@@ -1,0 +1,150 @@
+﻿@inherits NHSBlazorComponentBase
+@inject ICharacterStateService CharacterStateService
+
+<h3>Favourite Character Form </h3>
+
+@if (isFormSubmitted)
+{
+    <div class="alert alert-success">
+        Form submitted successfully! You have submitted the form @submissionCount times.
+    </div>
+}
+
+<EditForm Model="@FavouriteCharactersFormModel"  OnValidSubmit="HandleValidSubmit" OnInvalidSubmit="HandleInvalidSubmit" method="post" action="@Action">    
+      <DataAnnotationsValidator /> 
+  @*  <ValidationSummary class="error-message--margin-bottom-1 nhsuk-error-message field-validation-valid nhsuk-u-padding-top-1 nhsuk-u-padding-bottom-3" />*@
+    <div class="form-group">
+        @{
+            string placeholderTxt = "We just want to see ModelStateErrors in nojs so let me be empty so i can error;";
+        }
+        <label for="TestModelStateWithRequired">placeholderTxt</label>
+        <InputText id="TestModelStateWithRequired"
+                   class="form-control"
+                   DisplayName="@placeholderTxt"
+                   @bind-Value="FavouriteCharactersFormModel.TestModelStateWithRequired" />
+        <ValidationMessage For="@(() => FavouriteCharactersFormModel.TestModelStateWithRequired)" />
+    </div>
+   
+   @*qqqq we set an int, and we tell it that its an int. but then the interface provides value as a string for vc*@
+    <RadioListVCB
+        TItem="CartoonCharacterModel"
+        TValue="int"
+        ValueToSetPostName="@($"{nameof(FavouriteCharactersFormModel)}.{nameof(FavouriteCharactersFormModel.FavouriteCharacterId)}")"
+        RadioListValueToSet="@FavouriteCharactersFormModel.FavouriteCharacterId"
+        RadioGroupId=@($"characterRadioGroup-{Cartoon.Id}")
+        RadioItems="@Cartoon.Characters" 
+        AspFor="@AspFor" 
+        Label="@Label" 
+        HintText="@RadioListHint" 
+        Class=""
+        HasError="@(!formIsValid)"
+        IsPageHeading="@IsPageHeading"
+        Required="@Required"
+        RequiredClientSideErrorMessage=""
+        SelectedValueChanged="@(value => FavouriteCharactersFormModel.FavouriteCharacterId = value)" />
+@*     ErrorMessages="@(validationErrors.ContainsKey("FavouriteCharacterId") ? validationErrors["FavouriteCharacterId"] : new List<string>())" *@
+   @*  Name="EditContext" *@
+
+        <ValidatorVCB 
+            Model="@FavouriteCharactersFormModel" 
+            AspFor="@AspFor"
+            EditContext="@EditContext"/>
+
+
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+
+</EditForm>
+
+@code {
+
+
+
+    [Parameter, EditorRequired]
+    public string Action { get; set; }
+
+    private EditContext EditContext;
+
+    [Parameter,EditorRequired]
+    public string AspFor { get; set; }
+
+    [Parameter, EditorRequired]
+    public bool Required { get; set; } 
+
+    /// <summary>
+    /// if this is private then we cant get errors off it
+    /// if it is provided we need to generate a list of these per cartoon model
+    /// we could use the cartoon itself as the model qqqq
+    /// Maybe as a DTO and add the selectedCharacterId to it and any other options for data changes
+    /// </summary>
+    /// 
+    [Parameter]
+    public FavouriteCharactersFormModel FavouriteCharactersFormModel { get; set; } = new();
+
+    [Parameter] /*Not requiring it becuase if not provided by the controller then we will get it from the service otherwise we wont*/
+    public GE_CartoonModel Cartoon { get; set; } = null;
+
+    [Parameter]
+    public string Label { get; set; } = "Label Not Set Would Be EditorRequired or null";
+
+    [Parameter]
+    public string RadioListHint { get; set; } = "Hint Not Set Would Be Required or Empty String";
+
+    [Parameter]
+    public bool IsPageHeading { get; set; } = true;
+
+
+    [Parameter, EditorRequired] /*Not requiring it becuase if not provided by the controller then we will get it from the service otherwise we wont*/
+    public int CartoonId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        //If cartoon isnt provided then get it
+        Cartoon = Cartoon ?? (await CharacterStateService.GetCartoonsAsync()).Single(x=>x.Id == CartoonId);//we would have a specific end point
+        FavouriteCharactersFormModel.FavouriteCharacterId = Cartoon.Characters.SingleOrDefault(x=>x.IsFavourite)?.Id??0;//Or default if no favourite set yet but will use zero for testing
+    }
+
+    // Track the success status and submission count
+    private bool isFormSubmitted = false;
+    private int submissionCount = 0;
+
+
+ 
+    // Maybe just an OR would be better 
+    private bool formIsValid => JSIsEnabled ? blazorFormIsValid : !FavouriteCharactersFormModel.HasModelStateValidationErrors;
+    private bool blazorFormIsValid = true;
+    
+    protected override void OnInitialized()
+    {
+        EditContext = new EditContext(FavouriteCharactersFormModel);
+    }
+
+    // Handle the form submission
+    private void HandleValidSubmit()
+    {
+        //Fire forget but would have service response object
+        CharacterStateService.SetCharacterAsFavouriteAsync(FavouriteCharactersFormModel.FavouriteCharacterId);
+
+        // Increment the submission count and mark the form as submitted
+        submissionCount++;
+        isFormSubmitted = true;
+        blazorFormIsValid = true;
+
+        // Reset the form model after submission (optional)
+        //FavouriteCharactersFormModel = new FavouriteCharactersFormModel(); //not for now want to keep bullet highlighted
+
+        // Optionally, you can reset the submission status after a delay if needed.
+        // Example: Resetting after 3 seconds.
+        Task.Delay(3000).ContinueWith(_ =>
+        {
+            isFormSubmitted = false;
+        });
+
+    }
+    // Handle invalid form submission (triggered if validation fails)
+    private void HandleInvalidSubmit()
+    {
+        
+        blazorFormIsValid = false;
+    }
+}

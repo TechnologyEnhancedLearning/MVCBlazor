@@ -1,0 +1,153 @@
+﻿@using Package.Shared.BlazorComponents.Core
+@using Package.Shared.Entities
+@using Package.Shared.Entities.VCBInterfaces
+@using Package.Shared.Services.StateServices.CharacterStateService
+
+@typeparam TItem where TItem : IVCBRadioItem<TValue>
+@typeparam TValue
+@inherits NHSBlazorComponentBase
+
+
+
+<div class="nhsuk-form-group @(HasError ? "nhsuk-form-group--error" :"")">
+    @* @(!string.IsNullOrEmpty(Model.HintText) ? $"{Model.Label.RemoveWhitespace()}-hint" : string.Empty) <- for simplicity just put *@
+
+    <fieldset class="nhsuk-fieldset" aria-describedby="@Label.RemoveWhitespace()-hint">
+        <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--m">
+            @if (IsPageHeading)
+            {
+                <h1>
+                    @Label
+                </h1>
+            }
+            else
+            {
+                @Label
+            }
+        </legend>
+
+
+        @if (HintText != null)
+        {
+            <div class="nhsuk-hint" id="@Label.RemoveWhitespace()-hint">
+                @((MarkupString)HintText)
+            </div>
+        }
+
+
+
+
+        <InputRadioGroup TValue="@TValue" @bind-Value="RadioListValueToSet" Name="@ValueToSetPostName">
+            <div id="RadioGroup-@RadioGroupId" class="nhsuk-radios">
+                @for (int index = 0; index < RadioItems.Count(); index++)
+                {
+                    var radioItem = RadioItems.ElementAt(index);
+
+                    // Generate unique and safe IDs
+                    string radioItemId = $"{RadioGroupId}-Radio-{index}";
+                    string radioHintId = $"{RadioGroupId}-Hint-{index}";
+
+                    @* VCBRadioItem qqqq the interface is forcing a type on value i dont want that*@
+                    <div class="nhsuk-radios__item">
+                        <InputRadio id="@radioItemId"
+                                    TValue="@TValue"
+                                    Value="@radioItem.Value"
+                                    class="nhsuk-radios__input"
+                                    aria-describedby="@radioHintId" />
+
+                        <label class="nhsuk-label nhsuk-radios__label"
+                               for="@radioItemId">@radioItem.Label</label>
+                        <div class="nhsuk-hint nhsuk-radios__hint"
+                             id="@radioHintId">
+                            @radioItem.HintText
+                        </div>
+                    </div>
+                }
+            </div>
+        </InputRadioGroup>
+
+    </fieldset>
+</div>
+
+
+
+
+
+@code
+{
+    // qqqq do it this way for now
+    // This is an approach which is fine.
+    // [Parameter] public Func<TItem, object> GetId { get; set; }
+    //        <!-- Function to extract ID -->
+    // [Parameter] public Func<TItem, TValue> GetValue { get; set; }
+    //     <!-- Function to extract value -->
+    // [Parameter] public Func<TItem, string> GetLabel { get; set; }
+    //     <!-- Function to extract label -->
+    // [Parameter] public Func<TItem, string> GetHint { get; set; }
+    //      <!-- Function to extract hint -->
+
+
+    /// <summary>
+    /// Blazor setup
+    /// </summary>
+
+    ///
+
+
+
+
+    [Parameter, EditorRequired] public string ValueToSetPostName { get; set; }//This is so we can use the form pre hydrated as pure html otherwise it will default to the param name
+    [Parameter, EditorRequired] public TValue RadioListValueToSet { get; set; }
+    [Parameter, EditorRequired] public string RadioGroupId { get; set; }
+
+    [Parameter, EditorRequired]
+    public EventCallback<TValue> SelectedValueChanged { get; set; }
+    private void HandleRadioChange(TValue value)
+    {
+        SelectedValueChanged.InvokeAsync(value);
+    }
+
+
+
+    /// <summary>
+    /// VC Inputs
+    /// </summary>
+    ///
+    [Parameter]
+    public IEnumerable<IVCBRadioItem<TValue>> RadioItems { get; set; } = default!;
+
+    [Parameter, EditorRequired]
+    public bool HasError { get; set; } = true;
+
+    [Parameter, EditorRequired]
+    public string AspFor { get; set; } = String.Empty;
+
+    [Parameter, EditorRequired]
+    public string Label { get; set; } = String.Empty;
+
+    [Parameter, EditorRequired]
+    public string HintText { get; set; } = String.Empty;
+
+    [Parameter, EditorRequired]
+    public string? Class { get; set; }
+
+    // [Parameter]
+    // public IEnumerable<string> ErrorMessages { get; set; } = new List<string>();
+
+    //Just because view component has the bool i want to tidy it
+    private bool? _isPageHeading = false;
+
+    [Parameter, EditorRequired]
+    public bool IsPageHeading
+    {
+        get { return _isPageHeading ?? false; }
+        set { _isPageHeading = value; }
+    }
+
+    [Parameter, EditorRequired]
+    public bool Required { get; set; }
+
+    [Parameter, EditorRequired]
+    public string RequiredClientSideErrorMessage { get; set; } = String.Empty;
+
+}

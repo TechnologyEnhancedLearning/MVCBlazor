@@ -1,0 +1,53 @@
+﻿@inherits LayoutComponentBase
+<nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+    <div class="container-fluid" style="background-color:lightblue!important">
+        <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">LH.MVCBlazor.Server</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+            <ul class="navbar-nav flex-grow-1 flex-wrap">
+                <li class="nav-item">
+                    <a class="nav-link text-dark" href="/">Home</a>@* asp-area="" asp-controller="Home" asp-action="Index" *@
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" href="/MeetingAttendees">MeetingAttendees Component</a> @* asp-area="" asp-controller="MeetingAttendees" asp-action="Index" *@
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link text-dark" href="/BlazorPage">BlazorPage</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" href="/CharactersBlazorPage">CharactersBlazorPage</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" href="/InteractiveAutoPage">InteractiveAutoPage</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" href="/InteractiveServerPage">InteractiveServerPage</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" href="/InteractiveWebAssemblyPage">InteractiveWebAssemblyPage</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" href="/StaticServerPage">StaticServerPage</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" href="/StreamRenderingWeatherPage">StreamRenderingWeatherPage</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" href="/InteractiveAutoPreRenderFalseWeatherPage">InteractiveAutoPreRenderFalseWeatherPage</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link text-dark" href="/ViewComponentExamplePage">ViewComponentExamplePage</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" href="/ViewComponentReferenceBlazorComponentPage">ViewComponentReferenceBlazorComponentPage</a>
+                </li>
+
+            </ul>
+        </div>
+    </div>
+</nav>

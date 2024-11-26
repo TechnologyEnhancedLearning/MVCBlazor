@@ -1,0 +1,26 @@
+﻿@using System.Diagnostics
+@using BaseComponents.Button
+@using Core
+@inherits GB_ComponentBase
+
+
+<GB_Button @onclick="HandleClick">Write to console @TextToPrintToConsole</GB_Button>
+
+@code {
+    [EditorRequired]
+    [Parameter]
+    public string TextToPrintToConsole { get; set; }
+
+
+
+    private async Task HandleClick()
+    {
+        // This will log the text to the console
+        Console.WriteLine(TextToPrintToConsole);
+        //Output window
+        Debug.WriteLine(TextToPrintToConsole);
+    }
+}
+
+
+

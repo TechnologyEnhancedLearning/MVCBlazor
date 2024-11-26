@@ -1,0 +1,22 @@
+﻿@usin
+
+
+@model AttendeesViewModel
+@{
+    
+    string GB_ComponentTagRenderMode = ViewBag.GB_ComponentTagRenderMode as string;
+    ViewData["Title"] = $"Attendees Page MVC RenderMode: {GB_ComponentTagRenderMode}";
+}
+
+<div class="attendees-wrapper">
+
+    <div class="attendees-form-container">
+        <h3 style="margin:10px;text-align:center">@Model.MeetingName</h3>
+        <component type="typeof(MeetingAttendees)"
+                   param-UniqueId=@("9")
+                   param-ListAttendeesProvidedByView="@Model.Attendees"
+                   render-mode="@GB_ComponentTagRenderMode" />
+    </div>
+</div>
+
+

@@ -1,0 +1,93 @@
+﻿@using Package.Shared.BlazorComponents.Core.Compliance.AccessibilityInterfaces
+@using Package.Shared.Entities.Enums
+@using Package.Shared.BlazorComponents.GenericBlazorComponents.Buttons.GenericButton
+@inherits Package.Shared.BlazorComponents.Core.NHSBlazorComponentBase
+@implements IAccessibleComponent
+
+@if (JSIsEnabled)
+{
+    @*Splatting example but a common button class using just IAccessibleComponent may make a better example qqqq*@
+    <GB_Button_I @attributes="GetCommonButtonAttributes()"
+                 OnClick="@OnClick" />
+}
+else
+{
+    <GB_Button_S @attributes="GetCommonButtonAttributes()"
+                 ButtonType="@ButtonType"
+                 ActionUrl="@ActionUrl"
+                 FormMethod="@FormMethod"
+                 FormData="@FormData" />
+}
+
+
+@code {
+
+    [Parameter] public ButtonType ButtonType { get; set; } = ButtonType.Generic; // Default to Generic
+
+    // Shared parameters for both button components
+    [EditorRequired]
+    [Parameter]
+    public string AriaLabel { get; set; } = "Danger button";
+
+    [EditorRequired]
+    [Parameter]
+    public string Title { get; set; } = "Perform a dangerous action";
+
+    [Parameter]
+    public int TabIndex { get; set; } = 0;
+
+    [Parameter]
+    public bool ShowIcon { get; set; } = false;
+
+    [Parameter]
+    public string IconCssClass { get; set; } = "bi bi-exclamation-triangle"; // Default icon class
+
+    [Parameter]
+    public string CustomCssClass { get; set; } = ""; // Custom CSS classes for styling
+
+    [EditorRequired]
+    [Parameter]
+    public string ButtonText { get; set; } = "Danger"; // Default button text
+
+    [EditorRequired]
+    [Parameter]
+    public string ActionUrl { get; set; } // URL for form submission
+
+    [Parameter]
+    public string FormMethod { get; set; } = "post"; // Form method, defaulting to POST
+
+    [EditorRequired]
+    [Parameter]
+    public Dictionary<string, string> FormData { get; set; } = new Dictionary<string, string>(); // Form data to be sent
+
+    [EditorRequired]
+    [Parameter]
+    public string AssistiveText { get; set; } // Text for screen readers
+
+    [EditorRequired]
+    [Parameter]
+    public EventCallback OnClick { get; set; } // Event callback for button click
+
+    // Aria role attribute (e.g., button, alert, dialog)
+    public string AriaRole { get; set; } //Do nothing with this we just want to force the initial component to implement it
+
+    // Aria-describedby attribute for additional descriptive text
+    public string AriaDescribedBy { get; set; }//Do nothing with this we just want to force the initial component to implement it
+
+
+    // Method to return common attributes as a dictionary
+    private Dictionary<string, object> GetCommonButtonAttributes()
+    {
+        return new Dictionary<string, object>
+        {
+            { "AriaLabel", AriaLabel },
+            { "Title", Title },
+            { "TabIndex", TabIndex },
+            { "ShowIcon", ShowIcon },
+            { "IconCssClass", IconCssClass },
+            { "CustomCssClass", CustomCssClass },
+            { "ButtonText", ButtonText },
+            { "AssistiveText", AssistiveText }
+        };
+    }
+}

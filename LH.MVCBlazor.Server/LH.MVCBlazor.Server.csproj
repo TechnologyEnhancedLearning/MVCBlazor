@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Remove="Views\Home\_Host.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Views\Home\_Host.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Package.LH.BlazorComponents\Package.LH.BlazorComponents.csproj" />
+    <ProjectReference Include="..\Package.LH.Entities\Package.LH.Entities.csproj" />
+    <ProjectReference Include="..\Package.LH.Services\Package.LH.Services.csproj" />
+    <ProjectReference Include="..\Package.Shared.BlazorComponents\Package.Shared.BlazorComponents.csproj" />
+    <ProjectReference Include="..\Package.Shared.Entities\Package.Shared.Entities.csproj" />
+    <ProjectReference Include="..\Package.Shared.Services\Package.Shared.Services.csproj" />
+  </ItemGroup>
+
+</Project>

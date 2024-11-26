@@ -1,0 +1,79 @@
+﻿@using Package.Shared.BlazorComponents.Core.Compliance.AccessibilityInterfaces
+@using Package.Shared.Entities.Enums
+@inherits Package.Shared.BlazorComponents.Core.NHSBlazorComponentBase
+@implements IAccessibleComponent
+
+
+<div class="nhsuk-button-container">
+
+    <button type="button"
+            class="nhsuk-generic-button @ButtonType.GetButtonClass() @CustomCssClass"
+            aria-label="@AriaLabel"
+            aria-role="@AriaRole"
+            aria-describedby="@AriaDescribedBy"
+            title="@Title"
+            tabindex="@TabIndex"
+            @onclick="OnClick">
+
+        @if (ShowIcon)
+        {
+            <i class="bi bi-exclamation-triangle nhsuk-icon" aria-hidden="true"></i> <!-- Example Bootstrap Icon -->
+        }
+        @ButtonText
+        @if (!string.IsNullOrEmpty(AssistiveText))
+        {
+            <span id="@AriaDescribedBy" class="nhsuk-assistive-text">@AssistiveText</span> <!-- Hidden for screen readers -->
+        }
+    </button>
+</div>
+
+@code {
+    // Accessible properties with default values
+    // But for now lets use editor required
+    private const string DefaultAriaLabel = "Danger button";
+    private const string DefaultTitle = "Perform a dangerous action";
+    private const string DefaultAssistiveText = "Click to perform a dangerous action";
+
+    // This property is public, satisfying the interface, but not a Parameter because i wanted to force it to be used in the contract of the interface but the component can do that itself
+    public string AriaRole { get; set; } = "Button"; // Set to button by default
+    public string AriaDescribedBy { get; set; } = $"assistive-text-{Guid.NewGuid().ToString()}"; // Default ARIA described by (can be empty)
+
+    [Parameter] public ButtonType ButtonType { get; set; } = ButtonType.Generic; // Default to Generic
+
+    [EditorRequired]
+    [Parameter]
+    public string AriaLabel { get; set; } = DefaultAriaLabel;
+
+    [EditorRequired]
+    [Parameter]
+    public string Title { get; set; } = DefaultTitle;  //Or ButtonText???
+
+    [EditorRequired]
+    [Parameter]
+    public string AssistiveText { get; set; } = DefaultAssistiveText;
+
+
+
+    // Tab index for keyboard navigation
+    [EditorRequired]
+    [Parameter]
+    public int TabIndex { get; set; } = 0;
+
+    // Optional parameters for icon
+    [Parameter]
+    public bool ShowIcon { get; set; } = false; // Default is false
+
+    [Parameter]
+    public string IconCssClass { get; set; } = "bi bi-exclamation-triangle"; // Default Bootstrap icon class
+
+    [Parameter] public string CustomCssClass { get; set; } = ""; // Custom CSS classes for additional styling
+
+    [EditorRequired]
+    [Parameter]
+    public string ButtonText { get; set; } // Content inside the button
+
+
+
+    [Parameter] public EventCallback OnClick { get; set; }
+
+}

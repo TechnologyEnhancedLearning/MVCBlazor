@@ -1,0 +1,216 @@
+﻿@using LH.Models.Package
+
+@using Package.Shared.Services.StateServices.AttendeeStateServices
+
+@inherits NHSBlazorComponentBase 
+@inject IAttendeeStateService AttendeeStateService
+
+
+@*qqqq use character list and make this inline nojs*@
+
+<h1> I am @WhoAmI </h1>
+<div >
+
+    <!-- Form for adding a new attendee -->
+    @if (!JSIsEnabled) 
+     {
+        <h3 style="text-align: center;">JS Disabled</h3>
+        <!-- Form to Add Attendee -->
+        <form method="post" action="/MeetingAttendees_NoJS/AddAttendee" id="AddAttendeeForm-@UniqueId">
+         
+            @*It is in the LH client but it is hardcoded we could extract this form **TODO** *@
+            <div>
+                <label for="newFirstName-@UniqueId">First Name:</label>
+                <input type="text" id="newFirstName-@UniqueId" name="FirstName" placeholder="Enter first name" required />
+
+                <label for="newSecondName-@UniqueId">Second Name:</label>
+                <input type="text" id="newSecondName-@UniqueId" name="SecondName" placeholder="Enter second name" required />
+
+                <button type="submit">Add Attendee</button>
+            </div>
+        </form>
+
+        <!-- List of Attendees with Remove Buttons -->
+
+        @*Notice this is the same generic component*@
+
+        <ListWithButtons Items="AttendeeStateService.Attendees"
+            ListTitle="Attendee List"
+            GetItemText="@(attendee => $"{attendee.FirstName} {attendee.SecondName}")"
+            ListButton="RenderDangerButton_NoJS" />
+
+        <GenericButton_NoJS   AriaLabel="Save the current list to the database"
+                              Title="Save List"
+                              AssistiveText="Click to save the current list"
+                              ShowIcon="true"
+                              IconCssClass="bi bi-save"
+                              TabIndex="0"
+                              ButtonType=ButtonType.Success
+                              ActionUrl="/MeetingAttendees_NoJS/SaveAttendees"
+                              FormMethod="Post"
+                              FormData=@(new Dictionary<string, string>(){})
+                              ButtonText=@("Set Database To This (No Js doesnt have client side state so actually redundant)")
+                              />    
+    }
+    else
+    { 
+
+       
+
+        <EditForm Model="@newAttendee" OnValidSubmit="AddAttendee" id="@($"AddAttendeeForm-{@UniqueId}")">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <div>
+              <label for="@($"newFirstName-{@UniqueId}")">First Name:</label>
+                <InputText id="@($"newFirstName-{@UniqueId}")" @bind-Value="newAttendee.FirstName" placeholder="Enter first name" required />
+
+                <label for="@($"newSecondName-{@UniqueId}")">Second Name:</label>
+                <InputText id="@($"newSecondName-{@UniqueId}")" @bind-Value="newAttendee.SecondName" placeholder="Enter second name" required />
+
+                <button type="submit">Add Attendee</button>
+            </div>
+        </EditForm>
+
+        @if (InitialiseWithControllerAttendeeStateServiceData == false && AttendeeStateService.DataIsLoaded == false  )
+        {
+            if (halfSecondPassed == true)
+            {
+                <h1>Loading ...</h1>
+            }
+            else
+            {
+                //Don't anything it will probably be loaded in a flash
+                
+            }
+        }
+        else
+        {
+            @* This works but lets avoid the complication for this example : Items=""@(((InitialiseWithControllerAttendeeStateServiceData && !AttendeeStateService.DataIsLoaded)?ListAttendeesProvidedByView:AttendeeStateService.Attendees))"*@
+            <ListWithButtons 
+                    Items="AttendeeStateService.Attendees" 
+                    ListTitle="Attendee List"
+                    GetItemText="@(attendee => attendee.ToString())"
+                    ListButton="RenderDangerButton_Blazor" />
+
+         <GenericButton_Blazor 
+            ButtonText="Set Database To This (Currently changes are in the clientside stateservice)"
+            AriaLabel="Save the current list to the database"
+            Title="Save List"
+            AssistiveText="Click to save the current list"
+            ShowIcon="true"
+            IconCssClass="bi bi-save"
+            TabIndex="0"
+            ButtonType=ButtonType.Success
+            OnClick="() => HandleSubmit()" />
+        
+                
+        }
+     } 
+</div>
+@code {
+
+
+    /// Not currently in use below
+    [Parameter]
+    public List<LH_AttendeeModel> ListAttendeesProvidedByView { get; set; } // **Todo**  not currently using we would use it with the flag InitialiseWithControllerAttendeeStateServiceData or pass it to AttendeeStateService to seed data during loading
+    [Parameter]
+    public bool InitialiseWithControllerAttendeeStateServiceData { private get; set; } = false; // **Todo** remove and build into the service
+
+    /// Not currently in use above
+
+    [Parameter]//not in use really but so old components still work
+    public string UniqueId { get; set; } = Guid.NewGuid().ToString();
+
+    private bool halfSecondPassed = false; //otherwise it flashes loaded and you dont knwo what youve seen so if it take less than half a second to load dont show loading
+
+    private LH_AttendeeModel newAttendee = new LH_AttendeeModel();
+    protected override void OnInitialized() 
+    {
+        base.OnInitialized();
+        // Additional logic for MyComponent
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        //Not stopping the flash
+        _ = WaitHalfSecondBeforeShowingLoadingText();//fire forget - i dont think the logic is quite right
+        //await AttendeeStateService.LoadAttendeesAsync();
+        //Console.WriteLine("Blazor Component : Initialise");
+        await AttendeeStateService.EnsureDataIsLoadedAsync(); //check the service is ready when it is do the next render stage as the data will now be available
+                                                              //Automatically reinitialises so dont need to tell it state has changed
+    }
+
+    private async Task AddAttendee()
+    {
+        if (!string.IsNullOrWhiteSpace(newAttendee.FirstName) && !string.IsNullOrWhiteSpace(newAttendee.SecondName))
+        {
+            // Generate a temporary ID
+            await AttendeeStateService.AddAttendeeAsync(newAttendee);
+            newAttendee = new LH_AttendeeModel(); // Use constructor with defaults // Clear input fields
+            Console.WriteLine("Blazor Component : AddAttendee");
+            StateHasChanged();//because we change the list in the service rather than changing a blazor parameter, blazor doesnt know its changed so we need to tell it the state has change
+        }
+    }
+
+    private async Task RemoveAttendee(LH_AttendeeModel attendee)
+    {
+        await AttendeeStateService.RemoveAttendeeByTemporaryIdAsync(attendee.ClientTemporaryId);
+        Console.WriteLine("Blazor Component : RemoveAttendee");
+        StateHasChanged();//because we change the list in the service rather than changing a blazor parameter, blazor doesnt know its changed so we need to tell it the state has change
+    }
+
+    private async Task HandleSubmit()
+    {
+        Console.WriteLine("Blazor Component : HandleSubmit");
+        await AttendeeStateService.ReplaceDbWithListAsync();
+        Console.WriteLine("Blazor Component : Submit finished");
+
+    }
+
+    //Not resolved the reload flash
+    private async Task WaitHalfSecondBeforeShowingLoadingText()
+    {
+        if (!halfSecondPassed)
+        {
+            // Wait for half a second
+            await Task.Delay(500);
+            if (!halfSecondPassed) //in case it updated e 
+            {
+                halfSecondPassed = true; // Set the flag after 0.5 seconds
+                if (!AttendeeStateService.DataIsLoaded)
+                {
+                    StateHasChanged(); // Refresh UI we dont need to if already loaded
+                }
+            }
+        }
+    }
+
+    private RenderFragment<LH_AttendeeModel> RenderDangerButton_Blazor => attendee => @<GenericButton_Blazor 
+                         ButtonText="Remove"
+                         AriaLabel=@($"Remove attendee {attendee.FirstName} {attendee.SecondName}")
+                         Title="Remove the attendee from the list"
+                         AssistiveText=@($"Remove attendee {attendee.FirstName} {attendee.SecondName} via inline buttons preceeding list items")
+                         ShowIcon="true"
+                         TabIndex="0"
+                         ButtonType=ButtonType.Danger
+                         OnClick="() => RemoveAttendee(attendee)" />;
+
+    private RenderFragment<LH_AttendeeModel> RenderDangerButton_NoJS => attendee => @<GenericButton_NoJS
+                         ButtonText="Remove"
+                         AriaLabel=@($"Remove attendee {attendee.FirstName} {attendee.SecondName}")
+                         Title="Remove the attendee from the list"
+                         AssistiveText=@($"Remove attendee {attendee.FirstName} {attendee.SecondName} via inline buttons preceeding list items")
+                         ShowIcon="true"
+                         TabIndex="0"
+                         ButtonType=ButtonType.Danger
+                         ActionUrl="https://localhost:44326/api/AttendeeDbService/RemoveAttendeeByTemporaryId_NoJS"
+                         FormMethod="Post"
+                         FormData=@(new Dictionary<string, string>(){ {"clientTemporaryId", attendee.ClientTemporaryId.ToString()} })
+                          />;
+    //qqqqqqq
+    //ActionUrl="/MeetingAttendees_NoJS/RemoveAttendeeByTemporaryId"
+    //    ActionUrl="/api/attendees/RemoveAttendeeByTemporaryId_NoJS"
+    //AttendeeDbService
+    //does this need to be guid and of type     FormData=@(new Dictionary<string, string>(){ {"clientTemporaryId", attendee.ClientTemporaryId.ToString()} })
+}

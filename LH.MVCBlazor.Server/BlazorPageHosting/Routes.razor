@@ -1,0 +1,17 @@
+﻿@using MVCWebApp.Server.Components.Layout
+<Router AppAssembly="@typeof(Program).Assembly"
+    AdditionalAssemblies="new[]{typeof(LH.BlazorComponents.Package.Components.Pages.CharactersBlazorPage).Assembly}" >
+    <Found Context="routeData">
+        <RouteView RouteData="@routeData"  DefaultLayout="@typeof(_LayoutBlazor)" />
+        <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+    </Found>
+     <NotFound>
+         <LayoutView Layout="@typeof(_LayoutBlazor)"> 
+            !!! We are rendering as a component through host so if we include a layout we will get both mvc and blazor layout 
+             <h1>Sorry, there's nothing at this address. 
+                Blazor router rendered me but if you see pink its the mvc layout.
+                Could probably put in routes for each failed route base e.g /pageWeKnow/*AnyMissingRoute</h1> 
+         </LayoutView> 
+       
+    </NotFound> 
+</Router>

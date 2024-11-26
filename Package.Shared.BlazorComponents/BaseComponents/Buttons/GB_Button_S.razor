@@ -1,0 +1,100 @@
+﻿@using Package.Shared.BlazorComponents.Core.Compliance.AccessibilityInterfaces
+@using Package.Shared.Entities.Enums
+@inherits Package.Shared.BlazorComponents.Core.NHSBlazorComponentBase
+@implements IAccessibleComponent
+
+@*qqqq an option here is @inject NavigationManager Navigation and use  <input type="hidden" name="returnUrl" value="@Navigation.Uri" /> and have a parameter so it can be provided or default to this*@
+
+<div class="nhsuk-button-container">
+
+    @*qqqq yes! extract the form to HiddenSubmitForm_NoJS in a utility folder ... but if button is generic should I what else would i put in it. and would i reference it rather than containing it so its not visibly different*@
+    <form action="@ActionUrl"
+          style="display:inline;"
+          role="form"
+          tabindex="-1"
+          method="@FormMethod">
+        <button type="submit"
+                class="nhsuk-generic-button @ButtonType.GetButtonClass() @CustomCssClass"
+                aria-label="@AriaLabel"
+                aria-role="@AriaRole"
+                aria-describedby="@AriaDescribedBy"
+                title="@Title"
+                tabindex="@TabIndex">
+
+            @if (ShowIcon)
+            {
+                <i class="bi bi-exclamation-triangle nhsuk-icon" aria-hidden="true"></i> <!-- Example Bootstrap Icon -->
+            }
+            @*Maybe this should actually be a label and then reference if with for??*@
+            @ButtonText
+            @if (!string.IsNullOrEmpty(AssistiveText))
+            {
+                <span id="@AriaDescribedBy" class="nhsuk-assistive-text">@AssistiveText</span> <!-- Hidden for screen readers -->
+            }
+        </button>
+        <!-- Hidden inputs can be dynamically generated here -->
+        @foreach (var keyValuePair in FormData)
+        {
+            <input tabindex="-1" type="hidden" name="@keyValuePair.Key" value="@keyValuePair.Value" />
+        }
+
+    </form>
+</div>
+
+@code {
+    // Accessible properties with default values
+    private const string DefaultAriaLabel = "Danger button";
+    private const string DefaultTitle = "Perform a dangerous action";
+    private const string DefaultAssistiveText = "Click to perform a dangerous action";
+
+    // This property is public, satisfying the interface, but not a Parameter because I wanted to force it to be used in the contract of the interface but the component can do that itself
+    public string AriaRole { get; set; } = "Button"; // Set to button by default
+    public string AriaDescribedBy { get; set; } = $"assistive-text-{Guid.NewGuid()}"; // Default ARIA described by (can be empty)
+
+    [Parameter] public ButtonType ButtonType { get; set; } = ButtonType.Generic; // Default to Generic
+
+    [EditorRequired]
+    [Parameter]
+    public string AriaLabel { get; set; } = DefaultAriaLabel;
+
+    [EditorRequired]
+    [Parameter]
+    public string Title { get; set; } = DefaultTitle; // Or ButtonText???
+
+    [EditorRequired]
+    [Parameter]
+    public string AssistiveText { get; set; } = DefaultAssistiveText;
+
+    // Tab index for keyboard navigation
+    [EditorRequired]
+    [Parameter]
+    public int TabIndex { get; set; } = 0;
+
+    // Optional parameters for icon
+    [Parameter]
+    public bool ShowIcon { get; set; } = false; // Default is false
+
+    [Parameter]
+    public string IconCssClass { get; set; } = "bi bi-exclamation-triangle"; // Default Bootstrap icon class
+
+    [Parameter] public string CustomCssClass { get; set; } = ""; // Custom CSS classes for additional styling
+
+    [EditorRequired]
+    [Parameter]
+    public string ButtonText { get; set; } // Content inside the button
+
+    // New Parameters
+    [EditorRequired]
+    [Parameter]
+    public string ActionUrl { get; set; } // URL for the form submission
+
+    [EditorRequired]
+    [Parameter]
+    public Dictionary<string, string> FormData { get; set; } = new Dictionary<string, string>();
+
+    [EditorRequired]
+    [Parameter]
+    public string FormMethod { get; set; } = "Post"; //We should do this with an enum
+
+
+}

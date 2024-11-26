@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="P_JsInterop.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="P_JsInterop.txt" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <SupportedPlatform Include="browser" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.8" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Package.Shared.BlazorComponents\Package.Shared.BlazorComponents.csproj" />
+    <ProjectReference Include="..\Package.Shared.Entities\Package.Shared.Entities.csproj" />
+    <ProjectReference Include="..\Package.Shared.Services\Package.Shared.Services.csproj" />
+  </ItemGroup>
+
+</Project>

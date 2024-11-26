@@ -1,0 +1,24 @@
+﻿@inherits LayoutComponentBase
+@* <div class="html-tag-css">
+    <div class="body-tag-css">
+ *@
+<header>
+   <NavMenu/>
+</header>
+<div class="container">
+    <main role="main" class="pb-3">
+        <noscript>
+            <h1 style=" text-align: center; background-color: yellow;">
+                Psst your on brave JS is turned off
+            </h1>
+        </noscript>
+        @* @RenderBody() *@
+        @Body
+    </main>
+</div>
+
+<footer class="border-top footer text-muted">
+    <div class="container">
+        &copy; 2024 - LH.MVCBlazor.Server - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    </div>
+</footer>

@@ -1,0 +1,36 @@
+﻿@inherits Package.Shared.BlazorComponents.Core.NHSBlazorComponentBase
+@typeparam TItem
+
+<div class="list-container">
+    <h2 class="text-center">@ListTitle</h2>
+    <ul>
+        @foreach (var item in Items)
+        {
+            <li class="nhsuk-list-item">
+                <!-- Use a consistent class name -->
+                <div class="nhsuk-inline-content">
+                    @ListButton(item)
+                    <span>@GetItemText(item)</span>
+                </div>
+            </li>
+        }
+    </ul>
+</div>
+
+@code {
+    [EditorRequired]
+    [Parameter]
+    public string ListTitle { get; set; }
+    [EditorRequired]
+    [Parameter]
+    public List<TItem> Items { get; set; } // Generic list of items
+
+    [EditorRequired]
+    [Parameter]
+    public Func<TItem, string> GetItemText { get; set; } // Delegate to format the item text
+
+    [Parameter]
+    public RenderFragment<TItem> ListButton { get; set; } // RenderFragment for button content
+
+
+}

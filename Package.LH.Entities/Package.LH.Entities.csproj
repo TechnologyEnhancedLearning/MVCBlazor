@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="BaseClasses\" />
+    <Folder Include="Communication\" />
+    <Folder Include="Enums\" />
+    <Folder Include="Interfaces\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Package.Shared.Entities\Package.Shared.Entities.csproj" />
+    <ProjectReference Include="..\Package.Shared.Services\Package.Shared.Services.csproj" />
+  </ItemGroup>
+
+</Project>

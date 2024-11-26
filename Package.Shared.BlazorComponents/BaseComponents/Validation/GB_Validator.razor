@@ -1,0 +1,67 @@
+﻿@using Microsoft.AspNetCore.Components.Forms
+@using Package.Shared.BlazorComponents.Core
+@using Package.Shared.Entities
+@typeparam TModel where TModel : IBlazorModelStateValidationErrors //May not actually need it nice to have the interface but we can the model off the editcontext
+@inherits NHSBlazorComponentBase
+@code {
+    [Parameter, EditorRequired] public TModel Model { get; set; }
+    [Parameter, EditorRequired] public EditContext EditContext { get; set; } //, EditorRequired
+
+    [Parameter, EditorRequired]
+    public string AspFor { get; set; }
+
+
+    protected override void OnInitialized()
+    {
+
+        // Subscribe to EditContext events to re-render the component
+        EditContext.OnValidationRequested += (sender, args) => StateHasChanged();
+        EditContext.OnFieldChanged += (sender, args) => StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        if (EditContext != null)
+        {
+            // Unsubscribe to avoid memory leaks
+            EditContext.OnValidationRequested -= (sender, args) => StateHasChanged();
+            EditContext.OnFieldChanged -= (sender, args) => StateHasChanged();
+        }
+    }
+
+}
+
+@if (JSIsEnabled)
+{
+    @*  <DataAnnotationsValidator /> if we have two in the form  all the validation is doubled  *@
+    <ValidationSummary class="error-message--margin-bottom-1 nhsuk-error-message field-validation-valid nhsuk-u-padding-top-1 nhsuk-u-padding-bottom-3" />
+
+}
+else if (Model.HasModelStateValidationErrors)
+{
+    @*if no js and errors*@
+    <div id="@AspFor-error" class="nhsuk-u-padding-top-1 nhsuk-u-padding-bottom-3">
+        <div class="alert alert-danger">
+            <h2>Validation Errors</h2>
+            <ul>
+                @foreach (var (propertyName, errorMessages) in Model.ModelStateErrors)
+                {
+                    <li>
+                        @propertyName:
+                        <ul>
+                            @foreach (var errorMessage in errorMessages)
+                            {
+                                <li>
+                                    <span class="error-message--margin-bottom-1 nhsuk-error-message">
+                                        <span class="nhsuk-u-visually-hidden">Error:</span> @errorMessage
+                                    </span>
+                                </li>
+                            }
+                        </ul>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+}
+
