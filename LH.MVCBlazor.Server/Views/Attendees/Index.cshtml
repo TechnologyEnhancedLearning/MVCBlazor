@@ -1,6 +1,4 @@
-﻿
-
-@model AttendeesViewModel
+﻿@model AttendeesViewModel
 @{
 
     Microsoft.AspNetCore.Mvc.Rendering.RenderMode renderMode = Microsoft.AspNetCore.Mvc.Rendering.RenderMode.Static;
@@ -18,7 +16,8 @@
     ViewData["Title"] = $"Attendees Page MVC RenderMode: {ViewBag.GB_ComponentTagRenderMode}";
 }
 
-
+<component type="typeof(LHB_HelloWorld)" render-mode="WebAssembly" />
+<component type="typeof(LHB_HelloWorld)" render-mode="Static" />
 
 
 <div class="attendees-wrapper">

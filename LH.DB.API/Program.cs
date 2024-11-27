@@ -10,11 +10,14 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+var allowedOrigins = builder.Configuration.GetSection("AllowedOrigins").Get<string[]>();
+
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowLHMVCBlazorServer",
       builder => builder
-          .WithOrigins("https://localhost:44343") //Server SSL
+          .WithOrigins(allowedOrigins) //Server SSL
           .AllowAnyHeader()
       .AllowAnyMethod()
       .AllowCredentials());

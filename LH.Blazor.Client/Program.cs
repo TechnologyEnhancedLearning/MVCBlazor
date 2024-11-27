@@ -1,4 +1,3 @@
-
 using Package.LH.Services.Configurations;
 using Package.LH.Services.DependencyInjection;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -9,13 +8,15 @@ using Package.Shared.Services.StateServices;
 using Package.Shared.BlazorComponents.DependencyInjection;
 using Package.LH.BlazorComponents.DependencyInjection;
 
-
-
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
+// Read the API Base URL from configuration
+var apiBaseUrl = builder.Configuration["LH_DB_API:BaseUrl"];
+
+// Configure HttpClient to use the base URL from the configuration
 builder.Services.AddHttpClient("LHDBAPIServiceHttpClient", client =>
 {
-    client.BaseAddress = new Uri("https://localhost:44350/");//SSL API
+    client.BaseAddress = new Uri(apiBaseUrl); // Use BaseUrl from appsettings.json
 });
 
 

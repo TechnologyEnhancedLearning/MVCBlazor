@@ -23,12 +23,16 @@ builder.Services.AddRazorComponents()
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+//builder.Services.AddHttpClient("LHAPIServiceHttpClient", client =>
+//{
+//    client.BaseAddress = new Uri("https://localhost:44306/");//API SSL
+//});
+
+var apiBaseUrl = builder.Configuration["LH_DB_API:BaseUrl"];
 builder.Services.AddHttpClient("LHAPIServiceHttpClient", client =>
 {
-    client.BaseAddress = new Uri("https://localhost:44326/");
+    client.BaseAddress = new Uri(apiBaseUrl);
 });
-
-
 
 
 // Register IHttpContextAccessor
