@@ -1,6 +1,6 @@
-﻿@*Try deleting may not need in .net 8 but i think we do*@
-@using LH.MVCBlazor.Server.BlazorPageHosting;
+﻿@using LH.MVCBlazor.Server.BlazorPageHosting;
 
 @addTagHelper *, Microsoft.AspNetCore.MVC.TagHelpers
-@*Change to webassembly see if still works*@
-<component type="typeof(LH.MVCBlazor.Server.BlazorPageHosting.Routes)" render-mode="ServerPrerendered" />
+
+<component type="typeof(Routes)" render-mode="ServerPrerendered" />
+

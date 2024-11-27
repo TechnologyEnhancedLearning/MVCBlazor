@@ -1,11 +1,9 @@
 ﻿@using Package.Shared.BlazorComponents.Core
+@using Package.Shared.BlazorComponents.Extensions
 @using Package.Shared.Entities
-@using Package.Shared.Entities.VCBInterfaces
-@using Package.Shared.Services.StateServices.CharacterStateService
-
-@typeparam TItem where TItem : IVCBRadioItem<TValue>
+@typeparam TItem
 @typeparam TValue
-@inherits NHSBlazorComponentBase
+@inherits GB_ComponentBase
 
 
 
@@ -47,8 +45,12 @@
                     string radioItemId = $"{RadioGroupId}-Radio-{index}";
                     string radioHintId = $"{RadioGroupId}-Hint-{index}";
 
-                    @* VCBRadioItem qqqq the interface is forcing a type on value i dont want that*@
-                    <div class="nhsuk-radios__item">
+                    @*Works but dont want to interface every data model just for UI
+
+                    qqqq but will event func still bind as we need, no were using event, so some kind UI_DTO
+
+                    *@
+                    @* <div class="nhsuk-radios__item">
                         <InputRadio id="@radioItemId"
                                     TValue="@TValue"
                                     Value="@radioItem.Value"
@@ -60,6 +62,20 @@
                         <div class="nhsuk-hint nhsuk-radios__hint"
                              id="@radioHintId">
                             @radioItem.HintText
+                        </div>
+                    </div> *@
+                    <div class="nhsuk-radios__item">
+                        <InputRadio id="@radioItemId"
+                                    TValue="@TValue"
+                                    Value="@GetValue(radioItem)"
+                                    class="nhsuk-radios__input"
+                                    aria-describedby="@radioHintId" />
+                                    @*can we really set value like this qqqq*@
+                        <label class="nhsuk-label nhsuk-radios__label"
+                               for="@radioItemId">@GetLabel(radioItem)</label>
+                        <div class="nhsuk-hint nhsuk-radios__hint"
+                             id="@radioHintId">
+                            @GetHint(radioItem)
                         </div>
                     </div>
                 }
@@ -75,16 +91,15 @@
 
 @code
 {
-    // qqqq do it this way for now
-    // This is an approach which is fine.
+
     // [Parameter] public Func<TItem, object> GetId { get; set; }
-    //        <!-- Function to extract ID -->
-    // [Parameter] public Func<TItem, TValue> GetValue { get; set; }
-    //     <!-- Function to extract value -->
-    // [Parameter] public Func<TItem, string> GetLabel { get; set; }
-    //     <!-- Function to extract label -->
-    // [Parameter] public Func<TItem, string> GetHint { get; set; }
-    //      <!-- Function to extract hint -->
+           <!-- Function to extract ID -->
+    [Parameter] public Func<TItem, TValue> GetValue { get; set; }
+        <!-- Function to extract value -->
+    [Parameter] public Func<TItem, string> GetLabel { get; set; }
+        <!-- Function to extract label -->
+    [Parameter] public Func<TItem, string> GetHint { get; set; }
+         <!-- Function to extract hint -->
 
 
     /// <summary>
@@ -114,7 +129,7 @@
     /// </summary>
     ///
     [Parameter]
-    public IEnumerable<IVCBRadioItem<TValue>> RadioItems { get; set; } = default!;
+    public IEnumerable<TItem> RadioItems { get; set; } = default!;
 
     [Parameter, EditorRequired]
     public bool HasError { get; set; } = true;

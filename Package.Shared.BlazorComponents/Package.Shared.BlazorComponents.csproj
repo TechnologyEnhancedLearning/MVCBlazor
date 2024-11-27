@@ -12,11 +12,17 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components" Version="8.0.8" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Forms" Version="8.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.8" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Models\Validation\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Package.Shared.Services\Package.Shared.Services.csproj" />
   </ItemGroup>
 
 </Project>

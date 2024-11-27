@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Package.LH.BlazorComponents.Models
 {
-    public class LHB_FavouriteCharacterFormModel : IGB_ModelStateValidationErrors
+    public class LHB_FavouriteCharacterFormModel : IGB_ModelStateValidation
     {
         public int FavouriteCharacterId { get; set; }
 

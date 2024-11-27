@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Package.LH.BlazorComponents.Components;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,14 +27,15 @@ namespace Package.LH.BlazorComponents.DependencyInjection
         /// </summary>
         /// <param name="services"></param>
         /// <returns></returns>
-        public static IServiceCollection LH_RegisterAllBlazorComponents(this IServiceCollection services)
+        public static IServiceCollection LHB_RegisterAllBlazorComponents(this IServiceCollection services)
         {
 
-            services.AddTransient<MeetingAttendees>();
-            services.AddTransient<CharactersBlazor>();
+            services.AddTransient<LHB_Attendees_AddRemoveListForm>();
+            services.AddTransient<LHB_FavouriteCharacterForm>();
+            services.AddTransient<LHB_PageTestComponent>();
             return services;
         }
-        public static IServiceCollection LH_RegisterAllBlazorPageRoutes(this IServiceCollection services)
+        public static IServiceCollection LHB_RegisterAllBlazorPageRoutes(this IServiceCollection services)
         {
 
 

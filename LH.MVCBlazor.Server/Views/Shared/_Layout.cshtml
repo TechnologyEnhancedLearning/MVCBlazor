@@ -4,10 +4,10 @@
     <base href="~/" />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - MVCWebApp.Server</title>
+    <title>@ViewData["Title"] - LH.MVCBlazor.Server</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    @*     <link rel="stylesheet" href="~/MVCWebApp.Server.styles.css" asp-append-version="true" /> dont have this folder *@
+    @*     <link rel="stylesheet" href="~/LH.MVCBlazor.Server.styles.css" asp-append-version="true" /> dont have this folder *@
     <link rel="stylesheet" href="~/css/_Layout.css" />
     <link rel="stylesheet" href="~/css/main.css" />
     <link rel="stylesheet" href="~/css/nhsuk/nhsuk.css" />
@@ -27,10 +27,11 @@
         //this one is just for nhsuk components
     </script>
     <header>
+        @*qqqq We use the controller options this way, but its shared, could seperate controller and blazor pages*@
            <component type="typeof(NavMenu)" render-mode="Static" />
      @*    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid" style="background-color:pink!important">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">MVCWebApp.Server</a>
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">LH.MVCBlazor.Server</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -66,7 +67,7 @@
                             <a class="nav-link text-dark" href="/StreamRenderingWeatherPage">StreamRenderingWeatherPage</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" href="/InteractiveAutoPreRenderFalseWeatherPage">InteractiveAutoPreRenderFalseWeatherPage</a>
+                            <a class="nav-link text-dark" href="/InteractiveAutoPrerenderFalseWeatherPage">InteractiveAutoPrerenderFalseWeatherPage</a>
                         </li>
 
                         <li class="nav-item">
@@ -94,7 +95,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2024 - MVCWebApp.Server - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2024 - LH.MVCBlazor.Server - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
 

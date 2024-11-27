@@ -15,6 +15,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.8" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.1" />
+    <PackageReference Include="NHSUKViewComponents.Web" Version="1.0.24" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\LH.Blazor.Client\LH.Blazor.Client.csproj" />
     <ProjectReference Include="..\Package.LH.BlazorComponents\Package.LH.BlazorComponents.csproj" />
     <ProjectReference Include="..\Package.LH.Entities\Package.LH.Entities.csproj" />
     <ProjectReference Include="..\Package.LH.Services\Package.LH.Services.csproj" />

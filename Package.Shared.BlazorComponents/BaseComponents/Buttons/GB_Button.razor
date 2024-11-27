@@ -1,8 +1,5 @@
-﻿@using Package.Shared.BlazorComponents.Core.Compliance.AccessibilityInterfaces
-@using Package.Shared.Entities.Enums
-@using Package.Shared.BlazorComponents.GenericBlazorComponents.Buttons.GenericButton
-@inherits Package.Shared.BlazorComponents.Core.NHSBlazorComponentBase
-@implements IAccessibleComponent
+﻿@inherits GB_ComponentBase
+@implements IGB_AccessibleComponent
 
 @if (JSIsEnabled)
 {
@@ -22,7 +19,7 @@ else
 
 @code {
 
-    [Parameter] public ButtonType ButtonType { get; set; } = ButtonType.Generic; // Default to Generic
+    [Parameter] public GB_ButtonType ButtonType { get; set; } = GB_ButtonType.Generic; // Default to Generic
 
     // Shared parameters for both button components
     [EditorRequired]

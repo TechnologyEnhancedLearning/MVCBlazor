@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Package.Shared.Services.ComponentServices
 {
-    public interface GS_IJSEnabled
+    public interface IGS_JSEnabled
     {
         public bool JSIsEnabled { get; set; }
 

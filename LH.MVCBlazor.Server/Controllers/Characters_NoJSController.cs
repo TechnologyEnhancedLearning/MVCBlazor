@@ -1,5 +1,6 @@
 ﻿using LH.MVCBlazor.Server.Controllers.BaseControllers;
 using Microsoft.AspNetCore.Mvc;
+using Package.LH.BlazorComponents.DependencyInjection;
 using Package.Shared.Services.StateServices.CharacterStateServices;
 
 namespace LH.MVCBlazor.Server.Controllers
@@ -16,7 +17,7 @@ namespace LH.MVCBlazor.Server.Controllers
 
 
 
-        public Characters_NoJSController(IGS_CharactersStateService charactersStateService, BlazorPageRegistryService blazorPageRegistryService)
+        public Characters_NoJSController(IGS_CharactersStateService charactersStateService, LHB_BlazorPageRegistryService blazorPageRegistryService)
             : base(blazorPageRegistryService)
         {
             _charactersStateService = charactersStateService;

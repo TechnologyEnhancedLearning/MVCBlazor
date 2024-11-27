@@ -7,11 +7,24 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="launchSettings.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="launchSettings.json">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Package.LH.Entities\Package.LH.Entities.csproj" />
+    <ProjectReference Include="..\Package.LH.Services\Package.LH.Services.csproj" />
     <ProjectReference Include="..\Package.Shared.Entities\Package.Shared.Entities.csproj" />
   </ItemGroup>
 

@@ -1,0 +1,1 @@
+﻿We can make out blazor components have js so they can trigger and be triggerable by existing JS if we wish;

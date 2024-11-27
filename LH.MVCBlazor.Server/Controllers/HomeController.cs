@@ -17,11 +17,11 @@ namespace LH.MVCBlazor.Server.Controllers
         {
             return View();
         }
-
-        public IActionResult Privacy()
+        public IActionResult Blazor()
         {
-            return View();
+            return View("_Host");
         }
+
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

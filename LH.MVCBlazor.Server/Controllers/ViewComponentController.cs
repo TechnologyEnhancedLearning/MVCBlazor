@@ -1,12 +1,22 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using LH.MVCBlazor.Server.ViewModels;
+using Microsoft.AspNetCore.Mvc;
+using Package.Shared.Services.StateServices.CharacterStateServices;
 
 namespace LH.MVCBlazor.Server.Controllers
 {
     public class ViewComponentController : Controller
     {
-        public IActionResult Index()
+        private readonly IGS_CharactersStateService _charactersStateService;
+        public ViewComponentController(IGS_CharactersStateService charactersStateService)
         {
-            return View();
+            _charactersStateService = charactersStateService;
+        }
+
+        [Route("ViewComponentMVCPage")]
+        public async Task<IActionResult> Index()
+        {
+            var viewModel = new CharactersViewModel { Characters = await _charactersStateService.GetCharactersAsync() };
+            return View(viewModel);
         }
     }
 }

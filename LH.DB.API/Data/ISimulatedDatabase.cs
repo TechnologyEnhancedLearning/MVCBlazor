@@ -1,4 +1,7 @@
-﻿namespace LH.DB.API.Data
+﻿using Package.LH.Entities.Models;
+using Package.Shared.Entities.Models;
+
+namespace LH.DB.API.Data
 {
     public interface ISimulatedDatabase
     {
@@ -6,7 +9,7 @@
         List<GE_CartoonModel> Cartoons { get; }
 
         // Property to access the list of meetings
-        List<MeetingModel> Meetings { get; }
+        List<LH_MeetingModel> Meetings { get; }
 
 
     }

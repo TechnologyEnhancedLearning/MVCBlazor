@@ -1,4 +1,5 @@
 ﻿using Package.Shared.Entities.BaseClasses;
+using Package.Shared.Entities.Interfaces.ComponentInterfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace Package.LH.Entities.Models
 {
     public class LH_AttendeeModel : GE_PersonBase
     {
-        public string Role { get; set; } // Unique to attendees
+        public string Role { get; set; } = string.Empty;// Unique to attendees
 
         // Constructor that takes all necessary parameters
         public LH_AttendeeModel(int id, string firstName, string secondName, bool deleted, string role/*, MeetingModel meeting*/)

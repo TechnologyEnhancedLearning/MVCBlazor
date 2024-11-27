@@ -9,19 +9,13 @@ namespace Package.Shared.Services.Interfaces
 {
     public interface IGS_CharactersDBService
     {
-        /// <summary>
-        /// Asynchronously loads all cartoons along with their characters.
-        /// </summary>
-        /// <returns>A list of GE_CartoonModel containing cartoons and their respective characters.</returns>
-        Task<List<GE_CartoonModel>> LoadCartoonsAsync();
+   
+        Task<List<GE_CharacterModel>> LoadCharactersAsync();
 
-        /// <summary>
-        /// Asynchronously saves the selected favorite character for a specific cartoon.
-        /// </summary>
-        /// <param name="cartoonId">The ID of the cartoon.</param>
-        /// <param name="characterId">The ID of the character that is selected as favorite.</param>
-        /// <returns>A Task representing the asynchronous operation.</returns>
-        Task SetCharacterAsFavouriteForTheirCartoon(int characterId);
+        Task SetCharacterAsFavourite(int characterId);
+
+        public Task ReplaceDBWithList(List<GE_CharacterModel> characters);
+        public Task<List<GE_CharacterModel>> RemoveCharacterByTemporaryId_NoJS(Guid ClientTemporaryId);
 
     }
 }

@@ -1,6 +1,7 @@
-﻿@using MVCWebApp.Server.Components.Layout
+﻿@using LH.MVCBlazor.Server.BlazorPageHosting.Layout
+@using Package.LH.BlazorComponents.Components.Pages
 <Router AppAssembly="@typeof(Program).Assembly"
-    AdditionalAssemblies="new[]{typeof(LH.BlazorComponents.Package.Components.Pages.CharactersBlazorPage).Assembly}" >
+    AdditionalAssemblies="new[]{typeof(LHB_PageTestComponent).Assembly}" >
     <Found Context="routeData">
         <RouteView RouteData="@routeData"  DefaultLayout="@typeof(_LayoutBlazor)" />
         <FocusOnNavigate RouteData="@routeData" Selector="h1" />

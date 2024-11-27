@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using LH.MVCBlazor.Server.ViewModels;
+using Microsoft.AspNetCore.Mvc;
 using Package.Shared.BlazorComponents.Enums;
 using Package.Shared.Services.StateServices.CharacterStateServices;
 
@@ -44,8 +45,8 @@ namespace LH.MVCBlazor.Server.Controllers
                     //throw new Exception("Rendermode not in the enum"); //this is just for convenience we wouldnt have render mode routes
                 }
 
-                // Load the list of attendees from the service
-                var viewModel = new CharactersAttendeesViewModel { Attendees = await _charactersStateService.GetCharactersAsync() };
+
+                var viewModel = new CharactersViewModel { Characters = await _charactersStateService.GetCharactersAsync() };
                 ViewBag.RenderMode = renderMode.ToString();
                 return View(viewModel);
             }

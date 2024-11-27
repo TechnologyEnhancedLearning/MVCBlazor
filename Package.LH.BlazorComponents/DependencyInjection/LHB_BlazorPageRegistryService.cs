@@ -23,7 +23,7 @@ namespace Package.LH.BlazorComponents.DependencyInjection
                 "/InteractiveWebAssemblyPage",
                 "/StaticServerPage",
                 "/StreamRenderingWeatherPage",
-                "/InteractiveAutoPreRenderFalseWeatherPage",
+                "/InteractiveAutoPrerenderFalseWeatherPage",
 
             };
         }

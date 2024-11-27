@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 namespace Package.LH.Services.Configurations
 {
-    public interface ILHS_AttendeesAPIEndPoints
+    public interface ILHS_AttendeesAPIEndpoints
     {
         public string ClientName { get; set; }
         public string LoadAttendees { get; set; }
-        public string ReplaceDbWithList { get; set; }
+        public string ReplaceDBWithList { get; set; }
+
     }
 }

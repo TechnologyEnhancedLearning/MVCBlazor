@@ -5,7 +5,7 @@
 @using Microsoft.AspNetCore.Components.Forms
 @using Microsoft.AspNetCore.Components.Routing
 @using Microsoft.AspNetCore.Components.Web
-@using static Microsoft.AspNetCore.Components.Web.RenderMode /*suspicious of this*/
+@using static Microsoft.AspNetCore.Components.Web.RenderMode 
 @using Package.LH.BlazorComponents.Components
 @using Package.Shared.BlazorComponents.BaseComponents.Buttons
 @using Package.Shared.BlazorComponents.BaseComponents.Radios
@@ -14,10 +14,19 @@
 @using Microsoft.AspNetCore.Components.Web.Virtualization
 @using Microsoft.JSInterop
 @using LH.MVCBlazor.Server.BlazorPageHosting
-g LH.MVCBlazor.Server.BlazorPageHosting;
 @using Package.LH.BlazorComponents;
 @using Package.Shared.BlazorComponents
 @using LH.MVCBlazor.Server.BlazorPageHosting.Layout
+@using LH.MVCBlazor.Server.Helpers.VCHelpers
+@using NHSUKViewComponents.Web.ViewModels
+@using System.Diagnostics
+
+@using static Microsoft.AspNetCore.Mvc.Rendering.RenderMode
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @addTagHelper *, LH.MVCBlazor.Server
 @addTagHelper *, NHSUKViewComponents.Web
+
+
+
+
+

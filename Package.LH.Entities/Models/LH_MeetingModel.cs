@@ -7,15 +7,18 @@ using System.Threading.Tasks;
 
 namespace Package.LH.Entities.Models
 {
-    public class LH_MeetingModel : GE_GroupBase
+    public class LH_MeetingModel : GE_GroupBase<LH_AttendeeModel>
     {
-        public string Location { get; set; }
-        //collection -> public List<LH_AttendeeModel> Attendees { get; set; } // List of attendees specific to this meeting
-
-        public LH_MeetingModel(int id, string title, bool deleted, List<Type> collection, string location)
-            : base(id, title, deleted,collection) // Call to base class constructor
+        public string? Location { get; set; } = null;
+        public LH_MeetingModel(int id, string title, bool deleted, List<LH_AttendeeModel> collection)
+            : base(id, title, deleted, collection) // Call to base class constructor
         {
-            Location= location;
+
+        }
+        public LH_MeetingModel(int id, string title, bool deleted, List<LH_AttendeeModel> collection, string location)
+            : base(id, title, deleted, collection) // Call to base class constructor
+        {
+            Location = location;
         }
     }
 }

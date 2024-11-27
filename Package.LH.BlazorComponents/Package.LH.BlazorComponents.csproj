@@ -6,14 +6,6 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
-  <ItemGroup>
-    <None Remove="P_JsInterop.txt" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Include="P_JsInterop.txt" />
-  </ItemGroup>
-
 
   <ItemGroup>
     <SupportedPlatform Include="browser" />
@@ -24,6 +16,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Package.LH.Entities\Package.LH.Entities.csproj" />
+    <ProjectReference Include="..\Package.LH.Services\Package.LH.Services.csproj" />
     <ProjectReference Include="..\Package.Shared.BlazorComponents\Package.Shared.BlazorComponents.csproj" />
     <ProjectReference Include="..\Package.Shared.Entities\Package.Shared.Entities.csproj" />
     <ProjectReference Include="..\Package.Shared.Services\Package.Shared.Services.csproj" />

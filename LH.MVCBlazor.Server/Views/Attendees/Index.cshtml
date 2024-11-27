@@ -1,21 +1,33 @@
-﻿@usin
-
+﻿
 
 @model AttendeesViewModel
 @{
-    
-    string GB_ComponentTagRenderMode = ViewBag.GB_ComponentTagRenderMode as string;
-    ViewData["Title"] = $"Attendees Page MVC RenderMode: {GB_ComponentTagRenderMode}";
+
+    Microsoft.AspNetCore.Mvc.Rendering.RenderMode renderMode = Microsoft.AspNetCore.Mvc.Rendering.RenderMode.Static;
+    if (Enum.TryParse(ViewBag.GB_ComponentTagRenderMode, out renderMode))
+    {
+        // Parsing succeeded
+        Console.WriteLine($"Render mode is: {renderMode}");
+    }
+    else
+    {
+        // Parsing failed, use a default
+        renderMode = Microsoft.AspNetCore.Mvc.Rendering.RenderMode.Static; // Default value
+        Console.WriteLine("Invalid render mode string, defaulting to Static.");
+    }
+    ViewData["Title"] = $"Attendees Page MVC RenderMode: {ViewBag.GB_ComponentTagRenderMode}";
 }
 
-<div class="attendees-wrapper">
 
+
+
+<div class="attendees-wrapper">
     <div class="attendees-form-container">
-        <h3 style="margin:10px;text-align:center">@Model.MeetingName</h3>
-        <component type="typeof(MeetingAttendees)"
+        <h3 style="margin:10px;text-align:center">"Model.MeetingName"</h3>
+        <component type="typeof(LHB_Attendees_AddRemoveListForm)"
                    param-UniqueId=@("9")
                    param-ListAttendeesProvidedByView="@Model.Attendees"
-                   render-mode="@GB_ComponentTagRenderMode" />
+                   render-mode="@renderMode" />
     </div>
 </div>
 

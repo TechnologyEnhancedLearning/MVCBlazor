@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Package.Shared.BlazorComponents.Interfaces
 {
-    public interface IGB_ModelStateValidationErrors
+    public interface IGB_ModelStateValidation
     {
         //public string AspFor { get; set; } maybeeeee???? qqqq if its always required which it may be
         Dictionary<string, List<string>> ModelStateErrors { get; set; }

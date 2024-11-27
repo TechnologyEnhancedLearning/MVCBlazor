@@ -1,50 +1,92 @@
 ﻿@inherits LayoutComponentBase
 <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
     <div class="container-fluid" style="background-color:lightblue!important">
-        <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">LH.MVCBlazor.Server</a>
+        <a class="navbar-brand" href="/"  >LH.MVCBlazor.Server</a>
+        @*asp-area="" asp-controller="Home" asp-action="Index"*@
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                 aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
             <ul class="navbar-nav flex-grow-1 flex-wrap">
+
+
+                @*Home Controller*@
                 <li class="nav-item">
-                    <a class="nav-link text-dark" href="/">Home</a>@* asp-area="" asp-controller="Home" asp-action="Index" *@
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-dark" href="/MeetingAttendees">MeetingAttendees Component</a> @* asp-area="" asp-controller="MeetingAttendees" asp-action="Index" *@
+                    <a class="nav-link text-dark" href="/">Home MVC</a>@* asp-area="" asp-controller="Home" asp-action="Index" *@
                 </li>
 
+                @*Weather Streaming Blazor Pages*@
                 <li class="nav-item">
-                    <a class="nav-link text-dark" href="/BlazorPage">BlazorPage</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-dark" href="/CharactersBlazorPage">CharactersBlazorPage</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-dark" href="/InteractiveAutoPage">InteractiveAutoPage</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-dark" href="/InteractiveServerPage">InteractiveServerPage</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-dark" href="/InteractiveWebAssemblyPage">InteractiveWebAssemblyPage</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-dark" href="/StaticServerPage">StaticServerPage</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-dark" href="/StreamRenderingWeatherPage">StreamRenderingWeatherPage</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-dark" href="/InteractiveAutoPreRenderFalseWeatherPage">InteractiveAutoPreRenderFalseWeatherPage</a>
+                    <a class="nav-link text-dark" href="/ViewComponentMVCPage">View Component MVC</a>
                 </li>
 
+                @*Attendees Controller*@
                 <li class="nav-item">
-                    <a class="nav-link text-dark" href="/ViewComponentExamplePage">ViewComponentExamplePage</a>
+                    <a class="nav-link text-dark" href="/Attendees/Static-MVCRendered">Attendees Static MVC</a> @* asp-area="" asp-controller="MeetingAttendees" asp-action="Index" *@
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-dark" href="/ViewComponentReferenceBlazorComponentPage">ViewComponentReferenceBlazorComponentPage</a>
+                    <a class="nav-link text-dark" href="/Attendees/Server-MVCRendered">Attendees Server MVC</a> @* asp-area="" asp-controller="MeetingAttendees" asp-action="Index" *@
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" href="/Attendees/ServerPrendered-MVCRendered">Attendees ServerPrendered MVC</a> @* asp-area="" asp-controller="MeetingAttendees" asp-action="Index" *@
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" href="/Attendees/WebAssembly-MVCRendered">Attendees WebAssembly MVC</a> @* asp-area="" asp-controller="MeetingAttendees" asp-action="Index" *@
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" href="/Attendees/WebAssemblyPrerendered-MVCRendered">Attendees WebAssemblyPrerendered MVC</a> @* asp-area="" asp-controller="MeetingAttendees" asp-action="Index" *@
+                </li>
+
+                @*Characters Controller*@
+
+
+                <li class="nav-item">
+                    <a class="nav-link text-dark" href="/Characters/Static-MVCRendered">Characters Static MVC</a> 
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" href="/Characters/Server-MVCRendered">Characters Server MVC</a> 
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" href="/Characters/ServerPrendered-MVCRendered">Characters ServerPrendered MVC</a> 
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" href="/Characters/WebAssembly-MVCRendered">Characters WebAssembly MVC</a> 
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" href="/Characters/WebAssemblyPrerendered-MVCRendered">Characters WebAssemblyPrerendered MVC</a> 
+                </li>
+
+
+                @*Attendees Blazor Pages*@
+                @*QQQQ ToDo if useful*@
+
+                @*Characters Blazor Pages*@
+                <li class="nav-item">
+                    <a class="nav-link text-dark" href="/Characters/Static-BlazorPage">Characters Static BlazorPage</a> 
+                </li> 
+                <li class="nav-item">
+                    <a class="nav-link text-dark" href="/Characters/Server-BlazorPage">Characters Server BlazorPage</a> 
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" href="/Characters/ServerPrenderedFalse-BlazorPage">Characters ServerPrenderedFalse BlazorPage</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" href="/Characters/WebAssembly-BlazorPage">Characters WebAssembly BlazorPage</a> 
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" href="/Characters/WebAssemblyPrerenderedFalse-BlazorPage">Characters WebAssemblyPrerenderedFalse BlazorPage</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" href="/Characters/InteractiveAutoPage-BlazorPage">Characters InteractiveAutoPage BlazorPage</a> 
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" href="/Characters/InteractiveAutoPagePrerenderFalse-BlazorPage">Characters InteractiveAutoPagePrerenderFalse BlazorPage</a> 
+                </li>
+                @*Weather Streaming Blazor Pages*@
+
+                <li class="nav-item">
+                    <a class="nav-link text-dark" href="/StreamRenderingWeather-BlazorPage">Weather Stream Rendering Page</a>
                 </li>
 
             </ul>

@@ -1,26 +1,27 @@
-using Package.LH.BlazorComponents.DependencyInjection;
+
 using Package.LH.Services.Configurations;
 using Package.LH.Services.DependencyInjection;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Package.Shared.BlazorComponents;
-using Package.Shared.Entities.VCBInterfaces;
 using Package.Shared.Services.ComponentServices;
 using Package.Shared.Services.DependencyInjection;
-using Package.Shared.Services.StateServices.AttendeeStateServices;
+using Package.Shared.Services.StateServices;
+using Package.Shared.BlazorComponents.DependencyInjection;
+using Package.LH.BlazorComponents.DependencyInjection;
 
 
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
-builder.Services.AddHttpClient("LHAPIServiceHttpClient", client =>
+builder.Services.AddHttpClient("LHDBAPIServiceHttpClient", client =>
 {
-    client.BaseAddress = new Uri("https://localhost:44326/");
+    client.BaseAddress = new Uri("https://localhost:44350/");//SSL API
 });
 
 
-builder.Services.AddSingleton<IJSEnabled>(sp =>
+builder.Services.AddSingleton<IGS_JSEnabled>(sp =>
 {
-    return new JSEnabled
+    return new GS_JSEnabled
     {
         JSIsEnabled = true, //if we are inject the client then it is true
         TestingWhoAmI = "Client"
@@ -30,8 +31,10 @@ builder.Services.AddSingleton<IJSEnabled>(sp =>
 
 //!!Leave in tested in release mode but based on stack overflow expect publishing issues tree shaking again - though expect better solution is the assemblies creation in server proj!!
 
-builder.Services.RegisterAllGenericBlazorComponents();
-builder.Services.RegisterAllLHBazorComponents();
+builder.Services.GB_RegisterAllGenericBlazorComponents();
+
+builder.Services.LHB_RegisterAllBlazorComponents();
+builder.Services.LHB_RegisterAllBlazorPageRoutes();
 
 
 // Add Configuration from appsettings.json
@@ -40,10 +43,10 @@ builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnC
 
 
 // Use the extension method to configure services from the shared package
-builder.Services.AddConfigurationFromSharedServicesPackage(builder.Configuration);
-builder.Services.AddStateServicesFromSharedServicesPackage();
+builder.Services.GS_AddConfiguration(builder.Configuration);
+builder.Services.GS_AddStateServices();
 
-builder.Services.AddConfigurationFromLHServicesPackage(builder.Configuration);
-builder.Services.AddStateServicesFromLHServicesPackage();
+builder.Services.LHS_AddConfiguration(builder.Configuration);
+builder.Services.LHS_AddStateServices();
 
 await builder.Build().RunAsync();

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using LH.MVCBlazor.Server.ViewModels;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Package.LH.Services.StateServices;
 using Package.Shared.BlazorComponents.Enums;
@@ -44,7 +45,7 @@ namespace LH.MVCBlazor.Server.Controllers
             }
 
             // Load the list of attendees from the service
-            var viewModel = new MeetingAttendeesViewModel { Attendees = await _attendeesStateService.GetAttendeesAsync() };
+            var viewModel = new AttendeesViewModel { Attendees = await _attendeesStateService.GetAttendeesAsync() };
             ViewBag.RenderMode = renderMode.ToString();
             return View(viewModel);
         }

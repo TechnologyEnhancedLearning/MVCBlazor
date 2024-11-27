@@ -12,9 +12,9 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowMVCBlazorServer",
+    options.AddPolicy("AllowLHMVCBlazorServer",
       builder => builder
-          .WithOrigins("https://localhost:44371") // The URL of your Blazor WebAssembly client
+          .WithOrigins("https://localhost:44343") //Server SSL
           .AllowAnyHeader()
       .AllowAnyMethod()
       .AllowCredentials());
@@ -23,7 +23,7 @@ builder.Services.AddCors(options =>
 builder.Services.AddSingleton<ISimulatedDatabase, SimulatedDatabase>();
 
 //DI Collections
-builder.Services.AddDbServicesFromLHAPIPackage();
+builder.Services.LHAPI_AddDbServices();
 
 
 var app = builder.Build();
@@ -36,7 +36,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseCors("AllowMVCBlazorServer"); // Apply CORS policy
+app.UseCors("AllowLHMVCBlazorServer"); // Apply CORS policy
 app.UseAuthorization();
 
 app.MapControllers();

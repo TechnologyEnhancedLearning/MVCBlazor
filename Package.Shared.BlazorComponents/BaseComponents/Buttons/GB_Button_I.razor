@@ -1,7 +1,6 @@
-﻿@using Package.Shared.BlazorComponents.Core.Compliance.AccessibilityInterfaces
-@using Package.Shared.Entities.Enums
-@inherits Package.Shared.BlazorComponents.Core.NHSBlazorComponentBase
-@implements IAccessibleComponent
+﻿
+@inherits Package.Shared.BlazorComponents.Core.GB_ComponentBase
+@implements IGB_AccessibleComponent
 
 
 <div class="nhsuk-button-container">
@@ -38,7 +37,7 @@
     public string AriaRole { get; set; } = "Button"; // Set to button by default
     public string AriaDescribedBy { get; set; } = $"assistive-text-{Guid.NewGuid().ToString()}"; // Default ARIA described by (can be empty)
 
-    [Parameter] public ButtonType ButtonType { get; set; } = ButtonType.Generic; // Default to Generic
+    [Parameter] public GB_ButtonType ButtonType { get; set; } = GB_ButtonType.Generic; // Default to Generic
 
     [EditorRequired]
     [Parameter]

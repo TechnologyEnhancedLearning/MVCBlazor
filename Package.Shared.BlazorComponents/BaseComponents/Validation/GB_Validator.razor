@@ -1,8 +1,6 @@
-﻿@using Microsoft.AspNetCore.Components.Forms
-@using Package.Shared.BlazorComponents.Core
-@using Package.Shared.Entities
-@typeparam TModel where TModel : IBlazorModelStateValidationErrors //May not actually need it nice to have the interface but we can the model off the editcontext
-@inherits NHSBlazorComponentBase
+﻿
+@typeparam TModel where TModel : IGB_ModelStateValidation //May not actually need it nice to have the interface but we can the model off the editcontext
+@inherits GB_ComponentBase
 @code {
     [Parameter, EditorRequired] public TModel Model { get; set; }
     [Parameter, EditorRequired] public EditContext EditContext { get; set; } //, EditorRequired

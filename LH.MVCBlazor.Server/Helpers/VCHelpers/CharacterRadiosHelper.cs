@@ -1,10 +1,12 @@
-﻿using System.Diagnostics;
+﻿using NHSUKViewComponents.Web.ViewModels;
+using Package.Shared.Entities.Models;
+using System.Diagnostics;
 
 namespace LH.MVCBlazor.Server.Helpers.VCHelpers
 {
     public static class CharacterRadiosHelper
     {
-        public static List<RadiosItemViewModel> PrepareCharacterRadios(List<CartoonCharacterModel> characters)
+        public static List<RadiosItemViewModel> PrepareCharacterRadios(List<GE_CharacterModel> characters)
         {
             var radios = new List<RadiosItemViewModel>();
 

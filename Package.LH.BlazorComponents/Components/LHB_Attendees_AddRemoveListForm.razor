@@ -1,15 +1,18 @@
-﻿@using LH.Models.Package
+﻿@using Package.LH.Entities
+@using Package.LH.Entities.Models
+@using Package.LH.Services.StateServices
+@using Package.Shared.BlazorComponents.Components.Lists
 
-@using Package.Shared.Services.StateServices.AttendeeStateServices
-
-@inherits NHSBlazorComponentBase 
-@inject IAttendeeStateService AttendeeStateService
+@inherits GB_ComponentBase 
+@inject ILHS_AttendeesStateService LHS_AttendeesStateService
 
 
 @*qqqq use character list and make this inline nojs*@
 
+@*REFACTOR!!!!! QQQQQ*@
+
 <h1> I am @WhoAmI </h1>
-<div >
+<div>
 
     <!-- Form for adding a new attendee -->
     @if (!JSIsEnabled) 
@@ -34,18 +37,18 @@
 
         @*Notice this is the same generic component*@
 
-        <ListWithButtons Items="AttendeeStateService.Attendees"
+        <GB_ListWithButtons Items="LHS_AttendeesStateService.Attendees"
             ListTitle="Attendee List"
             GetItemText="@(attendee => $"{attendee.FirstName} {attendee.SecondName}")"
             ListButton="RenderDangerButton_NoJS" />
 
-        <GenericButton_NoJS   AriaLabel="Save the current list to the database"
+        <GB_Button_S   AriaLabel="Save the current list to the database"
                               Title="Save List"
                               AssistiveText="Click to save the current list"
                               ShowIcon="true"
                               IconCssClass="bi bi-save"
                               TabIndex="0"
-                              ButtonType=ButtonType.Success
+                              ButtonType=GB_ButtonType.Success
                               ActionUrl="/MeetingAttendees_NoJS/SaveAttendees"
                               FormMethod="Post"
                               FormData=@(new Dictionary<string, string>(){})
@@ -72,7 +75,7 @@
             </div>
         </EditForm>
 
-        @if (InitialiseWithControllerAttendeeStateServiceData == false && AttendeeStateService.DataIsLoaded == false  )
+        @if (InitialiseWithControllerLHS_AttendeesStateServiceData == false && LHS_AttendeesStateService.DataIsLoaded == false  )
         {
             if (halfSecondPassed == true)
             {
@@ -86,14 +89,14 @@
         }
         else
         {
-            @* This works but lets avoid the complication for this example : Items=""@(((InitialiseWithControllerAttendeeStateServiceData && !AttendeeStateService.DataIsLoaded)?ListAttendeesProvidedByView:AttendeeStateService.Attendees))"*@
-            <ListWithButtons 
-                    Items="AttendeeStateService.Attendees" 
+            @* This works but lets avoid the complication for this example : Items=""@(((InitialiseWithControllerLHS_AttendeesStateServiceData && !LHS_AttendeesStateService.DataIsLoaded)?ListAttendeesProvidedByView:LHS_AttendeesStateService.Attendees))"*@
+            <GB_ListWithButtons 
+                    Items="LHS_AttendeesStateService.Attendees" 
                     ListTitle="Attendee List"
                     GetItemText="@(attendee => attendee.ToString())"
                     ListButton="RenderDangerButton_Blazor" />
 
-         <GenericButton_Blazor 
+         <GB_Button_I 
             ButtonText="Set Database To This (Currently changes are in the clientside stateservice)"
             AriaLabel="Save the current list to the database"
             Title="Save List"
@@ -101,7 +104,7 @@
             ShowIcon="true"
             IconCssClass="bi bi-save"
             TabIndex="0"
-            ButtonType=ButtonType.Success
+            ButtonType=GB_ButtonType.Success
             OnClick="() => HandleSubmit()" />
         
                 
@@ -113,9 +116,9 @@
 
     /// Not currently in use below
     [Parameter]
-    public List<LH_AttendeeModel> ListAttendeesProvidedByView { get; set; } // **Todo**  not currently using we would use it with the flag InitialiseWithControllerAttendeeStateServiceData or pass it to AttendeeStateService to seed data during loading
+    public List<LH_AttendeeModel> ListAttendeesProvidedByView { get; set; } // **Todo**  not currently using we would use it with the flag InitialiseWithControllerLHS_AttendeesStateServiceData or pass it to LHS_AttendeesStateService to seed data during loading
     [Parameter]
-    public bool InitialiseWithControllerAttendeeStateServiceData { private get; set; } = false; // **Todo** remove and build into the service
+    public bool InitialiseWithControllerLHS_AttendeesStateServiceData { private get; set; } = false; // **Todo** remove and build into the service
 
     /// Not currently in use above
 
@@ -135,9 +138,9 @@
     {
         //Not stopping the flash
         _ = WaitHalfSecondBeforeShowingLoadingText();//fire forget - i dont think the logic is quite right
-        //await AttendeeStateService.LoadAttendeesAsync();
+        //await LHS_AttendeesStateService.LoadAttendeesAsync();
         //Console.WriteLine("Blazor Component : Initialise");
-        await AttendeeStateService.EnsureDataIsLoadedAsync(); //check the service is ready when it is do the next render stage as the data will now be available
+        await LHS_AttendeesStateService.EnsureDataIsLoadedAsync(); //check the service is ready when it is do the next render stage as the data will now be available
                                                               //Automatically reinitialises so dont need to tell it state has changed
     }
 
@@ -146,7 +149,7 @@
         if (!string.IsNullOrWhiteSpace(newAttendee.FirstName) && !string.IsNullOrWhiteSpace(newAttendee.SecondName))
         {
             // Generate a temporary ID
-            await AttendeeStateService.AddAttendeeAsync(newAttendee);
+            await LHS_AttendeesStateService.AddAttendeeAsync(newAttendee);
             newAttendee = new LH_AttendeeModel(); // Use constructor with defaults // Clear input fields
             Console.WriteLine("Blazor Component : AddAttendee");
             StateHasChanged();//because we change the list in the service rather than changing a blazor parameter, blazor doesnt know its changed so we need to tell it the state has change
@@ -155,7 +158,7 @@
 
     private async Task RemoveAttendee(LH_AttendeeModel attendee)
     {
-        await AttendeeStateService.RemoveAttendeeByTemporaryIdAsync(attendee.ClientTemporaryId);
+        await LHS_AttendeesStateService.RemoveAttendeeByTemporaryIdAsync(attendee.ClientTemporaryId);
         Console.WriteLine("Blazor Component : RemoveAttendee");
         StateHasChanged();//because we change the list in the service rather than changing a blazor parameter, blazor doesnt know its changed so we need to tell it the state has change
     }
@@ -163,7 +166,7 @@
     private async Task HandleSubmit()
     {
         Console.WriteLine("Blazor Component : HandleSubmit");
-        await AttendeeStateService.ReplaceDbWithListAsync();
+        await LHS_AttendeesStateService.ReplaceDBWithListAsync();
         Console.WriteLine("Blazor Component : Submit finished");
 
     }
@@ -178,7 +181,7 @@
             if (!halfSecondPassed) //in case it updated e 
             {
                 halfSecondPassed = true; // Set the flag after 0.5 seconds
-                if (!AttendeeStateService.DataIsLoaded)
+                if (!LHS_AttendeesStateService.DataIsLoaded)
                 {
                     StateHasChanged(); // Refresh UI we dont need to if already loaded
                 }
@@ -193,7 +196,7 @@
                          AssistiveText=@($"Remove attendee {attendee.FirstName} {attendee.SecondName} via inline buttons preceeding list items")
                          ShowIcon="true"
                          TabIndex="0"
-                         ButtonType=ButtonType.Danger
+                         ButtonType=GB_ButtonType.Danger
                          OnClick="() => RemoveAttendee(attendee)" />;
 
     private RenderFragment<LH_AttendeeModel> RenderDangerButton_NoJS => attendee => @<GenericButton_NoJS
@@ -203,8 +206,8 @@
                          AssistiveText=@($"Remove attendee {attendee.FirstName} {attendee.SecondName} via inline buttons preceeding list items")
                          ShowIcon="true"
                          TabIndex="0"
-                         ButtonType=ButtonType.Danger
-                         ActionUrl="https://localhost:44326/api/AttendeeDbService/RemoveAttendeeByTemporaryId_NoJS"
+                         ButtonType=GB_ButtonType.Danger
+                         ActionUrl="https://localhost:44326/api/lh-db/attendees/RemoveAttendeeByTemporaryId_NoJS"
                          FormMethod="Post"
                          FormData=@(new Dictionary<string, string>(){ {"clientTemporaryId", attendee.ClientTemporaryId.ToString()} })
                           />;

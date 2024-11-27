@@ -1,15 +1,19 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using LH.DB.API.Services;
+using Microsoft.AspNetCore.Mvc;
+using Package.LH.Entities.Models;
+using Package.LH.Services.Interfaces;
 using Package.Shared.Entities.Communication;
 
 namespace LH.DB.API.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    //[Route("api/[controller]")]
+    [Route("api/lh-db/attendees")]
     public class LH_AttendeesDBController : ControllerBase
     {
-        private readonly IAttendeesDbService _attendeesDbService;
+        private readonly ILHS_AttendeesDbService _attendeesDbService;
 
-        public LH_AttendeesDBController(IAttendeesDbService attendeesDbService)
+        public LH_AttendeesDBController(ILHS_AttendeesDbService attendeesDbService)
         {
             _attendeesDbService = attendeesDbService;
             Console.WriteLine("API : Constructor");
@@ -30,9 +34,9 @@ namespace LH.DB.API.Controllers
             };
         }
 
-        // POST: api/attendees/replaceDbWithList
-        [HttpPost("replaceDbWithList")]
-        public async Task<GE_ServiceResponse<List<LH_AttendeeModel>>> ReplaceDbWithList([FromBody] List<LH_AttendeeModel> attendees)
+        // POST: api/attendees/replaceDBWithList
+        [HttpPost("replaceDBWithList")]
+        public async Task<GE_ServiceResponse<List<LH_AttendeeModel>>> ReplaceDBWithList([FromBody] List<LH_AttendeeModel> attendees)
         {
             if (attendees == null)
             {
@@ -46,7 +50,7 @@ namespace LH.DB.API.Controllers
             }
 
             // Update the database with the provided attendees list
-            await _attendeesDbService.ReplaceDbWithList(attendees);
+            await _attendeesDbService.ReplaceDBWithList(attendees);
 
             // Load the updated attendees
             var updatedAttendees = await _attendeesDbService.LoadAttendeesAsync();

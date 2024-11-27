@@ -27,7 +27,7 @@ namespace Package.Shared.Services.DependencyInjection
         {
 
             //Add Configuration
-            services.Configure<GS_CharactersAPIEndPoints>(configuration.GetSection("ApiEndpoints:Characters"));
+            services.Configure<GS_CharactersAPIEndpoints>(configuration.GetSection("APIEndpoints:Characters"));
             return services;
         }
     }

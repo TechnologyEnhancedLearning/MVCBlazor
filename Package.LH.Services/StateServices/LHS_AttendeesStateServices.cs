@@ -6,22 +6,23 @@ using System.Linq;
 using System.Net.Http.Json;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
 
 namespace Package.LH.Services.StateServices
 {
     public class LHS_AttendeesStateService: ILHS_AttendeesStateService //qqqq maybe should be in server side qqqq
     {
         private readonly HttpClient _http;
-        private ILHS_AttendeesAPIEndPoints _attendeesAPIEndPoints;
+        private ILHS_AttendeesAPIEndpoints _attendeesAPIEndpoints;
         public bool DataIsLoaded { get; private set; } = false;
         private Task _loadingTask;
         public List<LH_AttendeeModel> Attendees { get; private set; } = new List<LH_AttendeeModel>();
 
-        public AttendeesStateService(IHttpClientFactory httpClientFactory, IOptions<LHS_AttendeesAPIEndPoints> attendeesAPIEndPoints)
+        public LHS_AttendeesStateService(IHttpClientFactory httpClientFactory, IOptions<LHS_AttendeesAPIEndpoints> attendeesAPIEndpoints)
         {
             // _http = http;
-            _attendeesAPIEndPoints = attendeesAPIEndPoints.Value;
-            _http = httpClientFactory.CreateClient(attendeesAPIEndPoints.Value.ClientName);
+            _attendeesAPIEndpoints = attendeesAPIEndpoints.Value;
+            _http = httpClientFactory.CreateClient(attendeesAPIEndpoints.Value.ClientName);
             _loadingTask = LoadAttendeesAsync(); //cant await in constuctor and often bad to load like this but we want to kick off the load from the beginning and just wait for it to finish when data requested
         }
 
@@ -44,12 +45,12 @@ namespace Package.LH.Services.StateServices
 
 
             // Fetch attendees from the server
-            string route = $"{_http.BaseAddress}{_attendeesAPIEndPoints.LoadAttendees}";
+            string route = $"{_http.BaseAddress}{_attendeesAPIEndpoints.LoadAttendees}";
             Console.WriteLine(route);
 
-            Attendees = await _http.GetFromJsonAsync<List<LH_AttendeeModel>>($"{_http.BaseAddress}{_attendeesAPIEndPoints.LoadAttendees}") ?? new List<LH_AttendeeModel>();
+            Attendees = await _http.GetFromJsonAsync<List<LH_AttendeeModel>>($"{_http.BaseAddress}{_attendeesAPIEndpoints.LoadAttendees}") ?? new List<LH_AttendeeModel>();
             DataIsLoaded = true; // Set the flag to true when data is loaded
-            Console.WriteLine("AttendeeStateService: LoadAttendeesAsync");
+            Console.WriteLine("LHS_AttendeesStateService: LoadAttendeesAsync");
         }
 
         public async Task AddAttendeeAsync(LH_AttendeeModel attendee)
@@ -73,13 +74,13 @@ namespace Package.LH.Services.StateServices
             Console.WriteLine("AttendeesStateService : Removed");
         }
 
-        public async Task<List<LH_AttendeeModel>> ReplaceDbWithListAsync()
+        public async Task<List<LH_AttendeeModel>> ReplaceDBWithListAsync()
         {
             await EnsureDataIsLoadedAsync();
 
 
             // Send the current list of attendees to the server to replace the existing database records
-            var response = await _http.PostAsJsonAsync($"{_http.BaseAddress}{_attendeeAPIEndPoints.ReplaceDbWithList}", Attendees);
+            var response = await _http.PostAsJsonAsync($"{_http.BaseAddress}{_attendeesAPIEndpoints.ReplaceDBWithList}", Attendees);
 
             if (response.IsSuccessStatusCode)
             {
@@ -96,7 +97,7 @@ namespace Package.LH.Services.StateServices
             }
 
             // Return the updated list of attendees
-            Console.WriteLine("AttendeeStateService: ReplaceDbWithList");
+            Console.WriteLine("LHS_AttendeesStateService: ReplaceDBWithList");
             return Attendees;
         }
 

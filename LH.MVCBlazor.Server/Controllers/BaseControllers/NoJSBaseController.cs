@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Package.LH.BlazorComponents.DependencyInjection;
 
 namespace LH.MVCBlazor.Server.Controllers.BaseControllers
 {
@@ -13,9 +14,9 @@ namespace LH.MVCBlazor.Server.Controllers.BaseControllers
 
             //So we can have arguments probably should make methods abstract but ok for this
 
-            protected BlazorPageRegistryService BlazorPageRegistryService { get; }
+            protected LHB_BlazorPageRegistryService BlazorPageRegistryService  { get; }
 
-            protected NoJSBaseController(BlazorPageRegistryService blazorPageRegistryService)
+            protected NoJSBaseController(LHB_BlazorPageRegistryService blazorPageRegistryService)
             {
                 BlazorPageRegistryService = blazorPageRegistryService;
             }

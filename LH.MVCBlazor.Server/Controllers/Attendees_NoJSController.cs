@@ -1,5 +1,8 @@
 ﻿using LH.MVCBlazor.Server.Controllers.BaseControllers;
 using Microsoft.AspNetCore.Mvc;
+using Package.LH.BlazorComponents.DependencyInjection;
+using Package.LH.Entities.Models;
+using Package.LH.Services.StateServices;
 
 namespace LH.MVCBlazor.Server.Controllers
 {
@@ -7,7 +10,7 @@ namespace LH.MVCBlazor.Server.Controllers
     public class Attendees_NoJSController : NoJSBaseController
     {
 
-        private readonly IAttendeeStateService _attendeeStateService;
+        private readonly ILHS_AttendeesStateService LHS_AttendeesStateService;
 
 
         protected override string DefaultRouteController { get; set; } = "Attendees";
@@ -15,18 +18,18 @@ namespace LH.MVCBlazor.Server.Controllers
 
       
       
-        public Attendees_NoJSController(IAttendeeStateService attendeeStateService, BlazorPageRegistryService blazorPageRegistryService)
+        public Attendees_NoJSController(ILHS_AttendeesStateService LHS_AttendeesStateService, LHB_BlazorPageRegistryService blazorPageRegistryService)
             : base(blazorPageRegistryService)
         {
-            _attendeeStateService = attendeeStateService;
+            this.LHS_AttendeesStateService = LHS_AttendeesStateService;
         }
         //qqqq initial focus just on blazor
         // POST: /Attendees_NoJS/RemoveAttendee 
         [HttpPost]
         public async Task<IActionResult> RemoveAttendeeByTemporaryId(Guid clientTemporaryId, string returnUrl = null)
         {
-            await _attendeeStateService.RemoveAttendeeByTemporaryIdAsync(clientTemporaryId);
-            await _attendeeStateService.ReplaceDbWithListAsync();//we are not persisting in the controller
+            await LHS_AttendeesStateService.RemoveAttendeeByTemporaryIdAsync(clientTemporaryId);
+            await LHS_AttendeesStateService.ReplaceDBWithListAsync();//we are not persisting in the controller
 
             //for now for ease lets do this but it wouldnt work for bookmarks etc
             returnUrl = returnUrl ?? Request.Headers["Referer"].ToString();
@@ -38,8 +41,8 @@ namespace LH.MVCBlazor.Server.Controllers
         public async Task<IActionResult> AddAttendee(LH_AttendeeModel newAttendee, string returnUrl = null)
         {
 
-            await _attendeeStateService.AddAttendeeAsync(newAttendee);
-            await _attendeeStateService.ReplaceDbWithListAsync();//we are not persisting in the controller
+            await LHS_AttendeesStateService.AddAttendeeAsync(newAttendee);
+            await LHS_AttendeesStateService.ReplaceDBWithListAsync();//we are not persisting in the controller
 
             //for now for ease lets do this but it wouldnt work for bookmarks etc
             returnUrl = returnUrl ?? Request.Headers["Referer"].ToString();
@@ -52,7 +55,7 @@ namespace LH.MVCBlazor.Server.Controllers
         [HttpPost]
         public async Task<IActionResult> SaveAttendees(string returnUrl = null)
         {
-            await _attendeeStateService.ReplaceDbWithListAsync(); // Ensure all changes are saved
+            await LHS_AttendeesStateService.ReplaceDBWithListAsync(); // Ensure all changes are saved
 
             //for now for ease lets do this but it wouldnt work for bookmarks etc
             returnUrl = returnUrl ?? Request.Headers["Referer"].ToString();

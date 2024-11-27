@@ -9,9 +9,11 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.8" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.1" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Package.LH.BlazorComponents\Package.LH.BlazorComponents.csproj" />
     <ProjectReference Include="..\Package.LH.Entities\Package.LH.Entities.csproj" />
     <ProjectReference Include="..\Package.LH.Services\Package.LH.Services.csproj" />
     <ProjectReference Include="..\Package.Shared.BlazorComponents\Package.Shared.BlazorComponents.csproj" />
