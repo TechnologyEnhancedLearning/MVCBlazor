@@ -101,7 +101,7 @@
     protected override async Task OnInitializedAsync()
     {
         //If cartoon isnt provided then get it
-        Characters = Characters ?? (await GS_CharactersStateService.GetCharactersAsync());
+        Characters = Characters ?? (await GS_CharactersStateService.GetCharactersAsync()).Data;
         LHB_FavouriteCharacterFormModel.FavouriteCharacterId = Characters.SingleOrDefault(x=>x.IsFavourite)?.Id??0;//Or default if no favourite set yet but will use zero for testing
     }
 

@@ -1,4 +1,5 @@
-﻿using Package.Shared.Entities.Models;
+﻿using Package.Shared.Entities.Communication;
+using Package.Shared.Entities.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,13 +11,13 @@ namespace Package.Shared.Services.StateServices.CharacterStateServices
     public interface IGS_CharactersStateService
     {
         Task EnsureDataIsLoadedAsync();
-        Task<List<GE_CharacterModel>> GetCharactersAsync();
-        Task SetCharacterAsFavouriteAsync(int characterId);
-        Task AddCharacterAsync(GE_CharacterModel character);
+        Task<GE_ServiceResponse<List<GE_CharacterModel>>> GetCharactersAsync();
+        Task<GE_ServiceResponse<bool>> SetCharacterAsFavouriteAsync(int characterId);
+        Task<GE_ServiceResponse<bool>> AddCharacterAsync(GE_CharacterModel character);
 
-        Task RemoveCharacterByTemporaryIdAsync(Guid clientTemporaryId);
+        Task<GE_ServiceResponse<bool>> RemoveCharacterByTemporaryIdAsync(Guid clientTemporaryId);
 
-        Task<List<GE_CharacterModel>> ReplaceDBWithListAsync();
+        Task<GE_ServiceResponse<List<GE_CharacterModel>>> ReplaceDBWithListAsync();
 
         bool DataIsLoaded { get; }
 

@@ -1,4 +1,5 @@
-﻿using Package.Shared.Entities.Models;
+﻿using Package.Shared.Entities.Communication;
+using Package.Shared.Entities.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,13 +10,13 @@ namespace Package.Shared.Services.Interfaces
 {
     public interface IGS_CharactersDBService
     {
-   
-        Task<List<GE_CharacterModel>> LoadCharactersAsync();
 
-        Task SetCharacterAsFavourite(int characterId);
+        public Task<GE_ServiceResponse<List<GE_CharacterModel>>> LoadCharactersAsync();
 
-        public Task ReplaceDBWithList(List<GE_CharacterModel> characters);
-        public Task<List<GE_CharacterModel>> RemoveCharacterByTemporaryId_NoJS(Guid ClientTemporaryId);
+        public Task<GE_ServiceResponse<bool>> SetCharacterAsFavourite(int characterId);
+
+        public Task<GE_ServiceResponse<List<GE_CharacterModel>>> ReplaceDBWithList(List<GE_CharacterModel> characters);
+        public Task<GE_ServiceResponse<bool>> RemoveCharacterByTemporaryId_NoJS(Guid ClientTemporaryId);
 
     }
 }

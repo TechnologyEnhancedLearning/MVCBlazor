@@ -39,10 +39,11 @@ namespace Package.LH.Services.StateServices
                 await _loadingTask;
             }
         }
-        public async Task<List<LH_AttendeeModel>> GetAttendeesAsync()
+        public async Task<GE_ServiceResponse<List<LH_AttendeeModel>>> GetAttendeesAsync()
         {
             await EnsureDataIsLoadedAsync();
-            return Attendees;
+            
+            return new GE_ServiceResponse<List<LH_AttendeeModel>> { Data = Attendees };
         }
         private async Task LoadAttendeesAsync()
         {
@@ -57,7 +58,7 @@ namespace Package.LH.Services.StateServices
             Console.WriteLine("LHS_AttendeesStateService: LoadAttendeesAsync");
         }
 
-        public async Task AddAttendeeAsync(LH_AttendeeModel attendee)
+        public async Task<GE_ServiceResponse<bool>> AddAttendeeAsync(LH_AttendeeModel attendee)
         {
             await EnsureDataIsLoadedAsync();
             if (attendee != null)
@@ -65,9 +66,11 @@ namespace Package.LH.Services.StateServices
                 Attendees.Add(attendee);
             }
             Console.WriteLine("AttendeesStateService: AddAttendee");
+
+            return new GE_ServiceResponse<bool> { Data = true };
         }
 
-        public async Task RemoveAttendeeByTemporaryIdAsync(Guid clientTemporaryId)
+        public async Task<GE_ServiceResponse<bool>> RemoveAttendeeByTemporaryIdAsync(Guid clientTemporaryId)
         {
             await EnsureDataIsLoadedAsync();
             var attendee = Attendees.Find(a => a.ClientTemporaryId == clientTemporaryId);
@@ -76,9 +79,11 @@ namespace Package.LH.Services.StateServices
                 Attendees.Remove(attendee);
             }
             Console.WriteLine("AttendeesStateService : Removed");
+
+            return new GE_ServiceResponse<bool> { Data = true };
         }
 
-        public async Task<List<LH_AttendeeModel>> ReplaceDBWithListAsync()
+        public async Task<GE_ServiceResponse<List<LH_AttendeeModel>>> ReplaceDBWithListAsync()
         {
             await EnsureDataIsLoadedAsync();
 
@@ -102,7 +107,7 @@ namespace Package.LH.Services.StateServices
 
             // Return the updated list of attendees
             Console.WriteLine("LHS_AttendeesStateService: ReplaceDBWithList");
-            return Attendees;
+            return new GE_ServiceResponse<List<LH_AttendeeModel>> { Data = Attendees };
         }
 
      

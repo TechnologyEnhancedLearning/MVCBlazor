@@ -46,7 +46,7 @@ namespace LH.MVCBlazor.Server.Controllers
             }
 
             // Load the list of attendees from the service
-            var viewModel = new AttendeesViewModel { Attendees = await _attendeesStateService.GetAttendeesAsync()};
+            var viewModel = new AttendeesViewModel { Attendees = (await _attendeesStateService.GetAttendeesAsync()).Data};
             ViewBag.RenderMode = renderMode.ToString();
             return View(viewModel);
         }

@@ -1,6 +1,7 @@
 ﻿using LH.DB.API.Data;
 using Microsoft.AspNetCore.Mvc;
 using Package.LH.Entities.Models;
+using Package.Shared.Entities.Communication;
 using Package.Shared.Entities.Models;
 using Package.Shared.Services.Interfaces;
 
@@ -18,12 +19,12 @@ namespace LH.DB.API.Services
             _characters = _database.Cartoons.First().People;
         }
   
-        public Task<List<GE_CharacterModel>> LoadCharactersAsync()
+        public async Task<GE_ServiceResponse<List<GE_CharacterModel>>> LoadCharactersAsync()
         {
-            return Task.FromResult(_characters);
+            return new GE_ServiceResponse<List<GE_CharacterModel>>{ Data = _characters };
         }
 
-        public Task<List<GE_CharacterModel>> RemoveCharacterByTemporaryId_NoJS(Guid ClientTemporaryId)
+        public async Task<GE_ServiceResponse<bool>> RemoveCharacterByTemporaryId_NoJS(Guid ClientTemporaryId)
         {
             try
             {
@@ -32,7 +33,7 @@ namespace LH.DB.API.Services
                 _characters.Remove(characterToRemove);
                 //await _database.SaveChangesAsync(); isnt a real  db
 
-                return Task.FromResult(_characters);//If real db then would really be async
+                return new GE_ServiceResponse<bool>(){ Data = true };//If real db then would really be async
 
             }
             catch (Exception e)
@@ -45,20 +46,20 @@ namespace LH.DB.API.Services
 
        
 
-        public Task ReplaceDBWithList(List<GE_CharacterModel> characters)
+        public async Task<GE_ServiceResponse<List<GE_CharacterModel>>> ReplaceDBWithList(List<GE_CharacterModel> characters)
         {
             // Replace the current list with the new list
             _characters.Clear();  // Clear 
             _characters.AddRange(characters);  // Add 
-            return Task.CompletedTask;//If real db then would really be async
+            return new GE_ServiceResponse<List<GE_CharacterModel>> {Data=_characters };//If real db then would really be async
         }
 
-        public Task SetCharacterAsFavourite(int characterId)
+        public async Task<GE_ServiceResponse<bool>> SetCharacterAsFavourite(int characterId)
         {
             Console.WriteLine($"CharactersDbService : SaveFavouriteCharacterAsync for CharacterId: {characterId}");
 
             _characters.ForEach(x => x.IsFavourite = (x.Id == characterId));
-            return Task.CompletedTask;
+            return new GE_ServiceResponse<bool> { Data = true };
         }
     }
 }

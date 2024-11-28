@@ -46,7 +46,7 @@ namespace LH.MVCBlazor.Server.Controllers
                 }
 
 
-                var viewModel = new CharactersViewModel { Characters = await _charactersStateService.GetCharactersAsync() };
+                var viewModel = new CharactersViewModel { Characters = (await _charactersStateService.GetCharactersAsync()).Data };
                 ViewBag.RenderMode = renderMode.ToString();
                 return View(viewModel);
             }

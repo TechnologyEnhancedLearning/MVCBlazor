@@ -1,6 +1,7 @@
 ﻿using LH.DB.API.Data;
 using Package.LH.Entities.Models;
 using Package.LH.Services.Interfaces;
+using Package.Shared.Entities.Communication;
 using System.Linq;
 
 namespace LH.DB.API.Services
@@ -18,26 +19,26 @@ namespace LH.DB.API.Services
         }
 
         // Fetch all attendees from the simulated database
-        public Task<List<LH_AttendeeModel>> LoadAttendeesAsync()
+        public async Task<GE_ServiceResponse<List<LH_AttendeeModel>>> LoadAttendeesAsync()
         {
             Console.WriteLine("AttendeeDbService : LoadAttendeesAsync");
             // Return a copy of the list to avoid external modifications
-            return Task.FromResult(_attendees);//If real db then would really be async
+            return new GE_ServiceResponse<List<LH_AttendeeModel>>{ Data = _attendees};//If real db then would really be async
         }
 
         // Replace the entire list of attendees in the simulated database
-        public Task ReplaceDBWithList(List<LH_AttendeeModel> attendees) //qqqq warning!!! for now just first group
+        public async Task<GE_ServiceResponse<List<LH_AttendeeModel>>> ReplaceDBWithList(List<LH_AttendeeModel> attendees) //qqqq warning!!! for now just first group
         {
 
             // Replace the current list with the new list
             _attendees.Clear();  // Clear existing attendees
             _attendees.AddRange(attendees);  // Add the new attendees
             Console.WriteLine("AttendeeDbService : ReplaceDBWithList");
-            return Task.CompletedTask;//If real db then would really be async
+            return new GE_ServiceResponse<List<LH_AttendeeModel>> { Data = _attendees };
         }
 
 
-        public Task<List<LH_AttendeeModel>> RemoveAttendeeByTemporaryId_NoJS(Guid ClientTemporaryId)
+        public async Task<GE_ServiceResponse<bool>> RemoveAttendeeByTemporaryId_NoJS(Guid ClientTemporaryId)
         {
 
             try
@@ -47,7 +48,7 @@ namespace LH.DB.API.Services
                 _attendees.Remove(attendeeToRemove);
                 //await _database.SaveChangesAsync(); isnt a real  db
 
-                return Task.FromResult(_attendees);//If real db then would really be async
+                return new GE_ServiceResponse<bool>{ Data = true} ;
 
             }
             catch (Exception e)

@@ -37,10 +37,10 @@ namespace Package.Shared.Services.StateServices.CharacterStateServices
             }
         }
 
-        public async Task<List<GE_CharacterModel>> GetCharactersAsync()
+        public async Task<GE_ServiceResponse<List<GE_CharacterModel>>> GetCharactersAsync()
         {
             await EnsureDataIsLoadedAsync();
-            return Characters;
+            return new GE_ServiceResponse<List<GE_CharacterModel>> { Data = Characters };
         }
 
         private async Task LoadCharactersAsync()
@@ -50,7 +50,7 @@ namespace Package.Shared.Services.StateServices.CharacterStateServices
             DataIsLoaded = true;
         }
 
-        public async Task SetCharacterAsFavouriteAsync(int characterId)
+        public async Task<GE_ServiceResponse<bool>> SetCharacterAsFavouriteAsync(int characterId)
         {
             string route = $"{_http.BaseAddress}{_charactersAPIEndpoints.SetCharacterAsFavourite}?characterId={characterId}";
             // Call the API to set the character as a favorite
@@ -61,9 +61,11 @@ namespace Package.Shared.Services.StateServices.CharacterStateServices
                 // Handle the error case
                 throw new Exception("Failed to set the character as favourite.");
             }
+
+            return new GE_ServiceResponse<bool> { Data = true };
         }
 
-        public async Task AddCharacterAsync(GE_CharacterModel character)
+        public async Task<GE_ServiceResponse<bool>> AddCharacterAsync(GE_CharacterModel character)
         {
             await EnsureDataIsLoadedAsync();
             if (character != null)
@@ -71,9 +73,11 @@ namespace Package.Shared.Services.StateServices.CharacterStateServices
                 Characters.Add(character);
             }
             Console.WriteLine("CharactersStateService: AddCharacter");
+
+            return new GE_ServiceResponse<bool> { Data = true };
         }
 
-        public async Task RemoveCharacterByTemporaryIdAsync(Guid clientTemporaryId)
+        public async Task<GE_ServiceResponse<bool>> RemoveCharacterByTemporaryIdAsync(Guid clientTemporaryId)
         {
             await EnsureDataIsLoadedAsync();
             var attendee = Characters.Find(a => a.ClientTemporaryId == clientTemporaryId);
@@ -82,9 +86,11 @@ namespace Package.Shared.Services.StateServices.CharacterStateServices
                 Characters.Remove(attendee);
             }
             Console.WriteLine("CharactersStateService : Removed");
+
+            return new GE_ServiceResponse<bool> { Data = true };
         }
 
-        public async Task<List<GE_CharacterModel>> ReplaceDBWithListAsync()
+        public async Task<GE_ServiceResponse<List<GE_CharacterModel>>> ReplaceDBWithListAsync()
         {
             await EnsureDataIsLoadedAsync();
 
@@ -107,7 +113,8 @@ namespace Package.Shared.Services.StateServices.CharacterStateServices
 
             // Return the updated list of attendees
             Console.WriteLine("CharactersStateService: ReplaceDBWithList");
-            return Characters;
+
+            return new GE_ServiceResponse<List<GE_CharacterModel>>{ Data = Characters };
         }
     }
 }

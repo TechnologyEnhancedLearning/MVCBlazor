@@ -1,4 +1,5 @@
 ﻿using Package.LH.Entities.Models;
+using Package.Shared.Entities.Communication;
 using Package.Shared.Entities.Models;
 using System;
 using System.Collections.Generic;
@@ -11,13 +12,13 @@ namespace Package.LH.Services.StateServices
     public interface ILHS_AttendeesStateService
     {
         Task EnsureDataIsLoadedAsync();
-        Task<List<LH_AttendeeModel>> GetAttendeesAsync();
+        Task<GE_ServiceResponse<List<LH_AttendeeModel>>> GetAttendeesAsync();
 
-        Task AddAttendeeAsync(LH_AttendeeModel attendee);
+        Task<GE_ServiceResponse<bool>> AddAttendeeAsync(LH_AttendeeModel attendee);
 
-        Task RemoveAttendeeByTemporaryIdAsync(Guid clientTemporaryId);
+        Task<GE_ServiceResponse<bool>> RemoveAttendeeByTemporaryIdAsync(Guid clientTemporaryId);
 
-        Task<List<LH_AttendeeModel>> ReplaceDBWithListAsync();
+        Task<GE_ServiceResponse<List<LH_AttendeeModel>>> ReplaceDBWithListAsync();
 
         bool DataIsLoaded { get; }
 
