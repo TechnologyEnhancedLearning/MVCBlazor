@@ -1,5 +1,4 @@
 ﻿using Package.LH.Entities.Models;
-using Package.LH.Services.Configurations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,21 +6,26 @@ using System.Net.Http.Json;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
+using Package.LH.Services.Configurations.AttendeesConfiguration;
+using Package.Shared.Entities.Communication;
+
 
 namespace Package.LH.Services.StateServices
 {
     public class LHS_AttendeesStateService: ILHS_AttendeesStateService //qqqq maybe should be in server side qqqq
     {
         private readonly HttpClient _http;
+        private LHS_AttendeesAPIConfiguration _attendeesAPIConfiguration;
         private ILHS_AttendeesAPIEndpoints _attendeesAPIEndpoints;
         public bool DataIsLoaded { get; private set; } = false;
         private Task _loadingTask;
         public List<LH_AttendeeModel> Attendees { get; private set; } = new List<LH_AttendeeModel>();
 
-        public LHS_AttendeesStateService(IHttpClientFactory httpClientFactory, IOptions<LHS_AttendeesAPIEndpoints> attendeesAPIEndpoints)
+        public LHS_AttendeesStateService(IHttpClientFactory httpClientFactory, IOptions<LHS_AttendeesAPIConfiguration> attendeesAPIEndpoints)
         {
             // _http = http;
-            _attendeesAPIEndpoints = attendeesAPIEndpoints.Value;
+            _attendeesAPIConfiguration = attendeesAPIEndpoints.Value;
+            _attendeesAPIEndpoints = _attendeesAPIConfiguration.Endpoints.Attendees;
             _http = httpClientFactory.CreateClient(attendeesAPIEndpoints.Value.ClientName);
             _loadingTask = LoadAttendeesAsync(); //cant await in constuctor and often bad to load like this but we want to kick off the load from the beginning and just wait for it to finish when data requested
         }
@@ -47,8 +51,8 @@ namespace Package.LH.Services.StateServices
             // Fetch attendees from the server
             string route = $"{_http.BaseAddress}{_attendeesAPIEndpoints.LoadAttendees}";
             Console.WriteLine(route);
-
-            Attendees = await _http.GetFromJsonAsync<List<LH_AttendeeModel>>($"{_http.BaseAddress}{_attendeesAPIEndpoints.LoadAttendees}") ?? new List<LH_AttendeeModel>();
+            
+            Attendees = (await _http.GetFromJsonAsync<GE_ServiceResponse<List<LH_AttendeeModel>>>($"{_http.BaseAddress}{_attendeesAPIEndpoints.LoadAttendees}")).Data ?? new List<LH_AttendeeModel>();
             DataIsLoaded = true; // Set the flag to true when data is loaded
             Console.WriteLine("LHS_AttendeesStateService: LoadAttendeesAsync");
         }

@@ -47,7 +47,8 @@ builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnC
 builder.Services.GS_AddConfiguration(builder.Configuration);
 builder.Services.GS_AddStateServices();
 
-builder.Services.LHS_AddConfiguration(builder.Configuration);
-builder.Services.LHS_AddStateServices();
+///qqqq put back in
+//builder.Services.LHS_AddConfiguration(builder.Configuration);
+//builder.Services.LHS_AddStateServices();
 
 await builder.Build().RunAsync();

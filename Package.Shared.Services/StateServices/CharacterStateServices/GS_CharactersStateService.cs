@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Package.Shared.Entities;
 using Package.Shared.Services.Configurations;
 using Package.Shared.Entities.Models;
+using Package.Shared.Entities.Communication;
 
 namespace Package.Shared.Services.StateServices.CharacterStateServices
 {
@@ -45,7 +46,7 @@ namespace Package.Shared.Services.StateServices.CharacterStateServices
         private async Task LoadCharactersAsync()
         {
             string route = $"{_http.BaseAddress}{_charactersAPIEndpoints.LoadCharacters}"; // Adjust this to your actual endpoint
-            Characters = await _http.GetFromJsonAsync<List<GE_CharacterModel>>(route) ?? new List<GE_CharacterModel>();
+            Characters = (await _http.GetFromJsonAsync<GE_ServiceResponse<List<GE_CharacterModel>>>(route)).Data ?? new List<GE_CharacterModel>();
             DataIsLoaded = true;
         }
 

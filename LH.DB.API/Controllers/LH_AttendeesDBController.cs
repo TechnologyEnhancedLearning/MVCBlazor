@@ -21,22 +21,23 @@ namespace LH.DB.API.Controllers
 
         // GET: api/attendees/loadAttendees
         [HttpGet("loadAttendees")]
-        public async Task<GE_ServiceResponse<List<LH_AttendeeModel>>> LoadAttendees()
+        public async Task<ActionResult<GE_ServiceResponse<List<LH_AttendeeModel>>>> LoadAttendees()
         {
             var attendees = await _attendeesDbService.LoadAttendeesAsync();
 
             // Return a standardized ServiceResponse
-            return new GE_ServiceResponse<List<LH_AttendeeModel>>
+            var result = new GE_ServiceResponse<List<LH_AttendeeModel>>
             {
                 Data = attendees,
                 Success = true,
                 Message = "Attendees loaded successfully."
             };
+            return Ok(result); 
         }
 
         // POST: api/attendees/replaceDBWithList
         [HttpPost("replaceDBWithList")]
-        public async Task<GE_ServiceResponse<List<LH_AttendeeModel>>> ReplaceDBWithList([FromBody] List<LH_AttendeeModel> attendees)
+        public async Task<ActionResult<GE_ServiceResponse<List<LH_AttendeeModel>>>> ReplaceDBWithList([FromBody] List<LH_AttendeeModel> attendees)
         {
             if (attendees == null)
             {
@@ -56,12 +57,15 @@ namespace LH.DB.API.Controllers
             var updatedAttendees = await _attendeesDbService.LoadAttendeesAsync();
 
             // Return the updated attendees in a standardized ServiceResponse
-            return new GE_ServiceResponse<List<LH_AttendeeModel>>
+            
+
+            var result = new GE_ServiceResponse<List<LH_AttendeeModel>>
             {
                 Data = updatedAttendees,
                 Success = true,
                 Message = "Database replaced and updated attendees retrieved successfully."
             };
+            return Ok(result);
         }
     }
 }

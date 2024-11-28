@@ -1,4 +1,5 @@
-﻿using Package.LH.Entities.Models;
+﻿using Microsoft.Extensions.Configuration;
+using Package.LH.Entities.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Package.LH.Services.Interfaces
 {
-    public interface ILHS_AttendeesDbService
+    public interface ILHS_AttendeesDbService 
     {
         public Task<List<LH_AttendeeModel>> LoadAttendeesAsync();
         public Task ReplaceDBWithList(List<LH_AttendeeModel> attendees);

@@ -23,7 +23,7 @@ namespace LH.DB.API.Controllers
 
         // GET: api/characters/loadCharacters
         [HttpGet("loadCharacters")]
-        public async Task<GE_ServiceResponse<List<GE_CharacterModel>>> LoadCharacters()
+        public async Task<ActionResult<GE_ServiceResponse<List<GE_CharacterModel>>>> LoadCharacters()
         {
             var characters = await _charactersDbService.LoadCharactersAsync();
 
@@ -38,7 +38,7 @@ namespace LH.DB.API.Controllers
 
         // POST: api/characters/replaceDBWithList
         [HttpPost("replaceDBWithList")]
-        public async Task<GE_ServiceResponse<List<GE_CharacterModel>>> ReplaceDBWithList([FromBody] List<GE_CharacterModel> characters)
+        public async Task<ActionResult<GE_ServiceResponse<List<GE_CharacterModel>>>> ReplaceDBWithList([FromBody] List<GE_CharacterModel> characters)
         {
             if (characters == null)
             {
@@ -67,7 +67,7 @@ namespace LH.DB.API.Controllers
         }
 
         [HttpGet("SetCharacterAsFavourite")]
-        public async Task<GE_ServiceResponse<List<GE_CharacterModel>>> SetCharacterAsFavourite(int characterId)
+        public async Task<ActionResult<GE_ServiceResponse<List<GE_CharacterModel>>>> SetCharacterAsFavourite(int characterId)
         {
 
             // Call your service to save the favorite character logic

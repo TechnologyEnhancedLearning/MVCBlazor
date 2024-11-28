@@ -249,7 +249,7 @@ prerender work without blazor interactivity
 	- put in event func logic
 	- attendees
 	- characters
-	
+- service response into services not controllers
 
 - New project
 - Renamed (Rename so know the project and if generic)
@@ -344,7 +344,117 @@ They wont change often so I dont think its a problem to repeat them across two p
 
 
 
+# Carpark
+**Forcing appsetting.json to fit appsetting.cs in order to on package update get an error where appsettings requires updating too.
+There is complexity in building all the little classes and interfaces and it is not advisable to create an instantiation and use it during build.
+This means that you need use strings anyway. **
 
 
+//dont like but passing 
+
+using Package.Shared.Entities.Configuration;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Package.LH.Services.Configurations.AttendeesConfiguration
+{
+    public interface ILHS_AttendeesAPIConfiguration : IAPIConfiguration<ILHS_AttendeesAPIEndpointGroup>
+    {
+        // Marker interface with no additional members
+    }
+
+    public interface ILHS_AttendeesAPIEndpointGroup
+    {
+        public LHS_AttendeesAPIEndpoints Attendees { get; set; }
+    }
+
+    public interface ILHS_AttendeesAPIEndpoints
+    {
+        public string LoadAttendees { get; set; }
+        public string ReplaceDBWithList { get; set; }
+    }
+}
+
+using Package.Shared.Entities.Configuration;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Package.LH.Services.Configurations.AttendeesConfiguration
+{
+
+    public class LHS_AttendeesAPIConfiguration : ILHS_AttendeesAPIConfiguration
+    {
+        public string ClientName { get; set; } = "UnSet";
+        public string BaseAddress { get; set; } = "UnSet";
+        public LHS_AttendeesAPIEndpointGroup Endpoints { get; set; } = new LHS_AttendeesAPIEndpointGroup();
+    }
+
+    public class LHS_AttendeesAPIEndpointGroup : ILHS_AttendeesAPIEndpointGroup
+    {
+        public LHS_AttendeesAPIEndpoints Attendees { get; set; } = new LHS_AttendeesAPIEndpoints();
+    }
+
+    public class LHS_AttendeesAPIEndpoints : ILHS_AttendeesAPIEndpoints
+    {
+        public string LoadAttendees { get; set; } = "UnSet";
+        public string ReplaceDBWithList { get; set; } = "UnSet";
+    }
+}
+using Package.Shared.Entities.Configuration;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Package.LH.Services.Configurations.AttendeesConfiguration
+{
+
+    public class LHS_AttendeesAPIConfiguration : ILHS_AttendeesAPIConfiguration
+    {
+        public string ClientName { get; set; } = "UnSet";
+        public string BaseAddress { get; set; } = "UnSet";
+        public LHS_AttendeesAPIEndpointGroup Endpoints { get; set; } = new LHS_AttendeesAPIEndpointGroup();
+    }
+
+    public class LHS_AttendeesAPIEndpointGroup : ILHS_AttendeesAPIEndpointGroup
+    {
+        public LHS_AttendeesAPIEndpoints Attendees { get; set; } = new LHS_AttendeesAPIEndpoints();
+    }
+
+    public class LHS_AttendeesAPIEndpoints : ILHS_AttendeesAPIEndpoints
+    {
+        public string LoadAttendees { get; set; } = "UnSet";
+        public string ReplaceDBWithList { get; set; } = "UnSet";
+    }
+}
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Primitives;
+using Package.LH.Services.Configurations.AttendeesConfiguration;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Package.LH.Services.Configurations
+{
+    public class LHS_Configuration : ILHS_Configuration
+    {
+   
+
+        public string ClientName { get; set; }
+        public string BaseAddress { get; set; }
+        public LHS_AttendeesAPIEndpointGroup Endpoints { get; set; }
+
+  
+    }
+}
 
 

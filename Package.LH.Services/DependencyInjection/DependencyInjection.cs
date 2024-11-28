@@ -1,5 +1,4 @@
-﻿using Package.LH.Services.Configurations;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Package.Shared.Services.Configurations;
@@ -10,6 +9,8 @@ using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
 using Package.LH.Services.StateServices;
+using Package.LH.Services.Configurations.AttendeesConfiguration;
+using Package.LH.Services.Configurations;
 
 namespace Package.LH.Services.DependencyInjection
 {
@@ -21,11 +22,14 @@ namespace Package.LH.Services.DependencyInjection
             services.AddScoped<ILHS_AttendeesStateService, LHS_AttendeesStateService>();
             return services;
         }
-        public static IServiceCollection LHS_AddConfiguration(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection LHS_AddConfiguration(this IServiceCollection services, IConfiguration configuration, string apiSection)
         {
 
             //Add Configuration
-            services.Configure<LHS_AttendeesAPIEndpoints>(configuration.GetSection("APIEndpoints:Attendees"));
+            services.Configure<LHS_AttendeesAPIConfiguration>(configuration.GetSection(apiSection));
+            //services.Configure<ILHS_AttendeesAPIConfiguration>(configuration);
+            //services.Configure<LHS_AttendeesAPIConfiguration>(configuration);
+            //services.Configure<LHS_AttendeesAPIConfiguration>(configuration);
 
             return services;
         }
