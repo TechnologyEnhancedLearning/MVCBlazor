@@ -58,7 +58,7 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.LHS_AddConfiguration(builder.Configuration,"APIs:LH_DB_API");
 builder.Services.LHS_AddStateServices();
 
-builder.Services.GS_AddConfiguration(builder.Configuration);
+builder.Services.GS_AddConfiguration(builder.Configuration, "APIs:LH_DB_API");
 builder.Services.GS_AddStateServices();
 
 
@@ -90,9 +90,6 @@ builder.Services.AddScoped<IGS_JSEnabled>(provider =>
         TestingWhoAmI = "Server"
     };
 });
-
-
-
 
 
 var app = builder.Build();

@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Package.Shared.Services.Configurations;
+using Package.Shared.Services.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,9 +27,6 @@ namespace Package.LH.Services.DependencyInjection
 
             //Add Configuration
             services.Configure<LHS_AttendeesAPIConfiguration>(configuration.GetSection(apiSection));
-            //services.Configure<ILHS_AttendeesAPIConfiguration>(configuration);
-            //services.Configure<LHS_AttendeesAPIConfiguration>(configuration);
-            //services.Configure<LHS_AttendeesAPIConfiguration>(configuration);
 
             return services;
         }

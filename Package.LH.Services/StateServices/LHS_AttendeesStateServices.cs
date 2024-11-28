@@ -21,12 +21,12 @@ namespace Package.LH.Services.StateServices
         private Task _loadingTask;
         public List<LH_AttendeeModel> Attendees { get; private set; } = new List<LH_AttendeeModel>();
 
-        public LHS_AttendeesStateService(IHttpClientFactory httpClientFactory, IOptions<LHS_AttendeesAPIConfiguration> attendeesAPIEndpoints)
+        public LHS_AttendeesStateService(IHttpClientFactory httpClientFactory, IOptions<LHS_AttendeesAPIConfiguration> attendeesAPIConfiguration)
         {
             // _http = http;
-            _attendeesAPIConfiguration = attendeesAPIEndpoints.Value;
+            _attendeesAPIConfiguration = attendeesAPIConfiguration.Value;
             _attendeesAPIEndpoints = _attendeesAPIConfiguration.Endpoints.Attendees;
-            _http = httpClientFactory.CreateClient(attendeesAPIEndpoints.Value.ClientName);
+            _http = httpClientFactory.CreateClient(_attendeesAPIConfiguration.ClientName);
             _loadingTask = LoadAttendeesAsync(); //cant await in constuctor and often bad to load like this but we want to kick off the load from the beginning and just wait for it to finish when data requested
         }
 

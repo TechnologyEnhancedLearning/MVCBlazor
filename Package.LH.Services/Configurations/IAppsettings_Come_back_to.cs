@@ -3,7 +3,7 @@ using Package.Shared.Entities.Configuration;
 
 namespace Package.LH.Services.Configurations
 {
-    public interface IAppsettings_Come_back_to
+    public interface IAppsettings
     {
 
         IAPIsConfiguration APIs { get; set; }

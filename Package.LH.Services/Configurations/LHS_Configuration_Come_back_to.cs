@@ -9,8 +9,7 @@ using System.Threading.Tasks;
 
 namespace Package.LH.Services.Configurations
 {
-    public class LHS_Configuration : ILHS_Configuration
-    {
+    public class LHS_Configuration : ILHS_Configuration    {
    
 
         public string ClientName { get; set; }

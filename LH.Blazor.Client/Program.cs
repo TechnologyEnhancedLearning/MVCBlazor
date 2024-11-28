@@ -10,13 +10,25 @@ using Package.LH.BlazorComponents.DependencyInjection;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
-// Read the API Base URL from configuration
-var apiBaseUrl = builder.Configuration["LH_DB_API:BaseUrl"];
+string LH_DB_API_BaseURL;
+string LH_DB_API_ClientName;
 
-// Configure HttpClient to use the base URL from the configuration
-builder.Services.AddHttpClient("LHDBAPIServiceHttpClient", client =>
+try
 {
-    client.BaseAddress = new Uri(apiBaseUrl); // Use BaseUrl from appsettings.json
+    LH_DB_API_BaseURL = builder.Configuration["APIs:LH_DB_API:BaseURL"];
+    LH_DB_API_ClientName = builder.Configuration["APIs:LH_DB_API:ClientName"];
+}
+catch (Exception e)
+{
+    // Log or handle the error appropriately
+    // Its probably missing appsetting info
+    Console.WriteLine($"Configuration validation failed: {e.Message}");
+    throw; // Re-throw if necessary
+
+}
+builder.Services.AddHttpClient(LH_DB_API_ClientName, client =>
+{
+    client.BaseAddress = new Uri(LH_DB_API_BaseURL);
 });
 
 
@@ -44,11 +56,11 @@ builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnC
 
 
 // Use the extension method to configure services from the shared package
-builder.Services.GS_AddConfiguration(builder.Configuration);
+builder.Services.GS_AddConfiguration(builder.Configuration,"APIs:LH_DB_API");
 builder.Services.GS_AddStateServices();
 
-///qqqq put back in
-//builder.Services.LHS_AddConfiguration(builder.Configuration);
-//builder.Services.LHS_AddStateServices();
+
+builder.Services.LHS_AddConfiguration(builder.Configuration, "APIs:LH_DB_API");
+builder.Services.LHS_AddStateServices();
 
 await builder.Build().RunAsync();

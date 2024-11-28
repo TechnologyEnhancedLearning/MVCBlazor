@@ -8,24 +8,27 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Package.Shared.Entities;
-using Package.Shared.Services.Configurations;
+using Package.Shared.Services.Configuration;
 using Package.Shared.Entities.Models;
 using Package.Shared.Entities.Communication;
+using Package.Shared.Services.Configuration.CharactersConfiguration;
 
 namespace Package.Shared.Services.StateServices.CharacterStateServices
 {
     internal class GS_CharactersStateService : IGS_CharactersStateService
     {
         private readonly HttpClient _http;
+        private readonly GS_CharactersAPIConfiguration _charactersAPIConfiguration; // Assuming this is defined similar to your attendee endpoints
         private readonly IGS_CharactersAPIEndpoints _charactersAPIEndpoints; // Assuming this is defined similar to your attendee endpoints
         public bool DataIsLoaded { get; private set; } = false;
         private Task _loadingTask;
         public List<GE_CharacterModel> Characters { get; private set; } = new List<GE_CharacterModel>();
 
-        public GS_CharactersStateService(IHttpClientFactory httpClientFactory, IOptions<GS_CharactersAPIEndpoints> charactersAPIEndpoints)//qqqq i want this as an interface but wasnt previously will it error
+        public GS_CharactersStateService(IHttpClientFactory httpClientFactory, IOptions<GS_CharactersAPIConfiguration> charactersAPIConfiguration)//qqqq i want this as an interface but wasnt previously will it error
         {
-            _charactersAPIEndpoints = charactersAPIEndpoints.Value;
-            _http = httpClientFactory.CreateClient(charactersAPIEndpoints.Value.ClientName);
+            _charactersAPIConfiguration = charactersAPIConfiguration.Value;
+            _charactersAPIEndpoints = _charactersAPIConfiguration.Endpoints.Characters;
+            _http = httpClientFactory.CreateClient(_charactersAPIConfiguration.ClientName);
             _loadingTask = LoadCharactersAsync();
         }
 
