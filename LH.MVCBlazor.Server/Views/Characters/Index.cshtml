@@ -1,2 +1,53 @@
-﻿<component type="typeof(LHB_HelloWorld)" render-mode="WebAssembly" />
+﻿@model CharactersViewModel
+@{
+
+    Microsoft.AspNetCore.Mvc.Rendering.RenderMode renderMode = Microsoft.AspNetCore.Mvc.Rendering.RenderMode.Static;
+    if (Enum.TryParse(ViewBag.RenderMode, out renderMode))
+    {
+        // Parsing succeeded
+        Console.WriteLine($"Render mode is: {renderMode}");
+    }
+    else
+    {
+        // Parsing failed, use a default
+        renderMode = Microsoft.AspNetCore.Mvc.Rendering.RenderMode.Static; // Default value
+        Console.WriteLine("Invalid render mode string, defaulting to Static.");
+    }
+    string Title = $"Characters Page MVC RenderMode: {ViewBag.RenderMode}";
+    ViewData["Title"] = Title;
+}
+<h1>@Title</h1>
+<h3>WebAssembly</h3>
+<component type="typeof(LHB_HelloWorld)" render-mode="WebAssembly" />
+<h3>Static</h3>
 <component type="typeof(LHB_HelloWorld)" render-mode="Static" />
+
+
+
+@* <form asp-controller="Characters_NoJS"
+      asp-action="SetFavouriteCharacter"
+      method="post">
+    <vc:radio-list asp-for="FavouriteCharacterId"
+                   label="Select a Favorite Character"
+                   radios="@charactersRadios"
+                   populate-with-current-values="true"
+                   hint-text="Choose your favourite character from "Model.FirstCartoonOnly.Title For Now"
+                   required="true" /> *@
+
+
+<div class="attendees-wrapper">
+    <div class="attendees-form-container">
+        <h3 style="margin:10px;text-align:center">"Model.CartoonName"</h3>
+        <component type="typeof(LHB_FavouriteCharacterForm)"
+                   param-AspFor=@("FavouriteCharacterId")
+                   param-Required=true
+                   param-Action=@("SetFavouriteCharacter")
+                   param-LHB_FavouriteCharacterFormModel=@Model
+                   param-Label=@("EditFormLabel Here")
+                   param-RadioListHint=@("Edit form hint here ")
+                   param-IsPageHeading=true
+                   render-mode="@renderMode" />
+    </div>
+</div>
+
+

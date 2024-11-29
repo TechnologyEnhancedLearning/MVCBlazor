@@ -1,6 +1,7 @@
 ﻿using LH.MVCBlazor.Server.Controllers.BaseControllers;
 using Microsoft.AspNetCore.Mvc;
 using Package.LH.BlazorComponents.DependencyInjection;
+using Package.Shared.BlazorComponents.Models;
 using Package.Shared.Services.StateServices.CharacterStateServices;
 
 namespace LH.MVCBlazor.Server.Controllers
@@ -24,18 +25,31 @@ namespace LH.MVCBlazor.Server.Controllers
         }
 
         [HttpPost("SetFavouriteCharacter")]//qqqq its get in example in lh
-        public async Task<IActionResult> SetFavouriteCharacter(int FavouriteCharacterId, string returnUrl = null)
+        public async Task<IActionResult> SetFavouriteCharacter([FromForm]GB_FavouriteCharacterFormModel GB_FavouriteCharacterFormModel, string returnUrl = null)
         {
-
-            if (FavouriteCharacterId <= 0)
+            int characterId = GB_FavouriteCharacterFormModel.FavouriteCharacterId;
+            if (characterId <= 0)
             {
-                return BadRequest("Invalid character ID provided.");
+                ModelState.AddModelError("FavouriteCharacterId", "Invalid character ID provided.");
+                //return BadRequest("Invalid character ID provided.");
             }
 
-            await _charactersStateService.SetCharacterAsFavouriteAsync(FavouriteCharacterId);
+            if (!ModelState.IsValid)
+            {
+                //just for testing
+                GB_FavouriteCharacterFormModel.ModelStateErrors = ModelState
+                    .Where(ms => ms.Value.Errors.Count > 0)
+                    .ToDictionary(
+                        kvp => kvp.Key,
+                        kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).ToList()
+                    );
+            }
+
+
+            await _charactersStateService.SetCharacterAsFavouriteAsync(characterId);
             return RedirectToReturnUrl(returnUrl); // Redirect back to the index after setting favorite
         }
-
+ 
 
     }
 }
