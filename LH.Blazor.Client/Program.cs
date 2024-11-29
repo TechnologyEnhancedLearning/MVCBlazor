@@ -44,23 +44,22 @@ builder.Services.AddSingleton<IGS_JSEnabled>(sp =>
 
 //!!Leave in tested in release mode but based on stack overflow expect publishing issues tree shaking again - though expect better solution is the assemblies creation in server proj!!
 
-builder.Services.GB_RegisterAllGenericBlazorComponents();
+//Want to pass a configuration that is a configuration just of what is relevant to the package. And interface to error in the server by not fitting appsettings.
+builder.Services.LHS_AddConfiguration(builder.Configuration, "APIs:LH_DB_API");
+builder.Services.LHS_AddStateServices();
+
+builder.Services.GS_AddConfiguration(builder.Configuration, "APIs:LH_DB_API");
+builder.Services.GS_AddStateServices();
+
 
 builder.Services.LHB_RegisterAllBlazorComponents();
 builder.Services.LHB_RegisterAllBlazorPageRoutes();
+
+builder.Services.GB_RegisterAllGenericBlazorComponents();
 
 
 // Add Configuration from appsettings.json
 builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 
-
-
-// Use the extension method to configure services from the shared package
-builder.Services.GS_AddConfiguration(builder.Configuration,"APIs:LH_DB_API");
-builder.Services.GS_AddStateServices();
-
-
-builder.Services.LHS_AddConfiguration(builder.Configuration, "APIs:LH_DB_API");
-builder.Services.LHS_AddStateServices();
 
 await builder.Build().RunAsync();

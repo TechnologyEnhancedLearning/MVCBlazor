@@ -1,4 +1,5 @@
-﻿
+﻿@using System.Web
+
 @model CharactersViewModel
 @{
     ViewData["Title"] = "ViewComponentExamplePage";
@@ -10,59 +11,22 @@
 @{
 
     List<RadiosItemViewModel> charactersRadios = @CharacterRadiosHelper.PrepareCharacterRadios(Model.Characters);
-   
+
 
 }
-<h1>test</h1>
-@*Take params out of model to make it more like VC*@
-<form asp-controller="ViewComponentExamplePage" asp-action="SetFirstCartoonFavouriteCharacter" method="get">
-    <div class="cartoon-section">
-        <h3>Set Favourite Character in "Cartoon Title Not Implemented"</h3>
-    </div>
-    <div class="nhsuk-form-group">
-        <button type="submit" class="nhsuk-button">Save Favourite</button>
-    </div>
-</form>
 
-<form asp-controller="ViewComponentReferenceBlazorComponentPage"
+
+<form asp-controller="Characters_NoJS"
       asp-action="SetFavouriteCharacter"
       method="post">
-
-
-    <div class="form-group">
-        <label for="VCTestModelStateWithRequired">placeholderTxt</label>
-        <input id="VCTestModelStateWithRequired"
-               class="form-control"
-               placeholder="Some txt"
-               name="LHB_FavouriteCharacterFormModel.TestModelStateWithRequired" />
-
-    </div>
-    <vc:radio-list asp-for="FirstCartoonOnlySelectedCharacterId"
-                   name="characterId"
+    <vc:radio-list asp-for="FavouriteCharacterId"
                    label="Select a Favorite Character"
                    radios="@charactersRadios"
                    populate-with-current-values="true"
-                   hint-text="Choose your favorite character from "Model.FirstCartoonOnly.Title For Now"
+                   hint-text="Choose your favourite character from "Model.FirstCartoonOnly.Title For Now"
                    required="true" />
 
-
-    <div class="nhsuk-form-group">
-        <button type="submit" class="nhsuk-button">Save Favourite</button>
-    </div>
-</form>
-<h1>after test </h1>
-<form asp-controller="ViewComponentExamplePage" asp-action="SetFirstCartoonFavouriteCharacter" method="get">
-    <div class="cartoon-section">
-        <h3>Set Favourite Character in "Model."FirstCartoonOnly.Title"</h3>
-        <vc:radio-list asp-for="FirstCartoonOnlySelectedCharacterId"
-                       label="Select a Favorite Character"
-                       radios="@charactersRadios"
-                       populate-with-current-values="true"
-                       hint-text="Choose your favorite character"
-                       required="true" />
-
-
-    </div>
+   
     <div class="nhsuk-form-group">
         <button type="submit" class="nhsuk-button">Save Favourite</button>
     </div>

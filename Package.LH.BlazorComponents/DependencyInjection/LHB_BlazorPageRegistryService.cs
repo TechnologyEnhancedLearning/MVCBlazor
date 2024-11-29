@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Package.Shared.BlazorComponents.Core;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,15 +16,32 @@ namespace Package.LH.BlazorComponents.DependencyInjection
             // Initialize the allowed routes list
             BlazorPageRoutes = new HashSet<string>
             {
-                "/meeting-attendees",
-                "/BlazorPage",
-                "/CharactersBlazorPage",
-                "/InteractiveAutoPage",
-                "/InteractiveServerPage",
-                "/InteractiveWebAssemblyPage",
-                "/StaticServerPage",
-                "/StreamRenderingWeatherPage",
-                "/InteractiveAutoPrerenderFalseWeatherPage",
+                "/Attendees/InteractiveAutoPage-BlazorPage",
+                "/Attendees/InteractiveAutoPrerenderFalseWeatherPage-BlazorPage",
+                "/Attendees/InteractiveServerPage-BlazorPage",
+                "/Attendees/InteractiveServerPagePrenderFalse-BlazorPage",
+                "/Attendees/StaticServerPage-BlazorPage",
+                "/Attendees/InteractiveWebAssemblyPage-BlazorPage",
+                "/Attendees/InteractiveWebAssemblyPrerenderFalse-BlazorPage",
+
+                "/Characters/InteractiveAutoPage-BlazorPage",
+                "/Characters/InteractiveAutoPrerenderFalseWeatherPage-BlazorPage",
+                "/Characters/InteractiveServerPage-BlazorPage",
+                "/Characters/InteractiveServerPagePrenderFalse-BlazorPage",
+                "/Characters/StaticServerPage-BlazorPage",
+                "/Characters/InteractiveWebAssemblyPage-BlazorPage",
+                "/Characters/InteractiveWebAssemblyPrerenderFalse-BlazorPage",
+
+                "/StreamRenderingWeather-BlazorPage"
+
+
+
+
+
+
+
+
+
 
             };
         }

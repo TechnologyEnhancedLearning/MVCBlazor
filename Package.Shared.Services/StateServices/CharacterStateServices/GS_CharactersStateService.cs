@@ -24,6 +24,9 @@ namespace Package.Shared.Services.StateServices.CharacterStateServices
         private Task _loadingTask;
         public List<GE_CharacterModel> Characters { get; private set; } = new List<GE_CharacterModel>();
 
+
+
+
         public GS_CharactersStateService(IHttpClientFactory httpClientFactory, IOptions<GS_CharactersAPIConfiguration> charactersAPIConfiguration)//qqqq i want this as an interface but wasnt previously will it error
         {
             _charactersAPIConfiguration = charactersAPIConfiguration.Value;

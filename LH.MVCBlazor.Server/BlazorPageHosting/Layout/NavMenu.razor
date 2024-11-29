@@ -1,7 +1,8 @@
 ﻿@inherits LayoutComponentBase
+<h1>@(IsMVCHosted ? "IsMVCHosted" : "IsBlazorHosted")</h1>
 <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-    <div class="container-fluid" style="background-color:lightblue!important">
-        <a class="navbar-brand" href="/"  >LH.MVCBlazor.Server</a>
+    <div class="container-fluid" style="background-color:@(IsMVCHosted ? "lightpink" : "lightblue")!important;">
+        <a class="navbar-brand" href="/" >LH.MVCBlazor.Server</a>
         @*asp-area="" asp-controller="Home" asp-action="Index"*@
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                 aria-expanded="false" aria-label="Toggle navigation">
@@ -93,3 +94,8 @@
         </div>
     </div>
 </nav>
+
+@code {
+    [Parameter, EditorRequired]
+    public bool IsMVCHosted { get; set; } = true; // Example value
+}

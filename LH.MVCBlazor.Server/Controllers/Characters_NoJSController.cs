@@ -22,7 +22,20 @@ namespace LH.MVCBlazor.Server.Controllers
         {
             _charactersStateService = charactersStateService;
         }
-    
-     
+
+        [HttpPost("SetFavouriteCharacter")]//qqqq its get in example in lh
+        public async Task<IActionResult> SetFavouriteCharacter(int FavouriteCharacterId, string returnUrl = null)
+        {
+
+            if (FavouriteCharacterId <= 0)
+            {
+                return BadRequest("Invalid character ID provided.");
+            }
+
+            await _charactersStateService.SetCharacterAsFavouriteAsync(FavouriteCharacterId);
+            return RedirectToReturnUrl(returnUrl); // Redirect back to the index after setting favorite
+        }
+
+
     }
 }

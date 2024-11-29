@@ -29,6 +29,6 @@ namespace Package.Shared.Entities.Models
         {
 
         }
-        public override string ToString() => $"{FirstName} {SecondName} - {(IsFavourite?"☺":"👍")}";
+        public override string ToString() => $"{FirstName} {SecondName} - {(IsFavourite? "😄" : "👍")}";
     }
 }

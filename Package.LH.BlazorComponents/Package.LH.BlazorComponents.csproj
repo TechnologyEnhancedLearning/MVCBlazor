@@ -23,4 +23,28 @@
     <ProjectReference Include="..\Package.Shared.Services\Package.Shared.Services.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="Components\Pages\RenderModePages\AttendeesRenderModePages\InteractiveAutoAttendeesPage.razor">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+    </Content>
+    <Content Update="Components\Pages\RenderModePages\AttendeesRenderModePages\InteractiveAutoPrerenderFalseAttendeesPage.razor">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+    </Content>
+    <Content Update="Components\Pages\RenderModePages\AttendeesRenderModePages\ServerPageAttendeesPage.razor">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+    </Content>
+    <Content Update="Components\Pages\RenderModePages\AttendeesRenderModePages\ServerPrerenderedFalseAttendeesPage.razor">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+    </Content>
+    <Content Update="Components\Pages\RenderModePages\AttendeesRenderModePages\StaticAtendeesPage.razor">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+    </Content>
+    <Content Update="Components\Pages\RenderModePages\AttendeesRenderModePages\WebAssemblyAttendeesPage.razor">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+    </Content>
+    <Content Update="Components\Pages\RenderModePages\AttendeesRenderModePages\WebAssemblyPrerenderedFalseAttendeesPage.razor">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+    </Content>
+  </ItemGroup>
+
 </Project>

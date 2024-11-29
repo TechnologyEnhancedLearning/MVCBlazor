@@ -63,6 +63,7 @@ builder.Services.GS_AddStateServices();
 
 
 builder.Services.LHB_RegisterAllBlazorComponents();
+builder.Services.LHB_RegisterAllBlazorPageRoutes();
 
 builder.Services.AddSession(options =>
 {

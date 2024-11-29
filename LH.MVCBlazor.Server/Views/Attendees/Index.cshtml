@@ -2,7 +2,7 @@
 @{
 
     Microsoft.AspNetCore.Mvc.Rendering.RenderMode renderMode = Microsoft.AspNetCore.Mvc.Rendering.RenderMode.Static;
-    if (Enum.TryParse(ViewBag.GB_ComponentTagRenderMode, out renderMode))
+    if (Enum.TryParse(ViewBag.RenderMode, out renderMode))
     {
         // Parsing succeeded
         Console.WriteLine($"Render mode is: {renderMode}");
@@ -13,10 +13,13 @@
         renderMode = Microsoft.AspNetCore.Mvc.Rendering.RenderMode.Static; // Default value
         Console.WriteLine("Invalid render mode string, defaulting to Static.");
     }
-    ViewData["Title"] = $"Attendees Page MVC RenderMode: {ViewBag.GB_ComponentTagRenderMode}";
+    string Title = $"Attendees Page MVC RenderMode: {ViewBag.RenderMode}";
+    ViewData["Title"] = Title;
 }
-
+<h1>@Title</h1>
+<h3>WebAssembly</h3>
 <component type="typeof(LHB_HelloWorld)" render-mode="WebAssembly" />
+<h3>Static</h3>
 <component type="typeof(LHB_HelloWorld)" render-mode="Static" />
 
 

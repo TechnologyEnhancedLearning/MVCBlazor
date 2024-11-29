@@ -15,7 +15,7 @@ namespace LH.MVCBlazor.Server.Controllers
         [Route("ViewComponentMVCPage")]
         public async Task<IActionResult> Index()
         {
-            var viewModel = new CharactersViewModel { Characters = (await _charactersStateService.GetCharactersAsync()).Data };
+            var viewModel = new CharactersViewModel((await _charactersStateService.GetCharactersAsync()).Data);
             return View(viewModel);
         }
     }
