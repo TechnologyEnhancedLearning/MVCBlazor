@@ -1,7 +1,7 @@
 ﻿@inherits GB_ComponentBase
 @inject IGS_CharactersStateService GS_CharactersStateService
 
-<GB_EditForm Title=@FormTitle Model="@LHB_FavouriteCharacterFormModel"  OnValidSubmit="@OnValidSubmit" OnInvalidSubmit="@OnInvalidSubmit" Action="@Action" AspFor="@AspFor">
+<GB_EditForm Title=@FormTitle EditContext="@EditContext"  OnValidSubmit="@OnValidSubmit" OnInvalidSubmit="@OnInvalidSubmit" Action="@Action" AspFor="@AspFor">
     <EditFormContents>
         <div class="form-group">
             @{
@@ -15,6 +15,7 @@
             <ValidationMessage For="@(() => LHB_FavouriteCharacterFormModel.TestModelStateWithRequired)" />
         </div>
        @*  HasError="@(!formIsValid)" *@
+
         <GB_VCB_Radios
             TItem="GE_CharacterModel"
             TValue="int"
@@ -26,7 +27,7 @@
             Label="@Label" 
             HintText="@RadioListHint" 
             Class=""
-            GetHint="@(character => $"{character.ToString()} Hint ")"
+            GetHint="@(character => "Click to select")"
             GetLabel="@(character => $"{character.ToString()}")"
             GetValue="@(character => character.Id)"
             IsPageHeading="@IsPageHeading"
@@ -70,6 +71,7 @@
     [Parameter]
     public bool IsPageHeading { get; set; } = true;
 
+    private EditContext EditContext { get; set; } 
 
     [Parameter]
     public List<GE_CharacterModel> Characters { get; set; } = null; //For model seeding for speed
@@ -78,11 +80,16 @@
 
     protected override async Task OnInitializedAsync()
     {
+
         //If cartoon isnt provided then get it
         Characters = Characters ?? (await GS_CharactersStateService.GetCharactersAsync()).Data;
         LHB_FavouriteCharacterFormModel.FavouriteCharacterId = Characters.SingleOrDefault(x=>x.IsFavourite)?.Id??0;//Or default if no favourite set yet but will use zero for testing
+        
     }
-
+    protected override void OnInitialized()
+    {
+        EditContext = new EditContext(LHB_FavouriteCharacterFormModel);
+    }
 
     
 

@@ -212,6 +212,7 @@ prerender work without blazor interactivity
 - SharedGeneric Reference ViewComponents but **Shouldnt**
 
 **Do this later**
+- This cast is because cant define my own EditContext : private bool formIsValid => JSIsEnabled ? blazorFormIsValid : !((IGB_ModelStateValidation)EditContext.Model).HasModelStateValidationErrors;
 - QQQQ if we use interfaces on our models to use in radiolists it can only work for one radiolist
 	- in actual fact it should 
 		- Be on the fly pass an event func (need to check how this would behave static)

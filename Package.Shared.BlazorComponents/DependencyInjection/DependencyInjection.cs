@@ -17,9 +17,13 @@ namespace Package.Shared.BlazorComponents.DependencyInjection
     {
         public static IServiceCollection GB_RegisterAllGenericBlazorComponents(this IServiceCollection services/*, qqqq IOptions<ILHBlazorWasmClientServiceLibraryConfiguration> config*/)
         {
+            //services.AddTransient(typeof(GB_Validator<IGB_ModelStateValidation>));
+            //services.AddTransient(typeof(GB_EditForm<IGB_ModelStateValidation>));
+
+            services.AddTransient<GB_Validator>();
+            services.AddTransient<GB_EditForm>();
+
             //services.AddTransient(typeof(RadioListVCB<,>));
-            services.AddTransient(typeof(GB_Validator<IGB_ModelStateValidation>));
-            services.AddTransient(typeof(GB_EditForm<IGB_ModelStateValidation>));
             //services.AddTransient<RadioList_TestSpace>();
             //services.AddTransient<TestBlazor_VCB>();
 

@@ -5,11 +5,7 @@
 @typeparam TValue
 @inherits GB_ComponentBase
 
-
-
 <div class="nhsuk-form-group @(!formIsValid ? "nhsuk-form-group--error" :"")">
-    @* @(!string.IsNullOrEmpty(Model.HintText) ? $"{Model.Label.RemoveWhitespace()}-hint" : string.Empty) <- for simplicity just put *@
-
     <fieldset class="nhsuk-fieldset" aria-describedby="@Label.RemoveWhitespace()-hint">
         <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--m">
             @if (IsPageHeading)
@@ -31,10 +27,6 @@
                 @((MarkupString)HintText)
             </div>
         }
-
-
-
-
         <InputRadioGroup TValue="@TValue" @bind-Value="RadioListValueToSet" Name="@ValueToSetPostName">
             <div id="RadioGroup-@RadioGroupId" class="nhsuk-radios">
                 @for (int index = 0; index < RadioItems.Count(); index++)
@@ -45,36 +37,15 @@
                     string radioItemId = $"{RadioGroupId}-Radio-{index}";
                     string radioHintId = $"{RadioGroupId}-Hint-{index}";
 
-                    @*Works but dont want to interface every data model just for UI
-
-                    qqqq but will event func still bind as we need, no were using event, so some kind UI_DTO
-
-                    *@
-                    @* <div class="nhsuk-radios__item">
-                        <InputRadio id="@radioItemId"
-                                    TValue="@TValue"
-                                    Value="@radioItem.Value"
-                                    class="nhsuk-radios__input"
-                                    aria-describedby="@radioHintId" />
-
-                        <label class="nhsuk-label nhsuk-radios__label"
-                               for="@radioItemId">@radioItem.Label</label>
-                        <div class="nhsuk-hint nhsuk-radios__hint"
-                             id="@radioHintId">
-                            @radioItem.HintText
-                        </div>
-                    </div> *@
                     <div class="nhsuk-radios__item">
                         <InputRadio id="@radioItemId"
                                     TValue="@TValue"
                                     Value="@GetValue(radioItem)"
                                     class="nhsuk-radios__input"
                                     aria-describedby="@radioHintId" />
-                                    @*can we really set value like this qqqq*@
-                        <label class="nhsuk-label nhsuk-radios__label"
-                               for="@radioItemId">@GetLabel(radioItem)</label>
-                        <div class="nhsuk-hint nhsuk-radios__hint"
-                             id="@radioHintId">
+
+                        <label class="nhsuk-label nhsuk-radios__label" for="@radioItemId">@GetLabel(radioItem)</label>
+                        <div class="nhsuk-hint nhsuk-radios__hint" id="@radioHintId">
                             @GetHint(radioItem)
                         </div>
                     </div>
@@ -134,8 +105,6 @@
     [Parameter]
     public IEnumerable<TItem> RadioItems { get; set; } = default!;
 
-
-
     [Parameter, EditorRequired]
     public string AspFor { get; set; } = String.Empty;
 
@@ -168,3 +137,24 @@
     public string RequiredClientSideErrorMessage { get; set; } = String.Empty;
 
 }
+
+
+                    @*Works but dont want to interface every data model just for UI
+
+                    qqqq but will event func still bind as we need, no were using event, so some kind UI_DTO
+
+                    *@
+                    @* <div class="nhsuk-radios__item">
+                        <InputRadio id="@radioItemId"
+                                    TValue="@TValue"
+                                    Value="@radioItem.Value"
+                                    class="nhsuk-radios__input"
+                                    aria-describedby="@radioHintId" />
+
+                        <label class="nhsuk-label nhsuk-radios__label"
+                               for="@radioItemId">@radioItem.Label</label>
+                        <div class="nhsuk-hint nhsuk-radios__hint"
+                             id="@radioHintId">
+                            @radioItem.HintText
+                        </div>
+                    </div> *@

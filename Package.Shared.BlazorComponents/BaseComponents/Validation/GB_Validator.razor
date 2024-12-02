@@ -1,8 +1,8 @@
 ﻿
-@typeparam TModel where TModel : IGB_ModelStateValidation //May not actually need it nice to have the interface but we can the model off the editcontext
+@* @typeparam TModel where TModel : IGB_ModelStateValidation *@ //May not actually need it nice to have the interface but we can the model off the editcontext
 @inherits GB_ComponentBase
 @code {
-    [Parameter, EditorRequired] public TModel Model { get; set; }
+    // [Parameter, EditorRequired] public TModel Model { get; set; }
     [Parameter, EditorRequired] public EditContext EditContext { get; set; } //, EditorRequired
 
     [Parameter, EditorRequired]
@@ -35,14 +35,14 @@
     <ValidationSummary class="error-message--margin-bottom-1 nhsuk-error-message field-validation-valid nhsuk-u-padding-top-1 nhsuk-u-padding-bottom-3" />
 
 }
-else if (Model.HasModelStateValidationErrors)
+else if (((IGB_ModelStateValidation)EditContext.Model).HasModelStateValidationErrors)
 {
     @*if no js and errors*@
     <div id="@AspFor-error" class="nhsuk-u-padding-top-1 nhsuk-u-padding-bottom-3">
         <div class="alert alert-danger">
             <h2>Validation Errors</h2>
             <ul>
-                @foreach (var (propertyName, errorMessages) in Model.ModelStateErrors)
+                @foreach (var (propertyName, errorMessages) in ((IGB_ModelStateValidation)EditContext.Model).ModelStateErrors)
                 {
                     <li>
                         @propertyName:

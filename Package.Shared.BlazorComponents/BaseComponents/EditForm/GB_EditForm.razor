@@ -1,5 +1,5 @@
 ﻿@inherits GB_ComponentBase
-@typeparam T where T:IGB_ModelStateValidation
+@* @typeparam T where T:IGB_ModelStateValidation *@
 <h3>GB_EditFormTitle : @Title</h3>
 
 @if (isFormSubmitted)
@@ -9,16 +9,14 @@
     </div>
 }
 @* EditContext="@EditContext" *@
-<EditForm   Model="@Model" OnValidSubmit="HandleValidSubmit" OnInvalidSubmit="HandleInvalidSubmit" method="post" action="@Action">
+<EditForm EditContext="@EditContext" OnValidSubmit="HandleValidSubmit" OnInvalidSubmit="HandleInvalidSubmit" method="post" action="@Action">
      <DataAnnotationsValidator /> 
      <CascadingValue Value="@formIsValid">
         @EditFormContents
       </CascadingValue>
 
-    <GB_Validator
-        Model="@Model" 
-        AspFor="@AspFor"
-        EditContext="@EditContext"/>
+    @* Model="@EditContext.Model" *@
+    <GB_Validator AspFor="@AspFor" EditContext="@EditContext"/>
 
     <button type="submit" class="btn btn-primary">Submit</button>
 
@@ -34,14 +32,13 @@
     [Parameter, EditorRequired]
     public string Action { get; set; }
 
-    private EditContext EditContext;
 
     [Parameter,EditorRequired]
     public string AspFor { get; set; }
 
 
     [Parameter, EditorRequired]
-    public T Model { get; set; }
+    public EditContext EditContext { get; set; }
 
     [Parameter, EditorRequired]
     public EventCallback<EditContext> OnValidSubmit { get; set; }
@@ -55,18 +52,14 @@
     private int submissionCount = 0;
  
     // Maybe just an OR would be better 
-    private bool formIsValid => JSIsEnabled ? blazorFormIsValid : !Model.HasModelStateValidationErrors;
+    private bool formIsValid => JSIsEnabled ? blazorFormIsValid : !((IGB_ModelStateValidation)EditContext.Model).HasModelStateValidationErrors;
     private bool blazorFormIsValid = true;
 
 
     
     protected override void OnInitialized()
     {
-        if (Model == null)
-        {
-            throw new ArgumentNullException(nameof(Model), "Model cannot be null.");
-        }
-        EditContext = new EditContext(Model);
+
     }
 
     // Handle the form submission
