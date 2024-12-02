@@ -1,7 +1,8 @@
 ﻿using LH.MVCBlazor.Server.Controllers.BaseControllers;
+using LH.MVCBlazor.Server.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Package.LH.BlazorComponents.DependencyInjection;
-using Package.Shared.BlazorComponents.Models;
+using Package.LH.BlazorComponents.Models;
 using Package.Shared.Services.StateServices.CharacterStateServices;
 
 namespace LH.MVCBlazor.Server.Controllers
@@ -24,32 +25,58 @@ namespace LH.MVCBlazor.Server.Controllers
             _charactersStateService = charactersStateService;
         }
 
-        [HttpPost("SetFavouriteCharacter")]//qqqq its get in example in lh
-        public async Task<IActionResult> SetFavouriteCharacter([FromForm]GB_FavouriteCharacterFormModel GB_FavouriteCharacterFormModel, string returnUrl = null)
+
+        ////!!!! This is just because of the way radiolist VC components bind name and asp-for
+        //[HttpPost("SetFavouriteCharacterByForm")]//qqqq its get in example in lh
+        //public async Task<IActionResult> SetFavouriteCharacterByForm(LHB_FavouriteCharacterFormModel LHB_FavouriteCharacterFormModel   /*int FavouriteCharacterId*/, string returnUrl = null)
+        //{
+        //    return await SetFavouriteCharacterHelper(LHB_FavouriteCharacterFormModel.FavouriteCharacterId, returnUrl);
+        //}        //!!!! This is just because of the way radiolist VC components bind name and asp-for
+        [HttpPost("SetFavouriteCharacterByForm")]//qqqq its get in example in lh
+        public async Task<IActionResult> SetFavouriteCharacterByForm(CharactersViewModel CharactersViewModel   /*int FavouriteCharacterId*/, string returnUrl = null)
         {
-            int characterId = GB_FavouriteCharacterFormModel.FavouriteCharacterId;
-            if (characterId <= 0)
-            {
-                ModelState.AddModelError("FavouriteCharacterId", "Invalid character ID provided.");
-                //return BadRequest("Invalid character ID provided.");
-            }
+            return await SetFavouriteCharacterHelper(CharactersViewModel.LHB_FavouriteCharacterFormModel.FavouriteCharacterId, returnUrl);
+        }
 
-            if (!ModelState.IsValid)
-            {
-                //just for testing
-                GB_FavouriteCharacterFormModel.ModelStateErrors = ModelState
-                    .Where(ms => ms.Value.Errors.Count > 0)
-                    .ToDictionary(
-                        kvp => kvp.Key,
-                        kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).ToList()
-                    );
-            }
-
-
-            await _charactersStateService.SetCharacterAsFavouriteAsync(characterId);
+        //!!!! This is just because of the way radiolist VC components bind name and asp-for
+        [HttpPost("SetFavouriteCharacter")]//qqqq its get in example in lh
+        public async Task<IActionResult> SetFavouriteCharacter(int FavouriteCharacterId, string returnUrl = null)
+        {
+    
+            return await SetFavouriteCharacterHelper(FavouriteCharacterId,  returnUrl); // Redirect back to the index after setting favorite
+        }
+        private async Task<IActionResult> SetFavouriteCharacterHelper(int FavouriteCharacterId, string returnUrl = null)
+        {
+            await _charactersStateService.SetCharacterAsFavouriteAsync(FavouriteCharacterId);
             return RedirectToReturnUrl(returnUrl); // Redirect back to the index after setting favorite
         }
- 
+
+        //[HttpPost("SetFavouriteCharacter")]//qqqq its get in example in lh
+        //public async Task<IActionResult> SetFavouriteCharacter(GB_FavouriteCharacterFormModel GB_FavouriteCharacterFormModel, string returnUrl = null)
+        //{
+        //    int characterId = GB_FavouriteCharacterFormModel.FavouriteCharacterId;
+        //    if (characterId <= 0)
+        //    {
+        //        ModelState.AddModelError("FavouriteCharacterId", "Invalid character ID provided.");
+        //        //return BadRequest("Invalid character ID provided.");
+        //    }
+
+        //    if (!ModelState.IsValid)
+        //    {
+        //        //just for testing
+        //        GB_FavouriteCharacterFormModel.ModelStateErrors = ModelState
+        //            .Where(ms => ms.Value.Errors.Count > 0)
+        //            .ToDictionary(
+        //                kvp => kvp.Key,
+        //                kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).ToList()
+        //            );
+        //    }
+
+
+        //    await _charactersStateService.SetCharacterAsFavouriteAsync(characterId);
+        //    return RedirectToReturnUrl(returnUrl); // Redirect back to the index after setting favorite
+        //}
+
 
     }
 }

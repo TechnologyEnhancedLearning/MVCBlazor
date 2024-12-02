@@ -14,22 +14,19 @@
 
 
 }
+@*asp-for=@("FavouriteCharacterIdStr")*@
 
-@* asp-for="FavouriteCharacterId" works *@
-@*CharactersViewModel.GB_FavouriteCharacterFormModel.FavouriteCharacterId*@
-@*GB_FavouriteCharacterFormModel doesnt cause pair error*@
 <form asp-controller="Characters_NoJS"
-      asp-action="SetFavouriteCharacter"
+      asp-action="SetFavouriteCharacterByForm"
       method="post">
-    <vc:radio-list asp-for="GB_FavouriteCharacterFormModel"
-                   name="FavouriteCharacterId"
-                   label="Select a Favorite Character"
+    <vc:radio-list asp-for="FavouriteCharacterIdStr"
+                    label="Select a Favorite Character"
                    radios="@charactersRadios"
                    populate-with-current-values="true"
                    hint-text="Choose your favourite character from PLACEHOLDER FOR NOW"
                    required="true" />
 
-   
+
     <div class="nhsuk-form-group">
         <button type="submit" class="nhsuk-button">Save Favourite</button>
     </div>

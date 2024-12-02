@@ -1,4 +1,5 @@
-﻿using Package.Shared.BlazorComponents.Interfaces;
+﻿using Microsoft.AspNetCore.Mvc;
+using Package.Shared.BlazorComponents.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -10,12 +11,22 @@ namespace Package.LH.BlazorComponents.Models
 {
     public class LHB_FavouriteCharacterFormModel : IGB_ModelStateValidation
     {
-        public int FavouriteCharacterId { get; set; }
+        [Required(ErrorMessage = "A character must be selected.")]
+        [Display(Name = "Favourite Character")]
+        [FromForm(Name = "FavouriteCharacterId")]
+        public int FavouriteCharacterId { get; set; } //qqqq
+
+  
+
 
         [Required(ErrorMessage = "SUCCESS YOU'VE GOT THE ERROR FROM VIEWSTATE (if your seeing this with JSDisabled)")]
         public string TestModelStateWithRequired { get; set; } = null;
         public Dictionary<string, List<string>> ModelStateErrors { get; set; } = new();
 
         public bool HasModelStateValidationErrors => ModelStateErrors.Any();
+
+        public LHB_FavouriteCharacterFormModel() { }
+
+
     }
 }
