@@ -18,12 +18,19 @@ namespace LH.MVCBlazor.Server.Controllers
 
         //Here the MVCRendered is added because we can render these same modes in our Blazor pages and we dont have to have seperate path stems for our blazor pages
         //So to illustrate this it is in the page name
-      
+        
+        //Get
         [HttpGet("/Attendees/Static-MVCRendered")]
         [HttpGet("/Attendees/Server-MVCRendered")]
         [HttpGet("/Attendees/ServerPrendered-MVCRendered")]
         [HttpGet("/Attendees/WebAssembly-MVCRendered")]
         [HttpGet("/Attendees/WebAssemblyPrerendered-MVCRendered")]
+        //Post
+        [HttpPost("/Attendees/Static-MVCRendered")]
+        [HttpPost("/Attendees/Server-MVCRendered")]
+        [HttpPost("/Attendees/ServerPrendered-MVCRendered")]
+        [HttpPost("/Attendees/WebAssembly-MVCRendered")]
+        [HttpPost("/Attendees/WebAssemblyPrerendered-MVCRendered")]
         public async Task<IActionResult> Index()
         {
             // Get the current route from the request path

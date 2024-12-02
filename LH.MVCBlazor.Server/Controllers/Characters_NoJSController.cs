@@ -33,13 +33,12 @@ namespace LH.MVCBlazor.Server.Controllers
         //    return await SetFavouriteCharacterHelper(LHB_FavouriteCharacterFormModel.FavouriteCharacterId, returnUrl);
         //}        //!!!! This is just because of the way radiolist VC components bind name and asp-for
         [HttpPost("SetFavouriteCharacterByForm")]//qqqq its get in example in lh
-        public async Task<IActionResult> SetFavouriteCharacterByForm(CharactersViewModel CharactersViewModel   /*int FavouriteCharacterId*/, string returnUrl = null)
+        public async Task<IActionResult> SetFavouriteCharacterByForm(CharactersViewModel CharactersViewModel, string returnUrl = null)
         {
             return await SetFavouriteCharacterHelper(CharactersViewModel.LHB_FavouriteCharacterFormModel.FavouriteCharacterId, returnUrl);
         }
 
-        //!!!! This is just because of the way radiolist VC components bind name and asp-for
-        [HttpPost("SetFavouriteCharacter")]//qqqq its get in example in lh
+        [HttpPost("SetFavouriteCharacter")]
         public async Task<IActionResult> SetFavouriteCharacter(int FavouriteCharacterId, string returnUrl = null)
         {
     

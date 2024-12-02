@@ -14,7 +14,7 @@ namespace Package.LH.BlazorComponents.Models
         [Required(ErrorMessage = "A character must be selected.")]
         [Display(Name = "Favourite Character")]
         [FromForm(Name = "FavouriteCharacterId")]
-        public int FavouriteCharacterId { get; set; } //qqqq
+        public int FavouriteCharacterId { get; set; } 
 
   
 

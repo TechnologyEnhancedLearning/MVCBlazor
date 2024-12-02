@@ -53,7 +53,7 @@ namespace LH.MVCBlazor.Server.Controllers
 
    
         [HttpPost]
-        public async Task<IActionResult> SaveAttendees(string returnUrl = null)
+        public async Task<IActionResult> SaveAttendees(string returnUrl = null) //everything is posted at everystage to update anyway
         {
             await LHS_AttendeesStateService.ReplaceDBWithListAsync(); // Ensure all changes are saved
 

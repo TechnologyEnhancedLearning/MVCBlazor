@@ -15,11 +15,17 @@
 <div>
 
     <!-- Form for adding a new attendee -->
-    @if (!JSIsEnabled) 
-     {
+    @if (JSIsEnabled)
+    {
+          <h3 style="text-align: center;">JS Enabled</h3>
+    }
+    else
+    {
         <h3 style="text-align: center;">JS Disabled</h3>
-        <!-- Form to Add Attendee -->
-        <form method="post" action="/MeetingAttendees_NoJS/AddAttendee" id="AddAttendeeForm-@UniqueId">
+    }
+    
+
+@*         <form method="post" action="/MeetingAttendees_NoJS/AddAttendee" id="AddAttendeeForm-@UniqueId">
          
             @*It is in the LH client but it is hardcoded we could extract this form **TODO** *@
             <div>
@@ -31,7 +37,7 @@
 
                 <button type="submit">Add Attendee</button>
             </div>
-        </form>
+        </form> *@
 
         <!-- List of Attendees with Remove Buttons -->
 
@@ -56,11 +62,10 @@
                               />    
     }
     else
-    { 
+    {
 
-       
 
-        <EditForm Model="@newAttendee" OnValidSubmit="AddAttendee" id="@($"AddAttendeeForm-{@UniqueId}")">
+    <EditForm Model="@newAttendee" OnValidSubmit="AddAttendee" id="@($"AddAttendeeForm-{@UniqueId}")" method="post" action="/Attendees/NoJS/AddAttendee">
             <DataAnnotationsValidator />
             <ValidationSummary />
 

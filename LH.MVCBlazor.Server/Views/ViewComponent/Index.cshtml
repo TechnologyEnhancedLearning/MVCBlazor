@@ -3,24 +3,16 @@
 @model CharactersViewModel
 @{
     ViewData["Title"] = "ViewComponentExamplePage";
-
-}
-
-
-
-@{
-
     List<RadiosItemViewModel> charactersRadios = @CharacterRadiosHelper.PrepareCharacterRadios(Model.Characters);
-
-
 }
-@*asp-for=@("FavouriteCharacterIdStr")*@
+
+
 
 <form asp-controller="Characters_NoJS"
       asp-action="SetFavouriteCharacterByForm"
       method="post">
     <vc:radio-list asp-for="FavouriteCharacterIdStr"
-                    label="Select a Favorite Character"
+                   label="Select a Favorite Character"
                    radios="@charactersRadios"
                    populate-with-current-values="true"
                    hint-text="Choose your favourite character from PLACEHOLDER FOR NOW"

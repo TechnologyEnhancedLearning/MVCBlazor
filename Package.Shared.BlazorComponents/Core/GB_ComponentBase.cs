@@ -16,6 +16,9 @@ namespace Package.Shared.BlazorComponents.Core
 
         protected string WhoAmI => JSEnabled.TestingWhoAmI;
 
+        //We could also pass the renderMode here and if it is Static (which we may not decide to use) then we could return JSEnableAndNotStatic
+        //so static pages receive post logic
+
 
     }
 }
