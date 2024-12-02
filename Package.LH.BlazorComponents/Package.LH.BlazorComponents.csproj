@@ -24,6 +24,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Update="Components\LHB_FavouriteCharacterForm - Copy Before GB_EditForm Change.razor">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+    </Content>
     <Content Update="Components\Pages\RenderModePages\AttendeesRenderModePages\InteractiveAutoAttendeesPage.razor">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
     </Content>

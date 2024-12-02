@@ -7,7 +7,7 @@
 
 
 
-<div class="nhsuk-form-group @(HasError ? "nhsuk-form-group--error" :"")">
+<div class="nhsuk-form-group @(!formIsValid ? "nhsuk-form-group--error" :"")">
     @* @(!string.IsNullOrEmpty(Model.HintText) ? $"{Model.Label.RemoveWhitespace()}-hint" : string.Empty) <- for simplicity just put *@
 
     <fieldset class="nhsuk-fieldset" aria-describedby="@Label.RemoveWhitespace()-hint">
@@ -91,14 +91,17 @@
 
 @code
 {
+    [CascadingParameter] public bool formIsValid { get; set; } = false;
+    // [Parameter, EditorRequired]
+    // public bool HasError { get; set; } = true;
 
     // [Parameter] public Func<TItem, object> GetId { get; set; }
            <!-- Function to extract ID -->
-    [Parameter] public Func<TItem, TValue> GetValue { get; set; }
+    [Parameter, EditorRequired] public Func<TItem, TValue> GetValue { get; set; }
         <!-- Function to extract value -->
-    [Parameter] public Func<TItem, string> GetLabel { get; set; }
+    [Parameter, EditorRequired] public Func<TItem, string> GetLabel { get; set; }
         <!-- Function to extract label -->
-    [Parameter] public Func<TItem, string> GetHint { get; set; }
+    [Parameter, EditorRequired] public Func<TItem, string> GetHint { get; set; }
          <!-- Function to extract hint -->
 
 
@@ -131,8 +134,7 @@
     [Parameter]
     public IEnumerable<TItem> RadioItems { get; set; } = default!;
 
-    [Parameter, EditorRequired]
-    public bool HasError { get; set; } = true;
+
 
     [Parameter, EditorRequired]
     public string AspFor { get; set; } = String.Empty;

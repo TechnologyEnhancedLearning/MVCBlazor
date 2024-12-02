@@ -173,6 +173,16 @@ prerender work without blazor interactivity
 ## Questions
 
 ### Questions Unanswered
+- unsatisfied with radiolist handling i want 
+	- seperate form model within the view model
+	- the form model to recieve model state
+	- it seems this happens in LH however unsure if specifically happens with radiolist elements
+	- have tried
+		- Model.FormModel.FormAutoProperty
+		- FormModel.FormAutoProperty
+		- [FromForm] attributes
+		- nameof
+		
 - If we want to share navlinks we have options
 	- use href routes only no url helpers and no specifying controllers etc
 	- seperate blazor page routes, and mvc routes would be optional and coded straight into mvc layout
@@ -306,6 +316,7 @@ They wont change often so I dont think its a problem to repeat them across two p
 
 		
 # Refactor
+- individual elements need to be told when they are invalid because modelstate in view not handling it
 	- MOVE REFERERENCES to imports
 	- do the blazor components ever hit the mvc controller maybe they shouldnt if they do
 		- unless no js then maybe??? MVC will reload the page anyway
@@ -348,7 +359,9 @@ They wont change often so I dont think its a problem to repeat them across two p
 **Forcing appsetting.json to fit appsetting.cs in order to on package update get an error where appsettings requires updating too.
 There is complexity in building all the little classes and interfaces and it is not advisable to create an instantiation and use it during build.
 This means that you need use strings anyway. **
-
+- look at example 
+ resetCancellationTokenSource?.Cancel();
+    resetCancellationTokenSource = new CancellationTokenSource();
 
 //dont like but passing 
 

@@ -1,63 +1,41 @@
 ﻿@inherits GB_ComponentBase
 @inject IGS_CharactersStateService GS_CharactersStateService
 
+<GB_EditForm Title=@FormTitle Model="@LHB_FavouriteCharacterFormModel"  OnValidSubmit="@OnValidSubmit" OnInvalidSubmit="@OnInvalidSubmit" Action="@Action" AspFor="@AspFor">
+    <EditFormContents>
+        <div class="form-group">
+            @{
+                string placeholderTxt = "We just want to see ModelStateErrors in nojs so let me be empty so i can error;";
+            }
+            <label for="TestModelStateWithRequired">placeholderTxt</label>
+            <InputText id="TestModelStateWithRequired"
+                       class="form-control"
+                       DisplayName="@placeholderTxt"
+                       @bind-Value="LHB_FavouriteCharacterFormModel.TestModelStateWithRequired" />
+            <ValidationMessage For="@(() => LHB_FavouriteCharacterFormModel.TestModelStateWithRequired)" />
+        </div>
+       @*  HasError="@(!formIsValid)" *@
+        <GB_VCB_Radios
+            TItem="GE_CharacterModel"
+            TValue="int"
+            ValueToSetPostName="@($"{nameof(LHB_FavouriteCharacterFormModel)}.{nameof(LHB_FavouriteCharacterFormModel.FavouriteCharacterId)}")"
+            RadioListValueToSet="@LHB_FavouriteCharacterFormModel.FavouriteCharacterId"
+            RadioGroupId=@($"characterRadioGroup-{"Cartoon.Id"}")
+            RadioItems="@Characters" 
+            AspFor="@AspFor" 
+            Label="@Label" 
+            HintText="@RadioListHint" 
+            Class=""
+            GetHint="@(character => $"{character.ToString()} Hint ")"
+            GetLabel="@(character => $"{character.ToString()}")"
+            GetValue="@(character => character.Id)"
+            IsPageHeading="@IsPageHeading"
+            Required="@Required"
+            RequiredClientSideErrorMessage=""
+            SelectedValueChanged="@(value => LHB_FavouriteCharacterFormModel.FavouriteCharacterId = value)" />
+    </EditFormContents>
 
-@*REFACTOR!!!!! QQQQQ*@
-
-<h3>Favourite Character Form </h3>
-
-@if (isFormSubmitted)
-{
-    <div class="alert alert-success">
-        Form submitted successfully! You have submitted the form @submissionCount times.
-    </div>
-}
-@*  <ValidationSummary class="error-message--margin-bottom-1 nhsuk-error-message field-validation-valid nhsuk-u-padding-top-1 nhsuk-u-padding-bottom-3" />*@
-<EditForm Model="@LHB_FavouriteCharacterFormModel"  OnValidSubmit="HandleValidSubmit" OnInvalidSubmit="HandleInvalidSubmit" method="post" action="@Action">
-     <DataAnnotationsValidator /> 
- 
-    <div class="form-group">
-        @{
-            string placeholderTxt = "We just want to see ModelStateErrors in nojs so let me be empty so i can error;";
-        }
-        <label for="TestModelStateWithRequired">placeholderTxt</label>
-        <InputText id="TestModelStateWithRequired"
-                   class="form-control"
-                   DisplayName="@placeholderTxt"
-                   @bind-Value="LHB_FavouriteCharacterFormModel.TestModelStateWithRequired" />
-        <ValidationMessage For="@(() => LHB_FavouriteCharacterFormModel.TestModelStateWithRequired)" />
-    </div>
-   
-   @*qqqq we set an int, and we tell it that its an int. but then the interface provides value as a string for vc*@
-    <GB_VCB_Radios
-        TItem="GE_CharacterModel"
-        TValue="int"
-        ValueToSetPostName="@($"{nameof(LHB_FavouriteCharacterFormModel)}.{nameof(LHB_FavouriteCharacterFormModel.FavouriteCharacterId)}")"
-        RadioListValueToSet="@LHB_FavouriteCharacterFormModel.FavouriteCharacterId"
-        RadioGroupId=@($"characterRadioGroup-{"Cartoon.Id"}")
-        RadioItems="@Characters" 
-        AspFor="@AspFor" 
-        Label="@Label" 
-        HintText="@RadioListHint" 
-        Class=""
-        HasError="@(!formIsValid)"
-        IsPageHeading="@IsPageHeading"
-        Required="@Required"
-        RequiredClientSideErrorMessage=""
-        SelectedValueChanged="@(value => LHB_FavouriteCharacterFormModel.FavouriteCharacterId = value)" />
-@*     ErrorMessages="@(validationErrors.ContainsKey("FavouriteCharacterId") ? validationErrors["FavouriteCharacterId"] : new List<string>())" *@
-   @*  Name="EditContext" *@
-
-        <GB_Validator
-            Model="@LHB_FavouriteCharacterFormModel" 
-            AspFor="@AspFor"
-            EditContext="@EditContext"/>
-
-
-
-    <button type="submit" class="btn btn-primary">Submit</button>
-
-</EditForm>
+</GB_EditForm>
 
 @code {
 
@@ -66,7 +44,6 @@
     [Parameter, EditorRequired]
     public string Action { get; set; }
 
-    private EditContext EditContext;
 
     [Parameter,EditorRequired]
     public string AspFor { get; set; }
@@ -97,6 +74,7 @@
     [Parameter]
     public List<GE_CharacterModel> Characters { get; set; } = null; //For model seeding for speed
 
+    private string FormTitle = "Favourite Character Form";
 
     protected override async Task OnInitializedAsync()
     {
@@ -105,47 +83,20 @@
         LHB_FavouriteCharacterFormModel.FavouriteCharacterId = Characters.SingleOrDefault(x=>x.IsFavourite)?.Id??0;//Or default if no favourite set yet but will use zero for testing
     }
 
-    // Track the success status and submission count
-    private bool isFormSubmitted = false;
-    private int submissionCount = 0;
 
-
- 
-    // Maybe just an OR would be better 
-    private bool formIsValid => JSIsEnabled ? blazorFormIsValid : !LHB_FavouriteCharacterFormModel.HasModelStateValidationErrors;
-    private bool blazorFormIsValid = true;
     
-    protected override void OnInitialized()
-    {
-        EditContext = new EditContext(LHB_FavouriteCharacterFormModel);
-    }
 
     // Handle the form submission
-    private void HandleValidSubmit()
+    private void OnValidSubmit()
     {
         //Fire forget but would have service response object
         GS_CharactersStateService.SetCharacterAsFavouriteAsync(LHB_FavouriteCharacterFormModel.FavouriteCharacterId);
 
-        // Increment the submission count and mark the form as submitted
-        submissionCount++;
-        isFormSubmitted = true;
-        blazorFormIsValid = true;
-
-        // Reset the form model after submission (optional)
-        //LHB_FavouriteCharacterFormModel = new LHB_FavouriteCharacterFormModel(); //not for now want to keep bullet highlighted
-
-        // Optionally, you can reset the submission status after a delay if needed.
-        // Example: Resetting after 3 seconds.
-        Task.Delay(3000).ContinueWith(_ =>
-        {
-            isFormSubmitted = false;
-        });
-
     }
     // Handle invalid form submission (triggered if validation fails)
-    private void HandleInvalidSubmit()
+    private void OnInvalidSubmit()
     {
+        //Nothing
         
-        blazorFormIsValid = false;
     }
 }

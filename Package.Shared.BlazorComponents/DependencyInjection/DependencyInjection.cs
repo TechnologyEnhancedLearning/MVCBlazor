@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Package.Shared.BlazorComponents.BaseComponents.Buttons;
+using Package.Shared.BlazorComponents.BaseComponents.EditForm;
 using Package.Shared.BlazorComponents.BaseComponents.Validation;
 using Package.Shared.BlazorComponents.Components.Buttons;
 using Package.Shared.BlazorComponents.Components.Lists;
@@ -18,6 +19,7 @@ namespace Package.Shared.BlazorComponents.DependencyInjection
         {
             //services.AddTransient(typeof(RadioListVCB<,>));
             services.AddTransient(typeof(GB_Validator<IGB_ModelStateValidation>));
+            services.AddTransient(typeof(GB_EditForm<IGB_ModelStateValidation>));
             //services.AddTransient<RadioList_TestSpace>();
             //services.AddTransient<TestBlazor_VCB>();
 

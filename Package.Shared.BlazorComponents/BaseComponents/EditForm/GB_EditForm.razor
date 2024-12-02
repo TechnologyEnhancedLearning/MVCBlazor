@@ -8,11 +8,12 @@
         Form submitted successfully! You have submitted the form @submissionCount times.
     </div>
 }
-
-<EditForm EditContext="@EditContext"  Model="@Model" OnValidSubmit="HandleValidSubmit" OnInvalidSubmit="HandleInvalidSubmit" method="post" action="@Action">
+@* EditContext="@EditContext" *@
+<EditForm   Model="@Model" OnValidSubmit="HandleValidSubmit" OnInvalidSubmit="HandleInvalidSubmit" method="post" action="@Action">
      <DataAnnotationsValidator /> 
-   
-   @EditFormContents
+     <CascadingValue Value="@formIsValid">
+        @EditFormContents
+      </CascadingValue>
 
     <GB_Validator
         Model="@Model" 
@@ -24,7 +25,7 @@
 </EditForm>
 
 @code {
-    [Parameter, EditorRequired]
+    [Parameter,EditorRequired]
     public RenderFragment EditFormContents { get; set; }
 
     [Parameter, EditorRequired]
@@ -52,12 +53,12 @@
     // Track the success status and submission count
     private bool isFormSubmitted = false;
     private int submissionCount = 0;
-
-
  
     // Maybe just an OR would be better 
     private bool formIsValid => JSIsEnabled ? blazorFormIsValid : !Model.HasModelStateValidationErrors;
     private bool blazorFormIsValid = true;
+
+
     
     protected override void OnInitialized()
     {
@@ -104,6 +105,7 @@
         {
             await OnInvalidSubmit.InvokeAsync(EditContext);
         }
+        blazorFormIsValid = false;
     }
 
 
