@@ -15,9 +15,8 @@ namespace LH.MVCBlazor.Server.Controllers
 
         protected override string DefaultRouteController { get; set; } = "Attendees";
         protected override string DefaultRouteAction { get; set; } = "Index";
+        protected override string DefaultViewRouteController { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
-      
-      
         public Attendees_NoJSController(ILHS_AttendeesStateService LHS_AttendeesStateService, LHB_BlazorPageRegistryService blazorPageRegistryService)
             : base(blazorPageRegistryService)
         {

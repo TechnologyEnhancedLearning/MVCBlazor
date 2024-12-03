@@ -3,6 +3,7 @@ using LH.MVCBlazor.Server.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Package.LH.BlazorComponents.DependencyInjection;
 using Package.LH.BlazorComponents.Models;
+using Package.Shared.BlazorComponents.Enums;
 using Package.Shared.Services.StateServices.CharacterStateServices;
 
 namespace LH.MVCBlazor.Server.Controllers
@@ -13,7 +14,7 @@ namespace LH.MVCBlazor.Server.Controllers
 
         private readonly IGS_CharactersStateService _charactersStateService;
 
-
+        protected override string DefaultViewRouteController { get; set; } = "~/Views/Characters/Index.cshtml";
         protected override string DefaultRouteController { get; set; } = "Characters";
         protected override string DefaultRouteAction { get; set; } = "Index";
 
@@ -42,7 +43,22 @@ namespace LH.MVCBlazor.Server.Controllers
         [HttpPost("SetFavouriteCharacterByForm")]//qqqq its get in example in lh
         public async Task<IActionResult> SetFavouriteCharacterByForm(LHB_FavouriteCharacterFormModel LHB_FavouriteCharacterFormModel, string returnUrl = null)
         {
-            LHB_FavouriteCharacterFormModel.ModelStateErrors = GetModelStateDictionary(ModelState);
+
+
+            if (!ModelState.IsValid)
+            {
+
+                LHB_FavouriteCharacterFormModel.ModelStateErrors = GetModelStateDictionary(ModelState);
+
+                var viewModel = new CharactersViewModel((await _charactersStateService.GetCharactersAsync()).Data)
+                {
+                    LHB_FavouriteCharacterFormModel = LHB_FavouriteCharacterFormModel
+                };
+                ViewBag.RenderMode = GetRenderModeStr();
+                return ReturnViewWithModel(viewModel);
+                
+            }
+
             //qqqq then we would need to redirect to returning the model with the view
             return await SetFavouriteCharacterHelper(LHB_FavouriteCharacterFormModel.FavouriteCharacterId, returnUrl);
         }
@@ -59,31 +75,31 @@ namespace LH.MVCBlazor.Server.Controllers
             return RedirectToReturnUrl(returnUrl); // Redirect back to the index after setting favorite
         }
 
-        //[HttpPost("SetFavouriteCharacter")]//qqqq its get in example in lh
-        //public async Task<IActionResult> SetFavouriteCharacter(GB_FavouriteCharacterFormModel GB_FavouriteCharacterFormModel, string returnUrl = null)
-        //{
-        //    int characterId = GB_FavouriteCharacterFormModel.FavouriteCharacterId;
-        //    if (characterId <= 0)
-        //    {
-        //        ModelState.AddModelError("FavouriteCharacterId", "Invalid character ID provided.");
-        //        //return BadRequest("Invalid character ID provided.");
-        //    }
+        private string GetRenderModeStr()
+        {
+            // Get the current route from the request path
+            string route = HttpContext.Request.Path.Value; // E.g., "/Attendees/Static-MVCRendered"
 
-        //    if (!ModelState.IsValid)
-        //    {
-        //        //just for testing
-        //        GB_FavouriteCharacterFormModel.ModelStateErrors = ModelState
-        //            .Where(ms => ms.Value.Errors.Count > 0)
-        //            .ToDictionary(
-        //                kvp => kvp.Key,
-        //                kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).ToList()
-        //            );
-        //    }
+            // Extract the part of the route that matches the render mode
+            string renderModeString = route.Replace("/Characters/", "").Replace("-MVCRendered", "");
+
+            // Try to parse the extracted string into the enum
+            if (Enum.TryParse(renderModeString, true, out GB_ComponentTagRenderMode renderMode))
+            {
+                // Successfully parsed render mode
+            }
+            else
+            {
+                // Default to Static if no match
+                renderMode = GB_ComponentTagRenderMode.Static;
+                //This could be the noJs so lets do static as a fallback
+                //throw new Exception("Rendermode not in the enum"); //this is just for convenience we wouldnt have render mode routes
+            }
+
+            return renderMode.ToString();
+        }
 
 
-        //    await _charactersStateService.SetCharacterAsFavouriteAsync(characterId);
-        //    return RedirectToReturnUrl(returnUrl); // Redirect back to the index after setting favorite
-        //}
 
 
     }

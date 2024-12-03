@@ -8,6 +8,7 @@ namespace LH.MVCBlazor.Server.Controllers.BaseControllers
     public abstract class NoJSBaseController : Controller
     {
         // Properties for default route and denied route
+        protected abstract string DefaultViewRouteController { get; set; }
         protected abstract string DefaultRouteController { get; set; }
         protected abstract string DefaultRouteAction { get; set; }
         protected virtual string DeniedRouteController { get; set; } = "Home";
@@ -56,7 +57,18 @@ namespace LH.MVCBlazor.Server.Controllers.BaseControllers
 
             return String.IsNullOrEmpty(returnUrl) ? DefaultRedirectAction() : ReturnRedirect(returnUrl);
         }
+        protected IActionResult ReturnViewWithModel(object viewModel)
+        {
+            return View(DefaultViewRouteController, viewModel);
+            // If the viewModel is not provided, simply return the "Index" view with the default action and controller
+            if (viewModel == null)
+            {
+                return View(DefaultRouteAction, DefaultRouteController);
+            }
 
+            // Return the "Index" view with the provided viewModel
+            return View(DefaultRouteAction, viewModel);
+        }
         private bool IsValidMVCPageRoute(string url)
         {
             //!!! Not for production
