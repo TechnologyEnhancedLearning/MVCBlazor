@@ -1,5 +1,5 @@
 ﻿@inherits GB_ComponentBase
-@* @typeparam T where T:IGB_ModelStateValidation *@
+@typeparam TModel where TModel:IGB_ModelStateValidation
 <h3>GB_EditFormTitle : @Title</h3>
 
 @if (isFormSubmitted)
@@ -12,11 +12,15 @@
 <EditForm EditContext="@EditContext" OnValidSubmit="HandleValidSubmit" OnInvalidSubmit="HandleInvalidSubmit" method="post" action="@Action">
      <DataAnnotationsValidator /> 
      <CascadingValue Value="@formIsValid">
-        @EditFormContents
-      </CascadingValue>
+@*         <CascadingValue Value="@EditContext"> *@
+
+                @EditFormContents
+ 
+     </CascadingValue>
+ @*    </CascadingValue> *@ 
 
     @* Model="@EditContext.Model" *@
-    <GB_Validator AspFor="@AspFor" EditContext="@EditContext"/>
+    <GB_Validator AspFor="@AspFor" EditContext="@EditContext" FormModel="@FormModel"/>
 
     <button type="submit" class="btn btn-primary">Submit</button>
 
@@ -36,31 +40,37 @@
     [Parameter,EditorRequired]
     public string AspFor { get; set; }
 
+    private EditContext EditContext { get; set; }
 
     [Parameter, EditorRequired]
-    public EditContext EditContext { get; set; }
+    public EventCallback OnValidSubmit { get; set; }
 
     [Parameter, EditorRequired]
-    public EventCallback<EditContext> OnValidSubmit { get; set; }
-
-    [Parameter, EditorRequired]
-    public EventCallback<EditContext> OnInvalidSubmit { get; set; }
+    public EventCallback OnInvalidSubmit { get; set; }
 
 
     // Track the success status and submission count
     private bool isFormSubmitted = false;
     private int submissionCount = 0;
- 
+
     // Maybe just an OR would be better 
-    private bool formIsValid => JSIsEnabled ? blazorFormIsValid : !((IGB_ModelStateValidation)EditContext.Model).HasModelStateValidationErrors;
+    private bool formIsValid => JSIsEnabled ? blazorFormIsValid : !FormModel.HasModelStateValidationErrors;
     private bool blazorFormIsValid = true;
 
+    [Parameter, EditorRequired]
+    public TModel FormModel { get; set; }
 
-    
     protected override void OnInitialized()
     {
+        EditContext = new EditContext(FormModel);
 
+        //We don't need to manually do this unless nojs
+        if (FormModel.HasModelStateValidationErrors) { EditContext.Validate(); }//qqqq hopefull summary can use this if call in initialise
     }
+
+   
+    
+
 
     // Handle the form submission
     private async Task HandleValidSubmit()

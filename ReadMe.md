@@ -151,7 +151,11 @@ prerender work without blazor interactivity
 - We can use modelstate but it may be worth having a blazor compatible interface that stores these errors and pass them in the controller
 		we can do this in the view, but if we have models in views, rather than views which are the forms, which is likely because blazor will pass just what it needs
 		then it would be good just to always pass the errors. also it will force error handling compatibility
-
+- Supporting NoJS such that everything works the same by passing ModelState, post routes etc requires custom versions of base components.
+It also mean lots of the nice quality of life type features cant be used and more complex approaches need to be used. For example
+EditForm with EditContext instead of using the Model results in more complex more manual defining of events rather than leveraging two way binding
+built into premade blazor components, that automatically update models held by parents and editcontexts;
+- Viewcomponets and MVC like flat models for ease Blazor requires less event handling and complexity when no using nested classes
 
 
 
@@ -166,6 +170,21 @@ prerender work without blazor interactivity
 			- import assemblies vs injection libraries may be worth considering.
 
 
+
+
+#Delete editcontext notes
+- editcontext only on gb_edif form but cascade
+	- but our model has that kind of information becuase editcontext is not dynamic in noJs
+- **Try model setting editcontext when interactivity cant so not duplicating logic between model and editcontext**
+- pass binding to model not the model
+- editContext.Validate() calling this manually may mean validationsummary works but doesnt update
+- GB_EditContext : EditContext with viewstate errors would be nice, could have a constructor also taking viewstate for nojs
+"
+Model Binding: By using EditContext, you're not directly binding the model to the form; rather, you're binding the form to an object 
+that encapsulates both the model data and the validation state. This allows you to keep validation state and data separate if needed.
+
+"
+- passing Model is so much easier to editform than editcontext is but we need to do it this way due to custom handling
 
 
 # End of readme this is just notes for project and project review

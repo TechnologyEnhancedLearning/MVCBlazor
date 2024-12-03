@@ -27,7 +27,9 @@
                 @((MarkupString)HintText)
             </div>
         }
-        <InputRadioGroup TValue="@TValue" @bind-Value="RadioListValueToSet" Name="@ValueToSetPostName">
+        @* @onchange="HandleRadioChange" *@
+        @* @bind-Value="RadioListValueToSet" *@
+        <InputRadioGroup TValue="@TValue" Name="@ValueToSetPostName" @bind-Value="@LocalRadioListValue">
             <div id="RadioGroup-@RadioGroupId" class="nhsuk-radios">
                 @*Maybe loader for null*@
                 @for (int index = 0; index < (RadioItems??Enumerable.Empty<TItem>()).Count() ; index++)
@@ -43,7 +45,9 @@
                                     TValue="@TValue"
                                     Value="@GetValue(radioItem)"
                                     class="nhsuk-radios__input"
-                                    aria-describedby="@radioHintId" />
+                                    aria-describedby="@radioHintId"
+
+                                     />
 
                         <label class="nhsuk-label nhsuk-radios__label" for="@radioItemId">@GetLabel(radioItem)</label>
                         <div class="nhsuk-hint nhsuk-radios__hint" id="@radioHintId">
@@ -88,14 +92,40 @@
 
     [Parameter, EditorRequired] public string ValueToSetPostName { get; set; }//This is so we can use the form pre hydrated as pure html otherwise it will default to the param name
     [Parameter, EditorRequired] public TValue RadioListValueToSet { get; set; }
+    [Parameter, EditorRequired] public EventCallback<TValue> RadioListValueToSetChanged { get; set; }
+
+    private TValue _localRadioListValue;
+
+    // Local property used to capture changes and invoke the callback
+    public TValue LocalRadioListValue
+    {
+        get => _localRadioListValue;
+        set
+        {
+            if (!EqualityComparer<TValue>.Default.Equals(_localRadioListValue, value))  // Checks for equality
+            {
+                _localRadioListValue = value;
+                RadioListValueToSetChanged.InvokeAsync(value);  // Notify the parent of the change
+            }
+        }
+    }
+     protected override void OnInitialized()
+    {
+        // Initialize the local value with the parent value
+        _localRadioListValue = RadioListValueToSet;
+    }
+
     [Parameter, EditorRequired] public string RadioGroupId { get; set; }
 
-    [Parameter, EditorRequired]
-    public EventCallback<TValue> SelectedValueChanged { get; set; }
-    private void HandleRadioChange(TValue value)
-    {
-        SelectedValueChanged.InvokeAsync(value);
-    }
+    // [parameter, editorrequired]
+    // public eventcallback<tvalue> selectedvaluechanged { get; set; }
+    // private void handleradiochange(changeeventargs e)
+    // {
+    //     // manually trigger the event callback on value change
+    //     var newvalue = (tvalue)e.value;
+    //     radiolistvaluetoset = newvalue; // update the local state
+    //     selectedvaluechanged.invokeasync(newvalue); // notify parent
+    // }
 
 
 

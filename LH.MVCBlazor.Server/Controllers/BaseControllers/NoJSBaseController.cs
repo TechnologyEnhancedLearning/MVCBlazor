@@ -72,7 +72,7 @@ namespace LH.MVCBlazor.Server.Controllers.BaseControllers
                 url.StartsWith(prefix, StringComparison.OrdinalIgnoreCase));
         }
 
-        private Dictionary<string, List<string>> GetModelState(ModelStateDictionary ModelState)
+        protected Dictionary<string, List<string>> GetModelStateDictionary(ModelStateDictionary ModelState)
         {
             return ModelState
                        .Where(ms => ms.Value.Errors.Count > 0)

@@ -35,6 +35,8 @@ namespace LH.MVCBlazor.Server.Controllers
         [HttpPost("SetFavouriteCharacterByForm")]//qqqq its get in example in lh
         public async Task<IActionResult> SetFavouriteCharacterByForm(CharactersViewModel CharactersViewModel, string returnUrl = null)
         {
+            CharactersViewModel.LHB_FavouriteCharacterFormModel.ModelStateErrors = GetModelStateDictionary(ModelState);
+            //qqqq then we would need to redirect to returning the model with the view
             return await SetFavouriteCharacterHelper(CharactersViewModel.LHB_FavouriteCharacterFormModel.FavouriteCharacterId, returnUrl);
         }
 

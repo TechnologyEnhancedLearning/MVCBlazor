@@ -24,7 +24,13 @@ namespace LH.MVCBlazor.Server.Controllers
             [HttpGet("/Characters/ServerPrendered-MVCRendered")]
             [HttpGet("/Characters/WebAssembly-MVCRendered")]
             [HttpGet("/Characters/WebAssemblyPrerendered-MVCRendered")]
-            public async Task<IActionResult> Index()
+
+            [HttpPost("/Characters/Static-MVCRendered")]
+            [HttpPost("/Characters/Server-MVCRendered")]
+            [HttpPost("/Characters/ServerPrendered-MVCRendered")]
+            [HttpPost("/Characters/WebAssembly-MVCRendered")]
+            [HttpPost("/Characters/WebAssemblyPrerendered-MVCRendered")]
+        public async Task<IActionResult> Index()
             {
                 // Get the current route from the request path
                 string route = HttpContext.Request.Path.Value; // E.g., "/Attendees/Static-MVCRendered"

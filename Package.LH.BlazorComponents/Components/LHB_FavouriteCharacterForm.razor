@@ -1,7 +1,7 @@
 ﻿@inherits GB_ComponentBase
 @inject IGS_CharactersStateService GS_CharactersStateService
 
-<GB_EditForm Title=@FormTitle EditContext="@EditContext"  OnValidSubmit="@OnValidSubmit" OnInvalidSubmit="@OnInvalidSubmit" Action="@Action" AspFor="@AspFor">
+<GB_EditForm Title=@FormTitle FormModel="@LHB_FavouriteCharacterFormModel" OnValidSubmit="@OnValidSubmit" OnInvalidSubmit="@OnInvalidSubmit" Action="@Action" AspFor="@AspFor">
     <EditFormContents>
         <div class="form-group">
             @{
@@ -14,33 +14,37 @@
             @bind-Value="LHB_FavouriteCharacterFormModel.TestModelStateWithRequired" />
             <ValidationMessage For="@(() => LHB_FavouriteCharacterFormModel.TestModelStateWithRequired)" />
         </div>
-        @*  HasError="@(!formIsValid)" *@
-
+        <h1>"@LHB_FavouriteCharacterFormModel.FavouriteCharacterId : " @LHB_FavouriteCharacterFormModel.FavouriteCharacterId</h1>
         <GB_VCB_Radios
-        TItem="GE_CharacterModel"
-        TValue="int"
-        ValueToSetPostName="@($"{nameof(LHB_FavouriteCharacterFormModel)}.{nameof(LHB_FavouriteCharacterFormModel.FavouriteCharacterId)}")"
-        RadioListValueToSet="@LHB_FavouriteCharacterFormModel.FavouriteCharacterId"
-        RadioGroupId=@($"characterRadioGroup-{"Cartoon.Id"}")
-        RadioItems="@Characters" 
-        AspFor="@AspFor" 
-        Label="@Label" 
-        HintText="@RadioListHint" 
-        Class=""
-        GetHint="@(character => "Click to select")"
-        GetLabel="@(character => $"{character.ToString()}")"
-        GetValue="@(character => character.Id)"
-        IsPageHeading="@IsPageHeading"
-        Required="@Required"
-        RequiredClientSideErrorMessage=""
-        SelectedValueChanged="@(value => LHB_FavouriteCharacterFormModel.FavouriteCharacterId = value)" />
+            TItem="GE_CharacterModel"
+            TValue="int"
+            ValueToSetPostName="@($"{nameof(LHB_FavouriteCharacterFormModel)}.{nameof(LHB_FavouriteCharacterFormModel.FavouriteCharacterId)}")"
+            @bind-RadioListValueToSet="@LHB_FavouriteCharacterFormModel.FavouriteCharacterId"
+            RadioGroupId=@($"characterRadioGroup-{"Cartoon.Id"}")
+            RadioItems="@Characters" 
+            AspFor="@AspFor" 
+            Label="@Label" 
+            HintText="@RadioListHint" 
+            Class=""
+            GetHint="@(character => "Click to select")"
+            GetLabel="@(character => $"{character.ToString()}")"
+            GetValue="@(character => character.Id)"
+            IsPageHeading="@IsPageHeading"
+            Required="@Required"
+            RequiredClientSideErrorMessage=""
+           />
+         @*    SelectedValueChanged="@(value => LHB_FavouriteCharacterFormModel.FavouriteCharacterId = value)" /> *@
     </EditFormContents>
 
 </GB_EditForm>
 
 @code {
-
-
+    //   SelectedValueChanged="@OnFavouriteCharacterChanged"
+    // private void OnFavouriteCharacterChanged(int value)
+    // {
+    //     LHB_FavouriteCharacterFormModel.FavouriteCharacterId = value;
+    //     // Optionally, you can add additional logic here (e.g., validation, side-effects).
+    // }
 
     [Parameter, EditorRequired]
     public string Action { get; set; }
@@ -71,7 +75,6 @@
     [Parameter]
     public bool IsPageHeading { get; set; } = true;
 
-    private EditContext EditContext { get; set; }
 
     [Parameter]
     public List<GE_CharacterModel> Characters { get; set; } = null; //For model seeding for speed
@@ -90,22 +93,19 @@
 
 
 
-    protected override void OnInitialized()
-    {
-        EditContext = new EditContext(LHB_FavouriteCharacterFormModel);
-    }
+
 
     
 
     // Handle the form submission
-    private async Task OnValidSubmit(EditContext EditContext)
+    private async Task OnValidSubmit()
     {
         //Fire forget but would have service response object
-        await GS_CharactersStateService.SetCharacterAsFavouriteAsync(((LHB_FavouriteCharacterFormModel)EditContext.Model).FavouriteCharacterId);
+        await GS_CharactersStateService.SetCharacterAsFavouriteAsync(LHB_FavouriteCharacterFormModel.FavouriteCharacterId);
 
     }
     // Handle invalid form submission (triggered if validation fails)
-    private void OnInvalidSubmit(EditContext EditContext)
+    private void OnInvalidSubmit()
     {
         //Nothing
         

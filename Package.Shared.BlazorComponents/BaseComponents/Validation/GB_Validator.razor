@@ -1,8 +1,8 @@
 ﻿
-@* @typeparam TModel where TModel : IGB_ModelStateValidation May need to come back to this if cant use editcontext either will do but need doing differently*@ 
+@typeparam TModel where TModel : IGB_ModelStateValidation
 @inherits GB_ComponentBase
 @code {
-    // [Parameter, EditorRequired] public TModel Model { get; set; }
+    [Parameter, EditorRequired] public TModel FormModel { get; set; }
     [Parameter, EditorRequired] public EditContext EditContext { get; set; } //, EditorRequired
 
     [Parameter, EditorRequired]
@@ -11,7 +11,7 @@
 
     protected override void OnInitialized()
     {
-
+       // if (FormModel.HasModelStateValidationErrors) { EditContext.Validate(); } //qqqq hopefully this can trigger validation message even if no js, it just wont be dynamic
         // Subscribe to EditContext events to re-render the component
         EditContext.OnValidationRequested += (sender, args) => StateHasChanged();
         EditContext.OnFieldChanged += (sender, args) => StateHasChanged();
@@ -29,25 +29,28 @@
 
 }
 
-@if (JSIsEnabled)
-{
+@* @if (JSIsEnabled)
+{ *@
     @*  <DataAnnotationsValidator /> if we have two in the form  all the validation is doubled  *@
-    <ValidationSummary class="error-message--margin-bottom-1 nhsuk-error-message field-validation-valid nhsuk-u-padding-top-1 nhsuk-u-padding-bottom-3" />
-
-}
-else if (((IGB_ModelStateValidation)EditContext.Model).HasModelStateValidationErrors)
+    @*qqq maybe should cascade throughtout?*@
+<CascadingValue Value="@EditContext">
+    <ValidationSummary  class="error-message--margin-bottom-1 nhsuk-error-message field-validation-valid nhsuk-u-padding-top-1 nhsuk-u-padding-bottom-3" />
+</CascadingValue>
+@* }
+else  *@
+@if (FormModel.HasModelStateValidationErrors)
 {
     @*if no js and errors*@
     <div id="@AspFor-error" class="nhsuk-u-padding-top-1 nhsuk-u-padding-bottom-3">
         <div class="alert alert-danger">
             <h2>Validation Errors</h2>
             <ul>
-                @foreach (var (propertyName, errorMessages) in ((IGB_ModelStateValidation)EditContext.Model).ModelStateErrors)
+                @foreach (var error in FormModel.ModelStateErrors)
                 {
                     <li>
-                        @propertyName:
+                        @error.Key:
                         <ul>
-                            @foreach (var errorMessage in errorMessages)
+                            @foreach (var errorMessage in error.Value)
                             {
                                 <li>
                                     <span class="error-message--margin-bottom-1 nhsuk-error-message">
@@ -58,6 +61,7 @@ else if (((IGB_ModelStateValidation)EditContext.Model).HasModelStateValidationEr
                         </ul>
                     </li>
                 }
+
             </ul>
         </div>
     </div>
