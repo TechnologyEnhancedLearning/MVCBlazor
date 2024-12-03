@@ -98,14 +98,14 @@
     
 
     // Handle the form submission
-    private void OnValidSubmit()
+    private async Task OnValidSubmit(EditContext EditContext)
     {
         //Fire forget but would have service response object
-        GS_CharactersStateService.SetCharacterAsFavouriteAsync(LHB_FavouriteCharacterFormModel.FavouriteCharacterId);
+        await GS_CharactersStateService.SetCharacterAsFavouriteAsync(((LHB_FavouriteCharacterFormModel)EditContext.Model).FavouriteCharacterId);
 
     }
     // Handle invalid form submission (triggered if validation fails)
-    private void OnInvalidSubmit()
+    private void OnInvalidSubmit(EditContext EditContext)
     {
         //Nothing
         

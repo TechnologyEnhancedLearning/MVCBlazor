@@ -173,6 +173,13 @@ prerender work without blazor interactivity
 ## Questions
 
 ### Questions Unanswered
+- EditContext I can get validation from and share parent form and children
+	- But then i need to cast to get the model
+	- using Model Type with interface was good 
+		- did have the disadvantage wasnt getting what needed error wise
+	- in light of trying both i think returning to T Model and deciding the point at which EditContext is used and no longer used. (cant give editform both)
+		- editcontext need to update our form and in doing so cause component StateHasChanged()
+	
 - unsatisfied with radiolist handling i want 
 	- seperate form model within the view model
 	- the form model to recieve model state
@@ -357,6 +364,11 @@ They wont change often so I dont think its a problem to repeat them across two p
 
 
 # Carpark
+
+Passing EditContext so in parent. Was passing the Model. However passing EditContext does not allow to interface the model.
+Therefore our own version editcontext would be good.
+But will it work no js
+
 **Forcing appsetting.json to fit appsetting.cs in order to on package update get an error where appsettings requires updating too.
 There is complexity in building all the little classes and interfaces and it is not advisable to create an instantiation and use it during build.
 This means that you need use strings anyway. **

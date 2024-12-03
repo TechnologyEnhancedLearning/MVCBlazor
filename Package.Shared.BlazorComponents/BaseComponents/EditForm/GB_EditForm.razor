@@ -72,7 +72,7 @@
         // Invoke custom user-defined behavior if provided.
         if (OnValidSubmit.HasDelegate)
         {
-            await OnValidSubmit.InvokeAsync(EditContext);
+            await OnValidSubmit.InvokeAsync();
         }
 
         await ResetFormStatusAsync();
@@ -96,7 +96,7 @@
         // Invoke custom user-defined behavior if provided.
         if (OnInvalidSubmit.HasDelegate)
         {
-            await OnInvalidSubmit.InvokeAsync(EditContext);
+            await OnInvalidSubmit.InvokeAsync();
         }
         blazorFormIsValid = false;
     }

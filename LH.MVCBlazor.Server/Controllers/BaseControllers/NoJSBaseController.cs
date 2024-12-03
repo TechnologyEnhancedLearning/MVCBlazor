@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Package.LH.BlazorComponents.DependencyInjection;
 
 namespace LH.MVCBlazor.Server.Controllers.BaseControllers
@@ -32,7 +33,7 @@ namespace LH.MVCBlazor.Server.Controllers.BaseControllers
             // Assuming returnUrl is defined and you want to trim the protocol (http:// or https://)
             string trimmedReturnUrlNotForProduction = returnUrl.Replace("https://", "")
                                                                .Replace("http://", "")
-                                                                .Replace("localhost:44343","");
+                                                                .Replace("localhost:44343", "");
 
             if (IsValidMVCPageRoute(trimmedReturnUrlNotForProduction) //MVC Routes
                 || BlazorPageRegistryService.BlazorPageRoutes.Contains(trimmedReturnUrlNotForProduction) //Blazor page routes
@@ -70,5 +71,16 @@ namespace LH.MVCBlazor.Server.Controllers.BaseControllers
             return allowedRoutePrefixes.Any(prefix =>
                 url.StartsWith(prefix, StringComparison.OrdinalIgnoreCase));
         }
+
+        private Dictionary<string, List<string>> GetModelState(ModelStateDictionary ModelState)
+        {
+            return ModelState
+                       .Where(ms => ms.Value.Errors.Count > 0)
+                       .ToDictionary(
+                           kvp => kvp.Key,
+                           kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).ToList()
+                       );
+        }
     }
+
 }
