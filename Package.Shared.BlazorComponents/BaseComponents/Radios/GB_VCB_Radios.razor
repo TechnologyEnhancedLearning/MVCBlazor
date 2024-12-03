@@ -29,7 +29,8 @@
         }
         <InputRadioGroup TValue="@TValue" @bind-Value="RadioListValueToSet" Name="@ValueToSetPostName">
             <div id="RadioGroup-@RadioGroupId" class="nhsuk-radios">
-                @for (int index = 0; index < RadioItems.Count(); index++)
+                @*Maybe loader for null*@
+                @for (int index = 0; index < (RadioItems??Enumerable.Empty<TItem>()).Count() ; index++)
                 {
                     var radioItem = RadioItems.ElementAt(index);
 
@@ -103,7 +104,7 @@
     /// </summary>
     ///
     [Parameter]
-    public IEnumerable<TItem> RadioItems { get; set; } = default!;
+    public IEnumerable<TItem> RadioItems { get; set; } = Enumerable.Empty<TItem>();//Because if we dont seed with the model then we get the data async. We could put in a loader.
 
     [Parameter, EditorRequired]
     public string AspFor { get; set; } = String.Empty;

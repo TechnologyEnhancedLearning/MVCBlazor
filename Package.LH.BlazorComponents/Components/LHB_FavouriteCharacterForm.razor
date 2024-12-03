@@ -9,31 +9,31 @@
             }
             <label for="TestModelStateWithRequired">placeholderTxt</label>
             <InputText id="TestModelStateWithRequired"
-                       class="form-control"
-                       DisplayName="@placeholderTxt"
-                       @bind-Value="LHB_FavouriteCharacterFormModel.TestModelStateWithRequired" />
+            class="form-control"
+            DisplayName="@placeholderTxt"
+            @bind-Value="LHB_FavouriteCharacterFormModel.TestModelStateWithRequired" />
             <ValidationMessage For="@(() => LHB_FavouriteCharacterFormModel.TestModelStateWithRequired)" />
         </div>
-       @*  HasError="@(!formIsValid)" *@
+        @*  HasError="@(!formIsValid)" *@
 
         <GB_VCB_Radios
-            TItem="GE_CharacterModel"
-            TValue="int"
-            ValueToSetPostName="@($"{nameof(LHB_FavouriteCharacterFormModel)}.{nameof(LHB_FavouriteCharacterFormModel.FavouriteCharacterId)}")"
-            RadioListValueToSet="@LHB_FavouriteCharacterFormModel.FavouriteCharacterId"
-            RadioGroupId=@($"characterRadioGroup-{"Cartoon.Id"}")
-            RadioItems="@Characters" 
-            AspFor="@AspFor" 
-            Label="@Label" 
-            HintText="@RadioListHint" 
-            Class=""
-            GetHint="@(character => "Click to select")"
-            GetLabel="@(character => $"{character.ToString()}")"
-            GetValue="@(character => character.Id)"
-            IsPageHeading="@IsPageHeading"
-            Required="@Required"
-            RequiredClientSideErrorMessage=""
-            SelectedValueChanged="@(value => LHB_FavouriteCharacterFormModel.FavouriteCharacterId = value)" />
+        TItem="GE_CharacterModel"
+        TValue="int"
+        ValueToSetPostName="@($"{nameof(LHB_FavouriteCharacterFormModel)}.{nameof(LHB_FavouriteCharacterFormModel.FavouriteCharacterId)}")"
+        RadioListValueToSet="@LHB_FavouriteCharacterFormModel.FavouriteCharacterId"
+        RadioGroupId=@($"characterRadioGroup-{"Cartoon.Id"}")
+        RadioItems="@Characters" 
+        AspFor="@AspFor" 
+        Label="@Label" 
+        HintText="@RadioListHint" 
+        Class=""
+        GetHint="@(character => "Click to select")"
+        GetLabel="@(character => $"{character.ToString()}")"
+        GetValue="@(character => character.Id)"
+        IsPageHeading="@IsPageHeading"
+        Required="@Required"
+        RequiredClientSideErrorMessage=""
+        SelectedValueChanged="@(value => LHB_FavouriteCharacterFormModel.FavouriteCharacterId = value)" />
     </EditFormContents>
 
 </GB_EditForm>
@@ -46,11 +46,11 @@
     public string Action { get; set; }
 
 
-    [Parameter,EditorRequired]
+    [Parameter, EditorRequired]
     public string AspFor { get; set; }
 
     [Parameter, EditorRequired]
-    public bool Required { get; set; } 
+    public bool Required { get; set; }
 
     /// <summary>
     /// if this is private then we cant get errors off it
@@ -71,7 +71,7 @@
     [Parameter]
     public bool IsPageHeading { get; set; } = true;
 
-    private EditContext EditContext { get; set; } 
+    private EditContext EditContext { get; set; }
 
     [Parameter]
     public List<GE_CharacterModel> Characters { get; set; } = null; //For model seeding for speed
@@ -86,6 +86,10 @@
         LHB_FavouriteCharacterFormModel.FavouriteCharacterId = Characters.SingleOrDefault(x=>x.IsFavourite)?.Id??0;//Or default if no favourite set yet but will use zero for testing
         
     }
+
+
+
+
     protected override void OnInitialized()
     {
         EditContext = new EditContext(LHB_FavouriteCharacterFormModel);
