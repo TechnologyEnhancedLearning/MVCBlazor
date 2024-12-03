@@ -46,7 +46,6 @@
                                     Value="@GetValue(radioItem)"
                                     class="nhsuk-radios__input"
                                     aria-describedby="@radioHintId"
-
                                      />
 
                         <label class="nhsuk-label nhsuk-radios__label" for="@radioItemId">@GetLabel(radioItem)</label>
@@ -97,6 +96,7 @@
     private TValue _localRadioListValue;
 
     // Local property used to capture changes and invoke the callback
+    //Must be a better way qqqq
     public TValue LocalRadioListValue
     {
         get => _localRadioListValue;

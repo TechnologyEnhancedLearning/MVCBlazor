@@ -27,17 +27,24 @@ namespace LH.MVCBlazor.Server.Controllers
 
 
         ////!!!! This is just because of the way radiolist VC components bind name and asp-for
-        //[HttpPost("SetFavouriteCharacterByForm")]//qqqq its get in example in lh
-        //public async Task<IActionResult> SetFavouriteCharacterByForm(LHB_FavouriteCharacterFormModel LHB_FavouriteCharacterFormModel   /*int FavouriteCharacterId*/, string returnUrl = null)
+        //[HttpPost("SetFavouriteCharacterByTopLevelForm")]//qqqq its get in example in lh
+        //public async Task<IActionResult> SetFavouriteCharacterByTopLevelForm(LHB_FavouriteCharacterFormModel LHB_FavouriteCharacterFormModel   /*int FavouriteCharacterId*/, string returnUrl = null)
         //{
         //    return await SetFavouriteCharacterHelper(LHB_FavouriteCharacterFormModel.FavouriteCharacterId, returnUrl);
         //}        //!!!! This is just because of the way radiolist VC components bind name and asp-for
-        [HttpPost("SetFavouriteCharacterByForm")]//qqqq its get in example in lh
-        public async Task<IActionResult> SetFavouriteCharacterByForm(CharactersViewModel CharactersViewModel, string returnUrl = null)
+        [HttpPost("SetFavouriteCharacterByTopLevelForm")]//qqqq its get in example in lh
+        public async Task<IActionResult> SetFavouriteCharacterByTopLevelForm(CharactersViewModel CharactersViewModel, string returnUrl = null)
         {
             CharactersViewModel.LHB_FavouriteCharacterFormModel.ModelStateErrors = GetModelStateDictionary(ModelState);
             //qqqq then we would need to redirect to returning the model with the view
             return await SetFavouriteCharacterHelper(CharactersViewModel.LHB_FavouriteCharacterFormModel.FavouriteCharacterId, returnUrl);
+        }
+        [HttpPost("SetFavouriteCharacterByForm")]//qqqq its get in example in lh
+        public async Task<IActionResult> SetFavouriteCharacterByForm(LHB_FavouriteCharacterFormModel LHB_FavouriteCharacterFormModel, string returnUrl = null)
+        {
+            LHB_FavouriteCharacterFormModel.ModelStateErrors = GetModelStateDictionary(ModelState);
+            //qqqq then we would need to redirect to returning the model with the view
+            return await SetFavouriteCharacterHelper(LHB_FavouriteCharacterFormModel.FavouriteCharacterId, returnUrl);
         }
 
         [HttpPost("SetFavouriteCharacter")]

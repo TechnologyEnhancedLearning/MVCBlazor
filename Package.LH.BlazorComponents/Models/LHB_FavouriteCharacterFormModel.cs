@@ -13,10 +13,10 @@ namespace Package.LH.BlazorComponents.Models
     {
         [Required(ErrorMessage = "A character must be selected.")]
         [Display(Name = "Favourite Character")]
-        [FromForm(Name = "FavouriteCharacterId")]
-        public int FavouriteCharacterId { get; set; } 
+        //[FromForm(Name = "LHB_FavouriteCharacterFormModel.FavouriteCharacterId")]
+        public int FavouriteCharacterId { get; set; }
+ 
 
-  
 
 
         [Required(ErrorMessage = "SUCCESS YOU'VE GOT THE ERROR FROM VIEWSTATE (if your seeing this with JSDisabled)")]

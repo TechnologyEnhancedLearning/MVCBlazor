@@ -155,10 +155,11 @@ prerender work without blazor interactivity
 It also mean lots of the nice quality of life type features cant be used and more complex approaches need to be used. For example
 EditForm with EditContext instead of using the Model results in more complex more manual defining of events rather than leveraging two way binding
 built into premade blazor components, that automatically update models held by parents and editcontexts;
-- Viewcomponets and MVC like flat models for ease Blazor requires less event handling and complexity when no using nested classes
-
-
-
+- Viewcomponets and MVC like flat models for ease Blazor requires less event handling and complexity when no using nested classes because reference changes are harder to track.
+- Make all default base components. And see if they can produce html that works statically. EditForm could be an outlier.
+	- We may find instead of using out of the box blazor components everything need building ontop of basic html elements
+	- I expect they can do it but we may be careful of @bind-RadioListValueToSet="@LHB_FavouriteCharacterFormModel.FavouriteCharacterId"
+		- if it needs FavouriteCharacterId for nojs
 # Trouble Shooting
 - if assembled files break try deleting them and then starting not rebuilding.
 - blazor not detecting any components! - restarted visual studio i was running two instances for comparison
@@ -192,6 +193,7 @@ that encapsulates both the model data and the validation state. This allows you 
 ## Questions
 
 ### Questions Unanswered
+- Is one advantage of interfaces and concrete fields for values like radios is that blazor knows that it needs updating
 - EditContext I can get validation from and share parent form and children
 	- But then i need to cast to get the model
 	- using Model Type with interface was good 
