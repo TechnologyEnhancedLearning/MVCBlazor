@@ -57,8 +57,9 @@ namespace LH.MVCBlazor.Server.Controllers.BaseControllers
 
             return String.IsNullOrEmpty(returnUrl) ? DefaultRedirectAction() : ReturnRedirect(returnUrl);
         }
-        protected IActionResult ReturnViewWithModel(object viewModel)
+        protected IActionResult ReturnViewWithModel(object viewModel, string returnUrl = null)
         {
+            returnUrl = returnUrl ?? Request.Headers["Referer"].ToString();
             return View(DefaultViewRouteController, viewModel);
             // If the viewModel is not provided, simply return the "Index" view with the default action and controller
             if (viewModel == null)

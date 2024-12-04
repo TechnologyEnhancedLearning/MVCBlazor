@@ -17,7 +17,7 @@ namespace Package.Shared.BlazorComponents.Enums
     { 
         Static, //in blazor pages serverStatic
         Server, //in blazor pages InteractiveServer
-        ServerPrendered,
+        ServerPrerendered,
         WebAssembly,
         WebAssemblyPrerendered
         //InteractiveAuto

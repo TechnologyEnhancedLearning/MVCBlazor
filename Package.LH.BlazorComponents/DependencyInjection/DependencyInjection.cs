@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static System.Net.Mime.MediaTypeNames;
+//using Package.LH.BlazorComponents.Components.Pages.SharedTestingPageComponents;
 
 namespace Package.LH.BlazorComponents.DependencyInjection
 {
@@ -32,7 +33,11 @@ namespace Package.LH.BlazorComponents.DependencyInjection
 
             services.AddTransient<LHB_Attendees_AddRemoveListForm>();
             services.AddTransient<LHB_FavouriteCharacterForm>();
-            services.AddTransient<LHB_PageTestComponent>();
+    
+
+
+            //services.AddTransient<CharactersPageComponent>();
+            //services.AddTransient<RenderModeDisplayer>();
             return services;
         }
         public static IServiceCollection LHB_RegisterAllBlazorPageRoutes(this IServiceCollection services)

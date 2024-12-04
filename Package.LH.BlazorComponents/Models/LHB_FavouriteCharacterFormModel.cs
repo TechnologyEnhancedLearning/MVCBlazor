@@ -19,7 +19,7 @@ namespace Package.LH.BlazorComponents.Models
 
 
 
-        [Required(ErrorMessage = "SUCCESS YOU'VE GOT THE ERROR FROM VIEWSTATE (if your seeing this with JSDisabled)")]
+        [Required(ErrorMessage = "Required attribue error for TestModelStateWithRequired")]
         public string TestModelStateWithRequired { get; set; } = null;
         public Dictionary<string, List<string>> ModelStateErrors { get; set; } = new();
 

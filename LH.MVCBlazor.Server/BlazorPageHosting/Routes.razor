@@ -1,7 +1,7 @@
 ﻿@using LH.MVCBlazor.Server.BlazorPageHosting.Layout
 @using Package.LH.BlazorComponents.Components.Pages
 <Router AppAssembly="@typeof(Program).Assembly"
-    AdditionalAssemblies="new[]{typeof(LHB_PageTestComponent).Assembly}" >
+    AdditionalAssemblies="new[]{typeof(LHB_HelloWorld).Assembly}" >
     <Found Context="routeData">
         <RouteView RouteData="@routeData"  DefaultLayout="@typeof(_LayoutBlazor)" />
         <FocusOnNavigate RouteData="@routeData" Selector="h1" />

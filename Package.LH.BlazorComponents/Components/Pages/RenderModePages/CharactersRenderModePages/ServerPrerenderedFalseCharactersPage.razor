@@ -1,10 +1,11 @@
-﻿@page "/Characters/InteractiveServerPagePrenderFalse-BlazorPage"
+﻿@page "/Characters/ServerPrenderFalse-BlazorPage"
+@* @page "/Characters/InteractiveServerPrenderFalse-BlazorPage" *@
 @rendermode @(new InteractiveServerRenderMode(prerender: false))
 @inherits GB_PageBase
 <PageTitle>@PageTitle</PageTitle>
 <h1>@PageTitle</h1>
 <LHB_HelloWorld />
-
+<CharactersPageComponent />
 @code {
     //Dont really need it to cascade or be setable here but shows it working
     [CascadingParameter] public override string PageTitle { get; set; } = "InteractiveServer Prerender False Blazor Page"; // Set this for each page

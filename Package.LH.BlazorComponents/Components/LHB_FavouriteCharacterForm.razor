@@ -14,7 +14,10 @@
             @bind-Value="LHB_FavouriteCharacterFormModel.TestModelStateWithRequired" />
             <ValidationMessage For="@(() => LHB_FavouriteCharacterFormModel.TestModelStateWithRequired)" />
         </div>
-        <h1>"@LHB_FavouriteCharacterFormModel.FavouriteCharacterId : " @LHB_FavouriteCharacterFormModel.FavouriteCharacterId</h1>
+        @if (CharactersAreLoading)
+        {
+            <h3>...Characters Are Loading</h3>
+        }else{
         <GB_VCB_Radios
             TItem="GE_CharacterModel"
             TValue="int"
@@ -33,11 +36,15 @@
             Required="@Required"
             RequiredClientSideErrorMessage=""
            />
-         @*    SelectedValueChanged="@(value => LHB_FavouriteCharacterFormModel.FavouriteCharacterId = value)" /> - Built in when bind*@
+        }
+        @{
+            var x = 1;
+        }
+        @*    SelectedValueChanged="@(value => LHB_FavouriteCharacterFormModel.FavouriteCharacterId = value)" /> - Built in when bind*@
     </EditFormContents>
 
 </GB_EditForm>
-
+<h3>"@LHB_FavouriteCharacterFormModel.FavouriteCharacterId if I change your interactive: " @LHB_FavouriteCharacterFormModel.FavouriteCharacterId</h3>
 @code {
     //   SelectedValueChanged="@OnFavouriteCharacterChanged"
     // private void OnFavouriteCharacterChanged(int value)
@@ -80,28 +87,22 @@
     public List<GE_CharacterModel> Characters { get; set; } = null; //For model seeding for speed
 
     private string FormTitle = "Favourite Character Form";
-
+    private bool CharactersAreLoading { get; set; } = true;
     protected override async Task OnInitializedAsync()
     {
 
         //If cartoon isnt provided then get it
         Characters = Characters ?? (await GS_CharactersStateService.GetCharactersAsync()).Data;
         LHB_FavouriteCharacterFormModel.FavouriteCharacterId = Characters.SingleOrDefault(x=>x.IsFavourite)?.Id??0;//Or default if no favourite set yet but will use zero for testing
-        
+        CharactersAreLoading = false;
     }
-
-
-
-
-
-
-    
 
     // Handle the form submission
     private async Task OnValidSubmit()
     {
         //Fire forget but would have service response object
         await GS_CharactersStateService.SetCharacterAsFavouriteAsync(LHB_FavouriteCharacterFormModel.FavouriteCharacterId);
+
 
     }
     // Handle invalid form submission (triggered if validation fails)

@@ -17,22 +17,6 @@
     ViewData["Title"] = Title;
 }
 <h1>@Title</h1>
-<h3>WebAssembly</h3>
-<component type="typeof(LHB_HelloWorld)" render-mode="WebAssembly" />
-<h3>Static</h3>
-<component type="typeof(LHB_HelloWorld)" render-mode="Static" />
-
-
-
-@* <form asp-controller="Characters_NoJS"
-      asp-action="SetFavouriteCharacter"
-      method="post">
-    <vc:radio-list asp-for="FavouriteCharacterId"
-                   label="Select a Favorite Character"
-                   radios="@charactersRadios"
-                   populate-with-current-values="true"
-                   hint-text="Choose your favourite character from "Model.FirstCartoonOnly.Title For Now"
-                   required="true" /> *@
 
 
 <div class="attendees-wrapper">
@@ -51,3 +35,5 @@
 </div>
 
 
+<h3>WebAssembly Works if below</h3>
+<component type="typeof(LHB_HelloWorld)" render-mode="WebAssembly" />

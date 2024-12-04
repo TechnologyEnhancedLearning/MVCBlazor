@@ -16,21 +16,21 @@ namespace Package.LH.BlazorComponents.DependencyInjection
             // Initialize the allowed routes list
             BlazorPageRoutes = new HashSet<string>
             {
-                "/Attendees/InteractiveAutoPage-BlazorPage",
+                "/Attendees/InteractiveAuto-BlazorPage",
                 "/Attendees/InteractiveAutoPrerenderFalseWeatherPage-BlazorPage",
                 "/Attendees/InteractiveServerPage-BlazorPage",
-                "/Attendees/InteractiveServerPagePrenderFalse-BlazorPage",
+                "/Attendees/InteractiveServerPrenderFalse-BlazorPage",
                 "/Attendees/StaticServerPage-BlazorPage",
-                "/Attendees/InteractiveWebAssemblyPage-BlazorPage",
-                "/Attendees/InteractiveWebAssemblyPrerenderFalse-BlazorPage",
+                "/Attendees/InteractiveWebAssembly-BlazorPage",
+                "/Attendees/InteractiveWebAssemblyPrerenderedFalse-BlazorPage",
 
-                "/Characters/InteractiveAutoPage-BlazorPage",
+                "/Characters/InteractiveAuto-BlazorPage",
                 "/Characters/InteractiveAutoPrerenderFalseWeatherPage-BlazorPage",
                 "/Characters/InteractiveServerPage-BlazorPage",
-                "/Characters/InteractiveServerPagePrenderFalse-BlazorPage",
+                "/Characters/InteractiveServerPrenderFalse-BlazorPage",
                 "/Characters/StaticServerPage-BlazorPage",
-                "/Characters/InteractiveWebAssemblyPage-BlazorPage",
-                "/Characters/InteractiveWebAssemblyPrerenderFalse-BlazorPage",
+                "/Characters/InteractiveWebAssembly-BlazorPage",
+                "/Characters/InteractiveWebAssemblyPrerenderedFalse-BlazorPage",
 
                 "/StreamRenderingWeather-BlazorPage"
 

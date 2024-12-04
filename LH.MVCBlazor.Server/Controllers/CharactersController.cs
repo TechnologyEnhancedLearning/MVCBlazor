@@ -21,13 +21,13 @@ namespace LH.MVCBlazor.Server.Controllers
 
         [HttpGet("/Characters/Static-MVCRendered")]
         [HttpGet("/Characters/Server-MVCRendered")]
-        [HttpGet("/Characters/ServerPrendered-MVCRendered")]
+        [HttpGet("/Characters/ServerPrerendered-MVCRendered")]
         [HttpGet("/Characters/WebAssembly-MVCRendered")]
         [HttpGet("/Characters/WebAssemblyPrerendered-MVCRendered")]
 
         [HttpPost("/Characters/Static-MVCRendered")]
         [HttpPost("/Characters/Server-MVCRendered")]
-        [HttpPost("/Characters/ServerPrendered-MVCRendered")]
+        [HttpPost("/Characters/ServerPrerendered-MVCRendered")]
         [HttpPost("/Characters/WebAssembly-MVCRendered")]
         [HttpPost("/Characters/WebAssemblyPrerendered-MVCRendered")]
         public async Task<IActionResult> Index()

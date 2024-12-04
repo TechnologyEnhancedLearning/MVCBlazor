@@ -1,10 +1,11 @@
-﻿@page "/Characters/StaticServerPage-BlazorPage"
+﻿@page "/Characters/Static-BlazorPage"
 @inherits GB_PageBase
+@*No rendermode is static*@
 <PageTitle>@PageTitle</PageTitle>
 <h1>@PageTitle</h1>
 <LHB_HelloWorld />
-
+<CharactersPageComponent />
 @code {
     //Dont really need it to cascade or be setable here but shows it working
-    [CascadingParameter] public override string PageTitle { get; set; } = "StaticServer Blazor Page"; // Set this for each page
+    [CascadingParameter] public override string PageTitle { get; set; } = "Static Blazor Page"; // Set this for each page
 }

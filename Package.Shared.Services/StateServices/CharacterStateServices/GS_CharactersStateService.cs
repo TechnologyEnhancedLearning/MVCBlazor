@@ -23,9 +23,7 @@ namespace Package.Shared.Services.StateServices.CharacterStateServices
         public bool DataIsLoaded { get; private set; } = false;
         private Task _loadingTask;
         public List<GE_CharacterModel> Characters { get; private set; } = new List<GE_CharacterModel>();
-
-
-
+        public string TestString { get; set; } = "Test string not set";
 
         public GS_CharactersStateService(IHttpClientFactory httpClientFactory, IOptions<GS_CharactersAPIConfiguration> charactersAPIConfiguration)//qqqq i want this as an interface but wasnt previously will it error
         {

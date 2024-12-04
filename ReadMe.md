@@ -193,6 +193,8 @@ that encapsulates both the model data and the validation state. This allows you 
 ## Questions
 
 ### Questions Unanswered
+- BlazorPages in the structure wont have access to viewmodels, viewmodels set up the views. if they did need it we need to wrap components with at which point does it becomes specific to MVC.
+	- Likely though it wont need to access viewmodels and they could be moved to entities potentially if needed
 - Is one advantage of interfaces and concrete fields for values like radios is that blazor knows that it needs updating
 - EditContext I can get validation from and share parent form and children
 	- But then i need to cast to get the model
@@ -386,9 +388,50 @@ They wont change often so I dont think its a problem to repeat them across two p
 
 # Carpark
 
-Passing EditContext so in parent. Was passing the Model. However passing EditContext does not allow to interface the model.
-Therefore our own version editcontext would be good.
-But will it work no js
+## carpark all pages one page component
+`
+@page "/Characters/InteractiveServerPagePrenderFalse-BlazorPage"
+@page "/Characters/InteractiveWebAssemblyPrerenderFalse-BlazorPage"
+@inherits GB_PageBase
+
+@rendermode @{
+    RenderModeForCurrentPage()
+}
+
+<PageTitle>@PageTitle</PageTitle>
+<h1>@PageTitle</h1>
+<LHB_HelloWorld />
+
+@code {
+    [CascadingParameter] 
+    public override string PageTitle { get; set; }
+
+    private string CurrentPage => NavigationManager.Uri.Replace(NavigationManager.BaseUri, "");
+
+    private object RenderModeForCurrentPage()
+    {
+        return CurrentPage switch
+        {
+            "Characters/InteractiveServerPagePrenderFalse-BlazorPage" => new InteractiveServerRenderMode(prerender: false),
+            "Characters/InteractiveWebAssemblyPrerenderFalse-BlazorPage" => new InteractiveWebAssemblyRenderMode(prerender: false),
+            _ => new InteractiveServerRenderMode(prerender: true) // Default RenderMode
+        };
+    }
+
+    protected override void OnParametersSet()
+    {
+        // Set the PageTitle dynamically based on the current page
+        PageTitle = CurrentPage switch
+        {
+            "Characters/InteractiveServerPagePrenderFalse-BlazorPage" => "InteractiveServer Prerender False Blazor Page",
+            "Characters/InteractiveWebAssemblyPrerenderFalse-BlazorPage" => "InteractiveWebAssembly Prerender False Blazor Page",
+            _ => "Default Page Title"
+        };
+    }
+}
+
+`
+## carpark appsetting
 
 **Forcing appsetting.json to fit appsetting.cs in order to on package update get an error where appsettings requires updating too.
 There is complexity in building all the little classes and interfaces and it is not advisable to create an instantiation and use it during build.

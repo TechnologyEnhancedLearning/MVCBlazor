@@ -10,6 +10,7 @@ namespace Package.Shared.Services.StateServices.CharacterStateServices
 {
     public interface IGS_CharactersStateService
     {
+        public string TestString { get; set; }
         Task EnsureDataIsLoadedAsync();
         Task<GE_ServiceResponse<List<GE_CharacterModel>>> GetCharactersAsync();
         Task<GE_ServiceResponse<bool>> SetCharacterAsFavouriteAsync(int characterId);
