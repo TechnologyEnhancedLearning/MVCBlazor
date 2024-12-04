@@ -1,6 +1,6 @@
 ﻿@model CharactersViewModel
 @{
-
+    var qqqq = Model;
     Microsoft.AspNetCore.Mvc.Rendering.RenderMode renderMode = Microsoft.AspNetCore.Mvc.Rendering.RenderMode.Static;
     if (Enum.TryParse(ViewBag.RenderMode, out renderMode))
     {
@@ -18,7 +18,7 @@
 }
 <h1>@Title</h1>
 
-
+@*qqqqq change lh_favouritecharacters to not preset null as a parameter and now pass characters so need view to pass null where it isnt providing it*@
 <div class="attendees-wrapper">
     <div class="attendees-form-container">
         <h3 style="margin:10px;text-align:center">"Model.CartoonName"</h3>
@@ -26,6 +26,7 @@
                    param-AspFor=@("FavouriteCharacterId")
                    param-Required=true
                    param-Action=@("Characters/NoJS/SetFavouriteCharacterByForm")
+                   param-Characters=@Model.Characters
                    param-LHB_FavouriteCharacterFormModel=@Model.LHB_FavouriteCharacterFormModel
                    param-Label=@("EditFormLabel Here")
                    param-RadioListHint=@("Edit form hint here ")

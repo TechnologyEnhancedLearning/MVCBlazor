@@ -71,7 +71,7 @@
     /// </summary>
     /// 
     [Parameter]
-    public LHB_FavouriteCharacterFormModel LHB_FavouriteCharacterFormModel { get; set; } = new();
+    public LHB_FavouriteCharacterFormModel LHB_FavouriteCharacterFormModel { get; set; } = null; //qqqqqqqqqqqqqqqqqq
 
     [Parameter]
     public string Label { get; set; } = "Label Not Set Would Be EditorRequired or null";
@@ -83,17 +83,38 @@
     public bool IsPageHeading { get; set; } = true;
 
 
-    [Parameter]
+    [Parameter, EditorRequired]
     public List<GE_CharacterModel> Characters { get; set; } = null; //For model seeding for speed
 
     private string FormTitle = "Favourite Character Form";
     private bool CharactersAreLoading { get; set; } = true;
+
+
+    bool LHB_FavouriteCharacterFormModelProvided = false;
+
+    protected override void OnInitialized()
+    {
+        LHB_FavouriteCharacterFormModelProvided = LHB_FavouriteCharacterFormModel != null;
+        LHB_FavouriteCharacterFormModel = LHB_FavouriteCharacterFormModel ?? new();
+
+    }
+
     protected override async Task OnInitializedAsync()
     {
 
         //If cartoon isnt provided then get it
+        //We may provide the characters for speed
+        //we may provide partially changed data from failed validation in a nojs scenario
         Characters = Characters ?? (await GS_CharactersStateService.GetCharactersAsync()).Data;
-        LHB_FavouriteCharacterFormModel.FavouriteCharacterId = Characters.SingleOrDefault(x=>x.IsFavourite)?.Id??0;//Or default if no favourite set yet but will use zero for testing
+
+        //we may provide it when there is validation
+        if (!LHB_FavouriteCharacterFormModelProvided)
+        {
+
+            LHB_FavouriteCharacterFormModel.FavouriteCharacterId = Characters.SingleOrDefault(x => x.IsFavourite)?.Id ?? 0;//Or default if no favourite set yet but will use zero for testing
+            
+        }
+
         CharactersAreLoading = false;
     }
 

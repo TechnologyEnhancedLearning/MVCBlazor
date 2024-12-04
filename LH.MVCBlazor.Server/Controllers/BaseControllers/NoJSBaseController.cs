@@ -8,6 +8,7 @@ namespace LH.MVCBlazor.Server.Controllers.BaseControllers
     public abstract class NoJSBaseController : Controller
     {
         // Properties for default route and denied route
+        protected abstract string RedirectBlazorPagesNoJsStaticMVCRoute { get; set; }
         protected abstract string DefaultViewRouteController { get; set; }
         protected abstract string DefaultRouteController { get; set; }
         protected abstract string DefaultRouteAction { get; set; }
@@ -21,6 +22,11 @@ namespace LH.MVCBlazor.Server.Controllers.BaseControllers
         protected NoJSBaseController(LHB_BlazorPageRegistryService blazorPageRegistryService)
         {
             BlazorPageRegistryService = blazorPageRegistryService;
+        }
+
+        protected ActionResult RedirectBlazorPage()
+        {
+            return RedirectToAction(DefaultRouteAction, DefaultRouteController);
         }
         protected ActionResult DefaultRedirectAction()
         {

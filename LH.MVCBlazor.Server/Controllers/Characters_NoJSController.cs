@@ -1,10 +1,12 @@
 ﻿using LH.MVCBlazor.Server.Controllers.BaseControllers;
 using LH.MVCBlazor.Server.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using Package.LH.BlazorComponents.DependencyInjection;
 using Package.LH.BlazorComponents.Models;
 using Package.Shared.BlazorComponents.Enums;
 using Package.Shared.Services.StateServices.CharacterStateServices;
+using System.Reflection;
 
 namespace LH.MVCBlazor.Server.Controllers
 {
@@ -17,8 +19,7 @@ namespace LH.MVCBlazor.Server.Controllers
         protected override string DefaultViewRouteController { get; set; } = "~/Views/Characters/Index.cshtml";
         protected override string DefaultRouteController { get; set; } = "Characters";
         protected override string DefaultRouteAction { get; set; } = "Index";
-
-
+        protected override string RedirectBlazorPagesNoJsStaticMVCRoute { get; set; } = "/Characters/Static-MVCRendered";
 
         public Characters_NoJSController(IGS_CharactersStateService charactersStateService, LHB_BlazorPageRegistryService blazorPageRegistryService)
             : base(blazorPageRegistryService)
@@ -50,12 +51,25 @@ namespace LH.MVCBlazor.Server.Controllers
 
                 LHB_FavouriteCharacterFormModel.ModelStateErrors = GetModelStateDictionary(ModelState);
 
-                var viewModel = new CharactersViewModel((await _charactersStateService.GetCharactersAsync()).Data)
-                {
-                    LHB_FavouriteCharacterFormModel = LHB_FavouriteCharacterFormModel
-                };
+                var viewModel = new CharactersViewModel((await _charactersStateService.GetCharactersAsync()).Data, LHB_FavouriteCharacterFormModel);
+          
                 ViewBag.RenderMode = GetRenderModeStr();
-                return ReturnViewWithModel(viewModel);
+
+                bool IsBlazorPage = true;
+                if (IsBlazorPage)
+                {
+                    //cant pass the validation data with current set up so redirect to the static page
+                    TempData["CharactersData"] = JsonConvert.SerializeObject(viewModel); // Serialize to pass complex objects
+                    return RedirectToAction("Static-MVCRendered", "Characters");
+                    //return RedirectToAction("Index", "Characters/Static-MVCRendered");
+
+                }
+                else
+                {
+                    //its mvc so just return model to where it came from now it has validation state errors on it
+
+                    return ReturnViewWithModel(viewModel);
+                }
                 
             }
 
@@ -99,7 +113,7 @@ namespace LH.MVCBlazor.Server.Controllers
             return renderMode.ToString();
         }
 
-
+     
 
 
     }

@@ -12,9 +12,9 @@ namespace LH.MVCBlazor.Server.ViewModels
     {
         //Kind of makes sense to be list cartoon qqqq
 
-        public LHB_FavouriteCharacterFormModel LHB_FavouriteCharacterFormModel { get; set; } = new LHB_FavouriteCharacterFormModel();
+        public LHB_FavouriteCharacterFormModel LHB_FavouriteCharacterFormModel { get; set; } = null;//qqqq new LHB_FavouriteCharacterFormModel();
         public string some_CharactersViewModel_specific_UI_String { get; set; } = "UnSet";
-        public List<GE_CharacterModel> Characters { get; set; } = new List<GE_CharacterModel>();
+        public List<GE_CharacterModel> Characters { get; set; } = null;//qqqq new List<GE_CharacterModel>();
 
         //asp-for doesnt allow seperate name setting so model and controller must match
         //radiolist not detecting LHB_FavouriteCharacterFormModel.FavouriteCharacterIdStr and doesnt set it on initial load unless its string
@@ -26,11 +26,26 @@ namespace LH.MVCBlazor.Server.ViewModels
 
 
 
-        public CharactersViewModel(List<GE_CharacterModel> characters)
+        public CharactersViewModel(List<GE_CharacterModel> characters, LHB_FavouriteCharacterFormModel CurrentFormData = null)
         {
-            Characters = characters;
-            LHB_FavouriteCharacterFormModel.FavouriteCharacterId = characters.Single(x => x.IsFavourite).Id;
+            LHB_FavouriteCharacterFormModel = CurrentFormData?? LHB_FavouriteCharacterFormModel;
             
+            if (CurrentFormData != null && CurrentFormData.FavouriteCharacterId != 0)
+            {
+                //set favourite from form
+                characters.ForEach(x => x.IsFavourite = false);
+                characters.Single(x => x.Id == CurrentFormData.FavouriteCharacterId).IsFavourite = true;
+                Characters = characters;
+                
+            }
+            else 
+            {
+                //Set favourite from database
+                Characters = characters;
+                LHB_FavouriteCharacterFormModel.FavouriteCharacterId = characters.Single(x => x.IsFavourite).Id;
+
+            }
+            FavouriteCharacterIdStr = LHB_FavouriteCharacterFormModel.FavouriteCharacterId.ToString();
         }
 
         public CharactersViewModel()

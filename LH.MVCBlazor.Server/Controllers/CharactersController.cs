@@ -1,11 +1,12 @@
 ﻿using LH.MVCBlazor.Server.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using Package.Shared.BlazorComponents.Enums;
 using Package.Shared.Services.StateServices.CharacterStateServices;
 
 namespace LH.MVCBlazor.Server.Controllers
 {
-
+    [Route("Characters")]
     public class CharactersController : Controller
     {
         private readonly IGS_CharactersStateService _charactersStateService;
@@ -30,21 +31,24 @@ namespace LH.MVCBlazor.Server.Controllers
         [HttpPost("/Characters/ServerPrerendered-MVCRendered")]
         [HttpPost("/Characters/WebAssembly-MVCRendered")]
         [HttpPost("/Characters/WebAssemblyPrerendered-MVCRendered")]
+        [Route("Characters")]
         public async Task<IActionResult> Index()
         {
+            CharactersViewModel charactersData = null;
+            if (TempData["CharactersData"] != null)
+            {
+                 charactersData = JsonConvert.DeserializeObject<CharactersViewModel>(TempData["CharactersData"].ToString());
+            }
+           
 
-            var viewModel = new CharactersViewModel((await _charactersStateService.GetCharactersAsync()).Data);
-            ViewBag.RenderMode = GetRenderModeStr();
+            var viewModel = charactersData ?? new CharactersViewModel((await _charactersStateService.GetCharactersAsync()).Data);
+            ViewBag.RenderMode = GetRenderModeStr();//Returns static if no rendermode so can use /Characters/
             return View(viewModel);
         }
-        public IActionResult Index(CharactersViewModel CharactersViewModel)
-        {
 
-            var viewModel = CharactersViewModel;
-            ViewBag.RenderMode = GetRenderModeStr();
-            return View(viewModel);
-        }
+        
 
+        //Default Blazor page nojs redirect routes
 
 
 

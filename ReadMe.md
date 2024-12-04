@@ -134,6 +134,9 @@ both with or without js
 	- revisit mediatr package
 - !important prototyping tools
 
+# current issues to come back to
+- static nojs redirects on blazor pages due to different route may need tweaking
+- it seems going from a route not found to a working blazor route doesnt rever the layout
 
 # Recommendations from project
 - Controllers should use same service as blazor components so posts using same logic
@@ -160,6 +163,8 @@ built into premade blazor components, that automatically update models held by p
 	- We may find instead of using out of the box blazor components everything need building ontop of basic html elements
 	- I expect they can do it but we may be careful of @bind-RadioListValueToSet="@LHB_FavouriteCharacterFormModel.FavouriteCharacterId"
 		- if it needs FavouriteCharacterId for nojs
+- if having pure blazor pages, we will need a different way of passing them data when js is disabled, or they will need to redirect to an mvc page that can handle it.		
+	- not seemed to be able to change a value in the state and have it affect the blazor pages, but potentially a shared stateful service could work 
 # Trouble Shooting
 - if assembled files break try deleting them and then starting not rebuilding.
 - blazor not detecting any components! - restarted visual studio i was running two instances for comparison
@@ -169,7 +174,11 @@ built into premade blazor components, that automatically update models held by p
 		- it could be due to complexity now in architecture and reducing it may solve it
 		- it could be that we are injecting a component that relies on a vc model and that we need more setup to enable this
 			- import assemblies vs injection libraries may be worth considering.
-
+			- mediatr
+			- so redirecting to blazor pages, and them accessing their services seems to be how they will work, if static they would need a service/api
+			somethere to receive data that has been processed where it wont be process it itself. 
+			- if nojs for now may need to redirect to a nojs mvc page
+- find someway to seperate nojs so clear what is there and why but dont do it how its acheived here
 
 
 
@@ -315,7 +324,16 @@ that encapsulates both the model data and the validation state. This allows you 
 - ViewComponents
 
 
-
+- Relation ships between viewmodel form model etc has got messy
+	- this is because we may want to actually seed the data not use the db data if we are redirecting from a blazor page nojs or nojs 
+generally so state isnt reset
+	- Viewcomponents did not work with tiered models and so FavouriteCharacterId is set at multiple levels and needs to be set up right**
+	- ViewModel isnt passed
+		- because its for the view not the components
+		- it lives in Server project so shouldnt be relationship to it
+		- However if storing data at the top level, and using controlled to keep list and form flag in sync then using same model for its constructors would be nice
+		also because providing two things to the component that are optional if they are used but shouldnt have option of providing one not the other is messy
+	
 **Rebuild components get interfaces right**
 *Bit weird but character is suppost to be the generic 
 shared thing attendees specific one. And group vs 
