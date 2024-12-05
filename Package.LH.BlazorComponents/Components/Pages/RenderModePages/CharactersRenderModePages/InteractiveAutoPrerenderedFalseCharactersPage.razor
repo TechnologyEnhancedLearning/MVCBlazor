@@ -1,4 +1,4 @@
-﻿@page "/Characters/InteractiveAutoPrerenderFalseWeatherPage-BlazorPage"
+﻿@page "/Characters/InteractiveAutoPrerenderedFalse-BlazorPage"
 @inherits GB_PageBase
 @rendermode @(new InteractiveAutoRenderMode(prerender:false))
 <PageTitle>@PageTitle</PageTitle>
@@ -8,6 +8,6 @@
 
 @code {
     //Dont really need it to cascade or be setable here but shows it working
-    [CascadingParameter] public override string PageTitle { get; set; } = "InteractiveAutoPrerenderFalseWeather Blazor Page"; // Set this for each page
+    [CascadingParameter] public override string PageTitle { get; set; } = "InteractiveAutoPrerenderedFalse Blazor Page"; // Set this for each page
 
 }

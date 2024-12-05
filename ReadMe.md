@@ -365,6 +365,9 @@ They wont change often so I dont think its a problem to repeat them across two p
 
 		
 # Refactor
+
+- proper textbox
+- maybe optional editform wrapper on all blazor components as a bool param?? 
 - individual elements need to be told when they are invalid because modelstate in view not handling it
 	- MOVE REFERERENCES to imports
 	- do the blazor components ever hit the mvc controller maybe they shouldnt if they do

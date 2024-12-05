@@ -70,3 +70,19 @@ button.accept-policy {
     white-space: nowrap;
     line-height: 60px;
 }
+/* CSS for colored borders */
+.attendee-mvc-nav-link {
+    border: 2px solid #3498db; /* Blue border */
+}
+
+.character-mvc-nav-link {
+    border: 2px solid #e74c3c; /* Red border */
+}
+
+.character-blazor-nav-link {
+    border: 2px solid #2ecc71; /* Green border */
+}
+
+.attendee-blazor-nav-link {
+    border: 2px solid #f1c40f; /* Yellow border */
+}
