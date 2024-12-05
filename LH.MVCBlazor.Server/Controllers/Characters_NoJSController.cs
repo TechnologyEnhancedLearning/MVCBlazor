@@ -42,7 +42,7 @@ namespace LH.MVCBlazor.Server.Controllers
             return await SetFavouriteCharacterHelper(CharactersViewModel.LHB_FavouriteCharacterFormModel.FavouriteCharacterId, returnUrl);
         }
         [HttpPost("SetFavouriteCharacterByForm")]//qqqq its get in example in lh
-        public async Task<IActionResult> SetFavouriteCharacterByForm(LHB_FavouriteCharacterFormModel LHB_FavouriteCharacterFormModel, string returnUrl = null)
+        public async Task<IActionResult> SetFavouriteCharacterByForm(GE_FavouriteCharacterFormModel LHB_FavouriteCharacterFormModel, string returnUrl = null)
         {
 
 

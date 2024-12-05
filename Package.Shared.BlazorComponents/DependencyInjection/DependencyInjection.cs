@@ -4,7 +4,7 @@ using Package.Shared.BlazorComponents.BaseComponents.EditForm;
 using Package.Shared.BlazorComponents.BaseComponents.Validation;
 using Package.Shared.BlazorComponents.Components.Buttons;
 using Package.Shared.BlazorComponents.Components.Lists;
-using Package.Shared.BlazorComponents.Interfaces;
+using Package.Shared.Entities.Interfaces.ComponentInterfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,8 +17,8 @@ namespace Package.Shared.BlazorComponents.DependencyInjection
     {
         public static IServiceCollection GB_RegisterAllGenericBlazorComponents(this IServiceCollection services/*, qqqq IOptions<ILHBlazorWasmClientServiceLibraryConfiguration> config*/)
         {
-            services.AddTransient(typeof(GB_Validator<IGB_ModelStateValidation>));
-            services.AddTransient(typeof(GB_EditForm<IGB_ModelStateValidation>));
+            services.AddTransient(typeof(GB_Validator<IGE_ModelStateValidation>));
+            services.AddTransient(typeof(GB_EditForm<IGE_ModelStateValidation>));
 
             //services.AddTransient<GB_Validator>();
             //services.AddTransient<GB_EditForm>();

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Package.LH.BlazorComponents.Models;
 using Package.LH.Entities.Models;
-using Package.Shared.BlazorComponents.Interfaces;
+
 
 using Package.Shared.Entities.Models;
 using System.ComponentModel.DataAnnotations;
@@ -12,7 +12,7 @@ namespace LH.MVCBlazor.Server.ViewModels
     {
         //Kind of makes sense to be list cartoon qqqq
 
-        public LHB_FavouriteCharacterFormModel LHB_FavouriteCharacterFormModel { get; set; } = new();//qqqqqq new LHB_FavouriteCharacterFormModel();
+        public GE_FavouriteCharacterFormModel LHB_FavouriteCharacterFormModel { get; set; } = new();//qqqqqq new LHB_FavouriteCharacterFormModel();
         public string some_CharactersViewModel_specific_UI_String { get; set; } = "UnSet";
         public List<GE_CharacterModel> Characters { get; set; } = null;//qqqq new List<GE_CharacterModel>();
 
@@ -26,7 +26,7 @@ namespace LH.MVCBlazor.Server.ViewModels
 
 
 
-        public CharactersViewModel(List<GE_CharacterModel> characters, LHB_FavouriteCharacterFormModel CurrentFormData = null)
+        public CharactersViewModel(List<GE_CharacterModel> characters, GE_FavouriteCharacterFormModel CurrentFormData = null)
         {
             LHB_FavouriteCharacterFormModel = CurrentFormData?? LHB_FavouriteCharacterFormModel;
             

@@ -8,6 +8,6 @@ namespace LH.MVCBlazor.Server.ViewModels
         //LH_MeetingModel LH_MeetingModel { get; set; }
 
         public string some_AttendeesViewModel_specific_UI_String { get; set; } = "UnSet";
-        public List<LH_AttendeeModel> Attendees { get; set; }
+        public List<LH_AttendeeModel> Attendees { get; set; } = null;
     }
 }

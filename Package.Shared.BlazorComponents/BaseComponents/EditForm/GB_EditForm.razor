@@ -1,5 +1,6 @@
-﻿@inherits GB_ComponentBase
-@typeparam TModel where TModel:IGB_ModelStateValidation
+﻿
+@inherits GB_ComponentBase
+@typeparam TModel where TModel:IGE_ModelStateValidation
 <h3>GB_EditFormTitle : @Title</h3>
 
 @if (isFormSubmitted)
@@ -22,11 +23,14 @@
     @* Model="@EditContext.Model" *@
     <GB_Validator AspFor="@AspFor" EditContext="@EditContext" FormModel="@FormModel"/>
 
-    <button type="submit" class="btn btn-primary">Submit</button>
+    @*Should be blazor button and have IAccessible*@
+    <button type="submit" class="btn btn-primary">@SubmitButtonText</button>
 
 </EditForm>
 
 @code {
+    [Parameter]
+    public string SubmitButtonText { get; set; } = "Submit Button";
     [Parameter,EditorRequired]
     public RenderFragment EditFormContents { get; set; }
 

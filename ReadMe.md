@@ -364,8 +364,9 @@ They wont change often so I dont think its a problem to repeat them across two p
 - Instead will have component packages and service packages
 
 		
-# Refactor
-
+# Refactor style="border: 2px solid black" ❌
+- probably need our own version of ValidationMessage too
+- MVC to blazor page get error list
 - proper textbox
 - maybe optional editform wrapper on all blazor components as a bool param?? 
 - individual elements need to be told when they are invalid because modelstate in view not handling it

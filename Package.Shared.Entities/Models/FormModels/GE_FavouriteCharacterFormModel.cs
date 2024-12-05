@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Package.Shared.BlazorComponents.Interfaces;
+﻿
+using Package.Shared.Entities.Interfaces.ComponentInterfaces;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -9,15 +9,12 @@ using System.Threading.Tasks;
 
 namespace Package.LH.BlazorComponents.Models
 {
-    public class LHB_FavouriteCharacterFormModel : IGB_ModelStateValidation
+    public class GE_FavouriteCharacterFormModel : IGE_ModelStateValidation
     {
         [Required(ErrorMessage = "A character must be selected.")]
         [Display(Name = "Favourite Character")]
         //[FromForm(Name = "LHB_FavouriteCharacterFormModel.FavouriteCharacterId")]
         public int FavouriteCharacterId { get; set; }
- 
-
-
 
         [Required(ErrorMessage = "Required attribue error for TestModelStateWithRequired")]
         public string TestModelStateWithRequired { get; set; } = null;
@@ -25,7 +22,7 @@ namespace Package.LH.BlazorComponents.Models
 
         public bool HasModelStateValidationErrors => ModelStateErrors.Any();
 
-        public LHB_FavouriteCharacterFormModel() { }
+        public GE_FavouriteCharacterFormModel() { }
 
 
     }
