@@ -1,9 +1,10 @@
-﻿@page "/Characters/ServerPrenderFalse-BlazorPage"
+﻿@page "/Characters/ServerPrerenderedFalse-BlazorPage"
 @* @page "/Characters/InteractiveServerPrenderFalse-BlazorPage" *@
 @rendermode @(new InteractiveServerRenderMode(prerender: false))
 @inherits GB_PageBase
 <PageTitle>@PageTitle</PageTitle>
 <h1>@PageTitle</h1>
+
 <LHB_HelloWorld />
 <CharactersPageComponent />
 @code {

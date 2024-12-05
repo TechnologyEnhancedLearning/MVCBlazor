@@ -12,7 +12,7 @@ namespace LH.MVCBlazor.Server.ViewModels
     {
         //Kind of makes sense to be list cartoon qqqq
 
-        public LHB_FavouriteCharacterFormModel LHB_FavouriteCharacterFormModel { get; set; } = null;//qqqq new LHB_FavouriteCharacterFormModel();
+        public LHB_FavouriteCharacterFormModel LHB_FavouriteCharacterFormModel { get; set; } = new();//qqqqqq new LHB_FavouriteCharacterFormModel();
         public string some_CharactersViewModel_specific_UI_String { get; set; } = "UnSet";
         public List<GE_CharacterModel> Characters { get; set; } = null;//qqqq new List<GE_CharacterModel>();
 
