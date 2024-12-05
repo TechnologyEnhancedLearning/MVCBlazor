@@ -17,10 +17,7 @@
     ViewData["Title"] = Title;
 }
 <h1>@Title</h1>
-<h3>WebAssembly</h3>
-<component type="typeof(LHB_HelloWorld)" render-mode="WebAssembly" />
-<h3>Static</h3>
-<component type="typeof(LHB_HelloWorld)" render-mode="Static" />
+
 
 
 <div class="attendees-wrapper">
@@ -29,8 +26,14 @@
         <component type="typeof(LHB_Attendees_AddRemoveListForm)"
                    param-UniqueId=@("9")
                    param-ListAttendeesProvidedByView="@Model.Attendees"
+
                    render-mode="@renderMode" />
     </div>
 </div>
 
+
+<h3>WebAssembly</h3>
+<component type="typeof(LHB_HelloWorld)" render-mode="WebAssembly" />
+<h3>Static</h3>
+<component type="typeof(LHB_HelloWorld)" render-mode="Static" />
 

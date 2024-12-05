@@ -1,6 +1,7 @@
 ﻿using LH.MVCBlazor.Server.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
+using Newtonsoft.Json;
 using Package.LH.Entities.Models;
 using Package.LH.Services.StateServices;
 using Package.Shared.BlazorComponents.Enums;
@@ -31,7 +32,23 @@ namespace LH.MVCBlazor.Server.Controllers
         [HttpPost("/Attendees/ServerPrerendered-MVCRendered")]
         [HttpPost("/Attendees/WebAssembly-MVCRendered")]
         [HttpPost("/Attendees/WebAssemblyPrerendered-MVCRendered")]
+        [Route("Attendees")]
         public async Task<IActionResult> Index()
+        {
+
+            AttendeesViewModel attendeesData = null;
+            if (TempData["CharactersData"] != null)
+            {
+                attendeesData = JsonConvert.DeserializeObject<AttendeesViewModel>(TempData["AttendeesData"].ToString());
+            }
+
+            // Load the list of attendees from the service
+            var viewModel = new AttendeesViewModel { Attendees = (await _attendeesStateService.GetAttendeesAsync()).Data};
+            ViewBag.RenderMode = GetRenderModeStr();
+            return View(viewModel);
+        }
+
+        private string GetRenderModeStr()
         {
             // Get the current route from the request path
             string route = HttpContext.Request.Path.Value; // E.g., "/Attendees/Static-MVCRendered"
@@ -52,13 +69,8 @@ namespace LH.MVCBlazor.Server.Controllers
                 //throw new Exception("Rendermode not in the enum"); //this is just for convenience we wouldnt have render mode routes
             }
 
-            // Load the list of attendees from the service
-            var viewModel = new AttendeesViewModel { Attendees = (await _attendeesStateService.GetAttendeesAsync()).Data};
-            ViewBag.RenderMode = renderMode.ToString();
-            return View(viewModel);
+            return renderMode.ToString();
         }
-
-
 
     }
 }

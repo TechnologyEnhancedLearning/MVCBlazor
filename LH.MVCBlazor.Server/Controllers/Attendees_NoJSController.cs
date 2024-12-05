@@ -12,11 +12,11 @@ namespace LH.MVCBlazor.Server.Controllers
 
         private readonly ILHS_AttendeesStateService LHS_AttendeesStateService;
 
-
+        protected override string DefaultViewRouteController { get; set; } = "~/Views/Attendees/Index.cshtml";
         protected override string DefaultRouteController { get; set; } = "Attendees";
         protected override string DefaultRouteAction { get; set; } = "Index";
-        protected override string DefaultViewRouteController { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        protected override string RedirectBlazorPagesNoJsStaticMVCRoute { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+       
+        protected override string RedirectBlazorPagesNoJsStaticMVCRoute { get; set ; } = "/Attendees/Static-MVCRendered";
 
         public Attendees_NoJSController(ILHS_AttendeesStateService LHS_AttendeesStateService, LHB_BlazorPageRegistryService blazorPageRegistryService)
             : base(blazorPageRegistryService)
@@ -25,7 +25,7 @@ namespace LH.MVCBlazor.Server.Controllers
         }
         //qqqq initial focus just on blazor
         // POST: /Attendees_NoJS/RemoveAttendee 
-        [HttpPost]
+        [HttpPost("RemoveAttendeeByTemporaryId")]
         public async Task<IActionResult> RemoveAttendeeByTemporaryId(Guid clientTemporaryId, string returnUrl = null)
         {
             await LHS_AttendeesStateService.RemoveAttendeeByTemporaryIdAsync(clientTemporaryId);
@@ -37,7 +37,7 @@ namespace LH.MVCBlazor.Server.Controllers
             return String.IsNullOrEmpty(returnUrl) ? DefaultRedirectAction() : ReturnRedirect(returnUrl);
         }
 
-        [HttpPost]
+        [HttpPost("AddAttendee")]
         public async Task<IActionResult> AddAttendee(LH_AttendeeModel newAttendee, string returnUrl = null)
         {
 
@@ -51,8 +51,8 @@ namespace LH.MVCBlazor.Server.Controllers
 
         }
 
-   
-        [HttpPost]
+
+        [HttpPost("SaveAttendees")]
         public async Task<IActionResult> SaveAttendees(string returnUrl = null) //everything is posted at everystage to update anyway
         {
             await LHS_AttendeesStateService.ReplaceDBWithListAsync(); // Ensure all changes are saved
