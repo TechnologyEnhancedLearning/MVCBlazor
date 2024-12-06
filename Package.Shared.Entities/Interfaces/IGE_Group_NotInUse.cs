@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace Package.Shared.Entities.Interfaces
 {
-    public interface IGE_Group<IGE_Person>
+    public interface IGE_Group_NotInUse<T> where T : IGE_Person
     {
         int Id { get; set; }
         string Title { get; set; }
         bool Deleted { get; set; }
         Guid ClientTemporaryId { get; set; }
-        List<IGE_Person> People { get; set; }
+        List<T> People { get; set; }
     }
 }

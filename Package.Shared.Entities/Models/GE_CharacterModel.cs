@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Package.Shared.Entities.Models
 {
-    public class GE_CharacterModel : GE_PersonBase
+    public class GE_CharacterModel : GE_PersonBase, IGE_Person
     {
 
         //Character

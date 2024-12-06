@@ -139,6 +139,7 @@ both with or without js
 - it seems going from a route not found to a working blazor route doesnt rever the layout
 
 # Recommendations from project
+
 - Controllers should use same service as blazor components so posts using same logic
 - Order of NoJs support priority
 	1. Make same elements support NoJS e.g. EditForm with AspFor rather than a NoJS split
@@ -179,8 +180,12 @@ built into premade blazor components, that automatically update models held by p
 			somethere to receive data that has been processed where it wont be process it itself. 
 			- if nojs for now may need to redirect to a nojs mvc page
 - find someway to seperate nojs so clear what is there and why but dont do it how its acheived here
-
-
+- use blazor pages for loading data initially and displaying it statically, and sending data. but if it requires interactivity in nojs 
+such as sending back and forth validation, it will need an mvc page anyway to redirect too. Unless we manage state in some api or service.
+In this scenario its probably best just to take the blazor page and use it as a component in an mvc page, so it has the nojs routing.
+It can still be made as page and used as a component.
+- if replacing all blazor components with our own version, a nojs compatible and iaccessible interfaces would be nice. for example forcing
+minlength, maxlength, regex, on GB_TextInput to ensure if nojs some html validation is still available. 
 
 #Delete editcontext notes
 - editcontext only on gb_edif form but cascade
@@ -202,6 +207,16 @@ that encapsulates both the model data and the validation state. This allows you 
 ## Questions
 
 ### Questions Unanswered
+- should components have their own copy of lists set by the service for example. so it can be set by nojs. rather than using a service to store it.
+	- if not does that mean everything a service would do should be passed by mvc
+	- would this mean recreating services functions where they happen on initialisation
+	- i think we need more complex examples to know
+- Will we see a difference in the form submit buttons because of state (I think it depends how we do it)? if our nojs and blazor are doing different things, because of a need to post more with blazor. then blazor may have a button submit to submit all data.
+whereas it wont be relevant for view. depending how it is done. To avoid this maybe post on dispose and a warning if incomplete?
+- to be usable as a component in lh usually will need to make blazor component per form. What would be the value in inheriting from a formmodel itself
+or both implementing an abstract with the blazor having parameter
+	- might mean its flatter than passing the model
+		-
 - BlazorPages in the structure wont have access to viewmodels, viewmodels set up the views. if they did need it we need to wrap components with at which point does it becomes specific to MVC.
 	- Likely though it wont need to access viewmodels and they could be moved to entities potentially if needed
 - Is one advantage of interfaces and concrete fields for values like radios is that blazor knows that it needs updating
@@ -323,7 +338,13 @@ that encapsulates both the model data and the validation state. This allows you 
 - Cartoons
 - ViewComponents
 
-
+- attendees stte is stateful 
+	- it should have subscription listners
+	- or be stateless
+	- but when we have nojs if the logic pass back an incomplete list following validation...
+		- it wouldnt be added itll have been posted
+		- if provided by the model wont use list from state
+		- 
 - Relation ships between viewmodel form model etc has got messy
 	- this is because we may want to actually seed the data not use the db data if we are redirecting from a blazor page nojs or nojs 
 generally so state isnt reset

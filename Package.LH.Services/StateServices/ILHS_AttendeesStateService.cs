@@ -19,6 +19,7 @@ namespace Package.LH.Services.StateServices
         Task<GE_ServiceResponse<bool>> RemoveAttendeeByTemporaryIdAsync(Guid clientTemporaryId);
 
         Task<GE_ServiceResponse<List<LH_AttendeeModel>>> ReplaceDBWithListAsync();
+      
 
         bool DataIsLoaded { get; }
 

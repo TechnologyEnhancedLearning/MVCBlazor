@@ -8,24 +8,14 @@ namespace Package.Shared.Entities.Interfaces
 {
     public interface IGE_Person
     {
-        public abstract class PersonBase : IGE_Person
-        {
-            public int Id { get; set; }
-            public string FirstName { get; set; }
-            public string SecondName { get; set; }
-            public bool Deleted { get; set; }
-            public Guid ClientTemporaryId { get; set; }
+        public int Id { get; set; }
+        public string FirstName { get; set; }
+        public string SecondName { get; set; }
+        public bool Deleted { get; set; }
+        public Guid ClientTemporaryId { get; set; }
 
-            // Constructor that initializes all properties
-            protected PersonBase(int id, string firstName, string secondName, bool deleted)
-            {
-                Id = id;
-                FirstName = firstName;
-                SecondName = secondName;
-                Deleted = deleted;
-                ClientTemporaryId = Guid.NewGuid(); // Automatically generates a new Guid
-            }
-            public override string ToString() => $"{FirstName} {SecondName}";
-        }
+        public virtual string ToString() => $"{FirstName} {SecondName}";
     }
+   
 }
+

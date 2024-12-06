@@ -27,7 +27,7 @@ namespace Package.LH.Services.StateServices
             _attendeesAPIConfiguration = attendeesAPIConfiguration.Value;
             _attendeesAPIEndpoints = _attendeesAPIConfiguration.Endpoints.Attendees;
             _http = httpClientFactory.CreateClient(_attendeesAPIConfiguration.ClientName);
-            _loadingTask = LoadAttendeesAsync(); //cant await in constuctor and often bad to load like this but we want to kick off the load from the beginning and just wait for it to finish when data requested
+            _loadingTask = LoadAttendeesAsync(true); //cant await in constuctor and often bad to load like this but we want to kick off the load from the beginning and just wait for it to finish when data requested
         }
 
 
@@ -45,17 +45,25 @@ namespace Package.LH.Services.StateServices
             
             return new GE_ServiceResponse<List<LH_AttendeeModel>> { Data = Attendees };
         }
-        private async Task LoadAttendeesAsync()
+
+        //QQQQ? adding bool so sharing service doesnt reset or rest on refresh
+        private async Task LoadAttendeesAsync(bool replaceExisting)
         {
 
+            if (DataIsLoaded && !replaceExisting)
+            {
+                //Do nothing
+            }
+            else
+            {
+                // Fetch attendees from the server
+                string route = $"{_http.BaseAddress}{_attendeesAPIEndpoints.LoadAttendees}";
+                Console.WriteLine(route);
 
-            // Fetch attendees from the server
-            string route = $"{_http.BaseAddress}{_attendeesAPIEndpoints.LoadAttendees}";
-            Console.WriteLine(route);
-            
-            Attendees = (await _http.GetFromJsonAsync<GE_ServiceResponse<List<LH_AttendeeModel>>>($"{_http.BaseAddress}{_attendeesAPIEndpoints.LoadAttendees}")).Data ?? new List<LH_AttendeeModel>();
-            DataIsLoaded = true; // Set the flag to true when data is loaded
-            Console.WriteLine("LHS_AttendeesStateService: LoadAttendeesAsync");
+                Attendees = (await _http.GetFromJsonAsync<GE_ServiceResponse<List<LH_AttendeeModel>>>($"{_http.BaseAddress}{_attendeesAPIEndpoints.LoadAttendees}")).Data ?? new List<LH_AttendeeModel>();
+                DataIsLoaded = true; // Set the flag to true when data is loaded
+                Console.WriteLine("LHS_AttendeesStateService: LoadAttendeesAsync");
+            }
         }
 
         public async Task<GE_ServiceResponse<bool>> AddAttendeeAsync(LH_AttendeeModel attendee)
@@ -94,10 +102,10 @@ namespace Package.LH.Services.StateServices
             if (response.IsSuccessStatusCode)
             {
                 // Read the response content as the updated list of attendees
-                var updatedAttendees = await response.Content.ReadFromJsonAsync<List<LH_AttendeeModel>>();
+                var updatedAttendees = await response.Content.ReadFromJsonAsync<GE_ServiceResponse<List<LH_AttendeeModel>>>();
 
                 // Update the local list of attendees
-                Attendees = updatedAttendees ?? new List<LH_AttendeeModel>();
+                Attendees = updatedAttendees?.Data ?? new List<LH_AttendeeModel>();
             }
             else
             {

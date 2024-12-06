@@ -1,13 +1,13 @@
 ﻿@inherits GB_ComponentBase 
 @inject ILHS_AttendeesStateService LHS_AttendeesStateService
-
+@* 
+    method="post"
+    id="AddAttendeeForm-UniqueId" *@
 <GB_EditForm 
     Title=@FormTitleForAddAttendee 
     Action="@ActionForAddAttendee" 
     SubmitButtonText="@SubmitNameForAddAttendee"
     FormModel="@newAttendee" 
-    method="post"  
-    id="AddAttendeeForm-UniqueId" 
     OnValidSubmit="@OnValidSubmitForAddAttendee" 
     OnInvalidSubmit="@OnInvalidSubmitForAddAttendee"
     AspFor="@AspForAddAttendeeForm">
@@ -23,6 +23,7 @@
                 <InputText  DisplayName="Second Name" placeholder="Enter Second name"  @bind-Value="@newAttendee.SecondName" class="form-control" id="@($"newSecondName-{UniqueId}")" required/>
                 <ValidationMessage For="@(() => newAttendee.SecondName)" />
         </div>
+        <p>We would need a GB_ version of validation message using our interface for viewstate to have these validators showing with nojs </p>
     </EditFormContents>
 </GB_EditForm>
 
@@ -92,7 +93,8 @@ else
     //To enable NoJS to persist with validation failed data
 
     [Parameter]
-    public LH_AttendeeFormModel newAttendee { get; set; } = new LH_AttendeeFormModel();
+    public LH_AttendeeFormModel newAttendee { get; set; } = new();
+    
 
     protected override void OnInitialized() 
     {
@@ -104,16 +106,19 @@ else
     {
         //Not stopping the flash
         _ = WaitHalfSecondBeforeShowingLoadingText();//fire forget - i dont think the logic is quite right
-        //await LHS_AttendeesStateService.LoadAttendeesAsync();
-        //Console.WriteLine("Blazor Component : Initialise");
+                                                     //await LHS_AttendeesStateService.LoadAttendeesAsync();
+                                                     //Console.WriteLine("Blazor Component : Initialise");
         await LHS_AttendeesStateService.EnsureDataIsLoadedAsync(); //check the service is ready when it is do the next render stage as the data will now be available
-                                                              //Automatically reinitialises so dont need to tell it state has changed
+                                                                   //Automatically reinitialises so dont need to tell it state has changed
     }
 
     // Handle the form submission
     private async Task OnValidSubmitForAddAttendee()
     {
+
         //Fire forget but would have service response object
+        await LHS_AttendeesStateService.AddAttendeeAsync(newAttendee);
+        newAttendee = new();
 
     }
     // Handle invalid form submission (triggered if validation fails)
@@ -124,17 +129,17 @@ else
     }
 
 
-    private async Task AddAttendee()
-    {
-        if (!string.IsNullOrWhiteSpace(newAttendee.FirstName) && !string.IsNullOrWhiteSpace(newAttendee.SecondName))
-        {
-            // Generate a temporary ID
-            await LHS_AttendeesStateService.AddAttendeeAsync(newAttendee);
-            newAttendee = new LH_AttendeeFormModel(); // Use constructor with defaults // Clear input fields
-            Console.WriteLine("Blazor Component : AddAttendee");
-            StateHasChanged();//because we change the list in the service rather than changing a blazor parameter, blazor doesnt know its changed so we need to tell it the state has change
-        }
-    }
+    // private async Task AddAttendee()
+    // {
+    //     if (!string.IsNullOrWhiteSpace(newAttendee.FirstName) && !string.IsNullOrWhiteSpace(newAttendee.SecondName))
+    //     {
+    //         // Generate a temporary ID
+    //         await LHS_AttendeesStateService.AddAttendeeAsync(newAttendee);
+    //         newAttendee = new LH_AttendeeFormModel(); // Use constructor with defaults // Clear input fields
+    //         Console.WriteLine("Blazor Component : AddAttendee");
+    //         StateHasChanged();//because we change the list in the service rather than changing a blazor parameter, blazor doesnt know its changed so we need to tell it the state has change
+    //     }
+    // }
 
     private async Task RemoveAttendee(LH_AttendeeModel attendee)
     {
@@ -170,28 +175,28 @@ else
     }
 
     //qqqq Refactor
-    private RenderFragment<LH_AttendeeModel> RenderDangerButton_Blazor => attendee => @<GB_Button_I 
-                         ButtonText="Remove"
-                         AriaLabel=@($"Remove attendee {attendee.FirstName} {attendee.SecondName}")
-                         Title="Remove the attendee from the list"
-                         AssistiveText=@($"Remove attendee {attendee.FirstName} {attendee.SecondName} via inline buttons preceeding list items")
-                         ShowIcon="true"
-                         TabIndex="0"
-                         ButtonType=GB_ButtonType.Danger
-                         OnClick="() => RemoveAttendee(attendee)" />;
+    // private RenderFragment<LH_AttendeeModel> RenderDangerButton_Blazor => attendee => @<GB_Button_I 
+    //                      ButtonText="Remove"
+    //                      AriaLabel=@($"Remove attendee {attendee.FirstName} {attendee.SecondName}")
+    //                      Title="Remove the attendee from the list"
+    //                      AssistiveText=@($"Remove attendee {attendee.FirstName} {attendee.SecondName} via inline buttons preceeding list items")
+    //                      ShowIcon="true"
+    //                      TabIndex="0"
+    //                      ButtonType=GB_ButtonType.Danger
+    //                      OnClick="() => RemoveAttendee(attendee)" />;
 
-    private RenderFragment<LH_AttendeeModel> RenderDangerButton_NoJS => attendee => @<GB_Button_S
-                         ButtonText="Remove"
-                         AriaLabel=@($"Remove attendee {attendee.FirstName} {attendee.SecondName}")
-                         Title="Remove the attendee from the list"
-                         AssistiveText=@($"Remove attendee {attendee.FirstName} {attendee.SecondName} via inline buttons preceeding list items")
-                         ShowIcon="true"
-                         TabIndex="0"
-                         ButtonType=GB_ButtonType.Danger
-                         ActionUrl="https://localhost:44326/api/lh-db/attendees/RemoveAttendeeByTemporaryId_NoJS"
-                         FormMethod="Post"
-                         FormData=@(new Dictionary<string, string>(){ {"clientTemporaryId", attendee.ClientTemporaryId.ToString()} })
-                          />;
+    // private RenderFragment<LH_AttendeeModel> RenderDangerButton_NoJS => attendee => @<GB_Button_S
+    //                      ButtonText="Remove"
+    //                      AriaLabel=@($"Remove attendee {attendee.FirstName} {attendee.SecondName}")
+    //                      Title="Remove the attendee from the list"
+    //                      AssistiveText=@($"Remove attendee {attendee.FirstName} {attendee.SecondName} via inline buttons preceeding list items")
+    //                      ShowIcon="true"
+    //                      TabIndex="0"
+    //                      ButtonType=GB_ButtonType.Danger
+    //                      ActionUrl="https://localhost:44326/api/lh-db/attendees/RemoveAttendeeByTemporaryId_NoJS"
+    //                      FormMethod="Post"
+    //                      FormData=@(new Dictionary<string, string>(){ {"clientTemporaryId", attendee.ClientTemporaryId.ToString()} })
+    //                       />;
 
     private RenderFragment<LH_AttendeeModel> RenderDangerButton => attendee => @<GB_Button
                         ButtonText="Remove"

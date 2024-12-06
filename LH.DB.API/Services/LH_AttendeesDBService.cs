@@ -1,7 +1,9 @@
 ﻿using LH.DB.API.Data;
 using Package.LH.Entities.Models;
 using Package.LH.Services.Interfaces;
+using Package.Shared.Entities.BaseClasses;
 using Package.Shared.Entities.Communication;
+using Package.Shared.Entities.Models;
 using System.Linq;
 
 namespace LH.DB.API.Services
@@ -14,16 +16,18 @@ namespace LH.DB.API.Services
         {
             _database = database;
             //For the current scope just want a list
-            _attendees = _database.Meetings.First().People;
+            //_attendees = _database.Meetings.First().People;
             Console.WriteLine("AttendeeDbService : Constructor");
         }
+
+        
 
         // Fetch all attendees from the simulated database
         public async Task<GE_ServiceResponse<List<LH_AttendeeModel>>> LoadAttendeesAsync()
         {
             Console.WriteLine("AttendeeDbService : LoadAttendeesAsync");
             // Return a copy of the list to avoid external modifications
-            return new GE_ServiceResponse<List<LH_AttendeeModel>>{ Data = _attendees};//If real db then would really be async
+            return new GE_ServiceResponse<List<LH_AttendeeModel>>{ Data = _database.Meetings.First().People };//If real db then would really be async
         }
 
         // Replace the entire list of attendees in the simulated database
@@ -31,12 +35,27 @@ namespace LH.DB.API.Services
         {
 
             // Replace the current list with the new list
-            _attendees.Clear();  // Clear existing attendees
-            _attendees.AddRange(attendees);  // Add the new attendees
+            _database.Meetings.First().People.Clear();  // Clear existing attendees
+            _database.Meetings.First().People.AddRange(attendees);  // Add the new attendees
+
+            //This would be done by the db itself
+
+            _database.ReassignListGroupPeopleIds<LH_AttendeeModel>(_database.Meetings.Cast<GE_GroupBase<LH_AttendeeModel>>().ToList());
+
+
+
             Console.WriteLine("AttendeeDbService : ReplaceDBWithList");
-            return new GE_ServiceResponse<List<LH_AttendeeModel>> { Data = _attendees };
+            return new GE_ServiceResponse<List<LH_AttendeeModel>> { Data = _database.Meetings.First().People };
         }
 
+        public async Task<GE_ServiceResponse<List<LH_AttendeeModel>>> AddAttendeeToMeeting(LH_AttendeeModel attendee) //qqqq warning!!! for now just first group
+        {
+
+
+            _database.AddAttendeeToMeeting(_database.Meetings.First().Id,attendee);  // Add the new attendees
+
+            return new GE_ServiceResponse<List<LH_AttendeeModel>> { Data = _database.Meetings.First().People };
+        }
 
         public async Task<GE_ServiceResponse<bool>> RemoveAttendeeByTemporaryId_NoJS(Guid ClientTemporaryId)
         {

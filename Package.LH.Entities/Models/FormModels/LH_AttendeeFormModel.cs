@@ -11,8 +11,6 @@ namespace Package.LH.Entities.Models.FormModels
 {
     public class LH_AttendeeFormModel : LH_AttendeeModel , IGE_ModelStateValidation
     {
-        [Required(ErrorMessage = "Required attribue error for TestModelStateWithRequired")]
-        public string TestModelStateWithRequired { get; set; } = null;
         public Dictionary<string, List<string>> ModelStateErrors { get; set; } = new();
 
         public bool HasModelStateValidationErrors => ModelStateErrors.Any();

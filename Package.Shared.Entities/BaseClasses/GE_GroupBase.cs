@@ -8,17 +8,17 @@ using System.Threading.Tasks;
 
 namespace Package.Shared.Entities.BaseClasses
 {
-    public abstract class GE_GroupBase<IGE_Person> : IGE_Group<IGE_Person>
+    public abstract class GE_GroupBase<T> where T : IGE_Person// GE_GroupBase<IGE_Person> : IGE_Group<IGE_Person>
     {
         public int Id { get; set; }
         public string Title { get; set; }
         public bool Deleted { get; set; }
         public Guid ClientTemporaryId { get; set; }
 
-        public List<IGE_Person> People { get; set; }
+        public List<T> People { get; set; }
 
         // Constructor that initializes all properties
-        protected GE_GroupBase(int id, string title, bool deleted, List<IGE_Person> people)
+        protected GE_GroupBase(int id, string title, bool deleted, List<T> people)
         {
             Id = id;
             Title = title;
