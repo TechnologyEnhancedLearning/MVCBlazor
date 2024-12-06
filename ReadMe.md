@@ -139,7 +139,7 @@ both with or without js
 - it seems going from a route not found to a working blazor route doesnt rever the layout
 
 # Recommendations from project
-
+- for every component we need to decide at what point do we split and become nojs OR where will we wrap this in a form
 - Controllers should use same service as blazor components so posts using same logic
 - Order of NoJs support priority
 	1. Make same elements support NoJS e.g. EditForm with AspFor rather than a NoJS split
@@ -207,6 +207,12 @@ that encapsulates both the model data and the validation state. This allows you 
 ## Questions
 
 ### Questions Unanswered
+- the nojs split for buttons is to wrap nojs buttons in an editform
+	- would it be better to wrap the blazor buttons in the editform too so style same html same
+	- there may be an issue of forms in forms, however that wold need to be avoided anyway because buttons with nojs are only submitting and resetting anyway
+		- do we avoid buttons in forms other than submit currently?
+	- therefore one component for js and not js of button which is always wrapped in an editform and a seperate editform button
+		- both buttons could be in the same button component with a submit bool but that would be better than needing the nojs bool
 - should components have their own copy of lists set by the service for example. so it can be set by nojs. rather than using a service to store it.
 	- if not does that mean everything a service would do should be passed by mvc
 	- would this mean recreating services functions where they happen on initialisation
@@ -373,7 +379,7 @@ growing the project if wanted*
 	- Package.Shared.Services
 	- Package.Shared.BlazorComponents
 
-
+- AssistiveText this should be interfaced at every level maybe as otherwise if its passed down through components we loose the summary hints
 
 	
 ## Decided against

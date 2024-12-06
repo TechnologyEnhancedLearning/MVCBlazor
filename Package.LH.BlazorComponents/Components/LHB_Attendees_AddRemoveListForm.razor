@@ -51,8 +51,9 @@ else
             ListTitle="Attendee List"
             GetItemText="@(attendee => attendee.ToString())"
             ListButton="@(RenderDangerButton)" />
-
-    <GB_Button 
+@*Probably should be part of the list as optional*@
+@if(JSIsEnabled){
+    <GB_Button_I 
         ButtonText="Set Database To This (Currently changes are in the clientside stateservice)"
         AriaLabel="Save the current list to the database"
         Title="Save List"
@@ -61,9 +62,14 @@ else
         IconCssClass="bi bi-save"
         TabIndex="0"
         ButtonType=GB_ButtonType.Success
-        OnClick="() => HandleSubmit()" 
-        ActionUrl="qqqqqed an end point"
-        FormData="@(new Dictionary<string, string>(){ {" qqqq", "qqqq"} })" />
+        OnClick="() => HandleSubmit()"
+    />
+      @*   ActionUrl = "@(null)"
+           FormData = "@(null)" *@
+}
+
+  @*   ActionUrl = "@ActionForRemoveAttendeeByTemporaryId"
+        FormData = "@(new Dictionary<string, string>(){ {"ClientTemporaryId", "qqqq"} })" *@
 
             //qqqq button type not working for style
         
@@ -80,9 +86,7 @@ else
     [Parameter]
     public bool InitialiseWithControllerLHS_AttendeesStateServiceData { private get; set; } = false; // **Todo** remove and build into the service
 
-
-
-
+    private string ActionForRemoveAttendeeByTemporaryId { get; set; } = "/Attendees/NoJS/RemoveAttendeeByTemporaryId";
     private string ActionForAddAttendee { get; set; } = "/Attendees/NoJS/AddAttendee";
     private string SubmitNameForAddAttendee { get; set; } = "Submit : Add Attendee";
 
@@ -211,7 +215,7 @@ else
                         ShowIcon="true"
                         TabIndex="0"
                         ButtonType=GB_ButtonType.Danger
-                        ActionUrl="https://localhost:44326/api/lh-db/attendees/RemoveAttendeeByTemporaryId_NoJS"
+                        ActionUrl="Attendees/NoJS/RemoveAttendeeByTemporaryId"
                         FormMethod="Post"
                         FormData=@(new Dictionary<string, string>(){ {"clientTemporaryId", attendee.ClientTemporaryId.ToString()} })
                         OnClick="() => RemoveAttendee(attendee)" />;
