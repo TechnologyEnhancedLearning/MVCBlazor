@@ -5,8 +5,8 @@
     [Parameter, EditorRequired] public TModel FormModel { get; set; }
     [Parameter, EditorRequired] public EditContext EditContext { get; set; } //, EditorRequired
 
-    [Parameter, EditorRequired]
-    public string AspFor { get; set; }
+    // [Parameter, EditorRequired]
+    // public string AspFor { get; set; }
 
 
     protected override void OnInitialized()
@@ -41,7 +41,8 @@ else  *@
 @if (FormModel.HasModelStateValidationErrors)
 {
     @*if no js and errors*@
-    <div id="@AspFor-error" class="nhsuk-u-padding-top-1 nhsuk-u-padding-bottom-3">
+@*     id = "@AspFor-error" *@
+    <div  class="nhsuk-u-padding-top-1 nhsuk-u-padding-bottom-3">
         <div class="alert alert-danger">
             <h2>Validation Errors</h2>
             <ul>

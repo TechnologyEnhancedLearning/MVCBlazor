@@ -1,0 +1,74 @@
+﻿@*own thing because doesnt need the nojs wrapper because its sat ina a form and dont want it to look like i am using interactive when it work nojs so weird duplication here suggesting a pattern is needed?*@
+
+
+@inherits Package.Shared.BlazorComponents.Core.GB_ComponentBase
+@implements IGB_AccessibleComponent
+<GB_Button_I AriaLabel="@AriaLabel"
+             Title="@Title"
+             AssistiveText="@AssistiveText"
+             TabIndex="@TabIndex"
+             ShowIcon="@ShowIcon"
+             IconCssClass="@IconCssClass"
+             CustomCssClass="@CustomCssClass"
+             ButtonText="@ButtonText"
+             ButtonType="@ButtonType"
+             OnClick="@OnClick" />
+
+
+
+
+
+
+
+@code {
+    private bool IsSubmit = true; //<--the difference from generic_I but generic I is supposed to indicate its only for interactive
+
+    // This property is public, satisfying the interface, but not a Parameter because i wanted to force it to be used in the contract of the interface but the component can do that itself
+    public string AriaRole { get; set; } = "Button"; // Set to button by default
+    public string AriaDescribedBy { get; set; } = $"assistive-text-{Guid.NewGuid().ToString()}"; // Default ARIA described by (can be empty)
+
+    [Parameter] public GB_ButtonType ButtonType { get; set; } = GB_ButtonType.Success; // Default to Success for submit
+
+
+
+    private const string DefaultAriaLabel = "Danger button";
+    private const string DefaultTitle = "Perform a dangerous action";
+    private const string DefaultAssistiveText = "Click to perform a dangerous action";
+
+    [EditorRequired]
+    [Parameter]
+    public string AriaLabel { get; set; } = DefaultAriaLabel;
+
+    [EditorRequired]
+    [Parameter]
+    public string Title { get; set; } = DefaultTitle;  //Or ButtonText???
+
+    [EditorRequired]
+    [Parameter]
+    public string AssistiveText { get; set; } = DefaultAssistiveText;
+
+    [EditorRequired]
+    [Parameter]
+    public string ButtonText { get; set; } // Content inside the button
+
+
+    // Tab index for keyboard navigation
+    [Parameter]
+    public int TabIndex { get; set; } = 0;
+
+    // Optional parameters for icon
+    [Parameter]
+    public bool ShowIcon { get; set; } = false; // Default is false
+
+    [Parameter]
+    public string IconCssClass { get; set; } = "bi bi-exclamation-triangle"; // Default Bootstrap icon class
+
+    [Parameter] public string CustomCssClass { get; set; } = ""; // Custom CSS classes for additional styling
+
+
+
+
+
+    [Parameter] public EventCallback OnClick { get; set; }
+
+}

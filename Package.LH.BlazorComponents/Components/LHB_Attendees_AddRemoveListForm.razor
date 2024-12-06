@@ -10,7 +10,10 @@
     FormModel="@newAttendee" 
     OnValidSubmit="@OnValidSubmitForAddAttendee" 
     OnInvalidSubmit="@OnInvalidSubmitForAddAttendee"
-    AspFor="@AspForAddAttendeeForm">
+    SubmitButtonAriaLabel="Add an attendee to the meeting list"
+    SubmitButtonTitle="Add attendee"
+    SubmitButtonAssistiveText="Adds an attendee"
+    >
         <EditFormContents>
         @*It is in the LH client but it is hardcoded we could extract this form **TODO** *@
         <div>
@@ -61,6 +64,8 @@ else
         OnClick="() => HandleSubmit()" 
         ActionUrl="qqqqqed an end point"
         FormData="@(new Dictionary<string, string>(){ {" qqqq", "qqqq"} })" />
+
+            //qqqq button type not working for style
         
                 
 }
@@ -76,7 +81,7 @@ else
     public bool InitialiseWithControllerLHS_AttendeesStateServiceData { private get; set; } = false; // **Todo** remove and build into the service
 
 
-    private string AspForAddAttendeeForm { get; set; } = "qqqqqq"; 
+
 
     private string ActionForAddAttendee { get; set; } = "/Attendees/NoJS/AddAttendee";
     private string SubmitNameForAddAttendee { get; set; } = "Submit : Add Attendee";

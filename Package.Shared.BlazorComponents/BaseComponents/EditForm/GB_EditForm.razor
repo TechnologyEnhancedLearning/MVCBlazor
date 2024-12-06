@@ -21,10 +21,16 @@
  @*    </CascadingValue> *@ 
 
     @* Model="@EditContext.Model" *@
-    <GB_Validator AspFor="@AspFor" EditContext="@EditContext" FormModel="@FormModel"/>
+@*     AspFor="@AspFor" *@
+    <GB_Validator  EditContext="@EditContext" FormModel="@FormModel"/>
 
-    @*Should be blazor button and have IAccessible*@
-    <button type="submit" class="btn btn-primary">@SubmitButtonText</button>
+    @*qqqq Should be blazor button and have IAccessible*@
+    <GB_Button_Submit 
+        ButtonText="@SubmitButtonText"
+        AriaLabel="@SubmitButtonAriaLabel"
+        Title="@SubmitButtonTitle"
+        AssistiveText="@SubmitButtonAssistiveText"
+        />
 
 </EditForm>
 
@@ -41,8 +47,8 @@
     public string Action { get; set; }
 
 
-    [Parameter,EditorRequired]
-    public string AspFor { get; set; }
+    // [Parameter,EditorRequired]
+    // public string AspFor { get; set; }
 
     private EditContext EditContext { get; set; }
 
@@ -72,8 +78,22 @@
         if (FormModel.HasModelStateValidationErrors) { EditContext.Validate(); }//qqqq hopefull summary can use this if call in initialise
     }
 
-   
-    
+    private const string DefaultAriaLabel = "Danger button";
+    private const string DefaultTitle = "Perform a dangerous action";
+    private const string DefaultAssistiveText = "Click to perform a dangerous action";
+
+    [EditorRequired]
+    [Parameter]
+    public string SubmitButtonAriaLabel { get; set; } = DefaultAriaLabel;
+
+    [EditorRequired]
+    [Parameter]
+    public string SubmitButtonTitle { get; set; } = DefaultTitle;  //Or ButtonText???
+
+    [EditorRequired]
+    [Parameter]
+    public string SubmitButtonAssistiveText { get; set; } = DefaultAssistiveText;
+
 
 
     // Handle the form submission

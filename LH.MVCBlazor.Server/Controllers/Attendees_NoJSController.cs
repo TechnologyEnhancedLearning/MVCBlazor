@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Package.LH.BlazorComponents.DependencyInjection;
 using Package.LH.Entities.Models;
+using Package.LH.Entities.Models.FormModels;
 using Package.LH.Services.StateServices;
 
 namespace LH.MVCBlazor.Server.Controllers
@@ -38,7 +39,7 @@ namespace LH.MVCBlazor.Server.Controllers
         }
 
         [HttpPost("AddAttendee")]
-        public async Task<IActionResult> AddAttendee(LH_AttendeeModel newAttendee, string returnUrl = null)
+        public async Task<IActionResult> AddAttendee(LH_AttendeeFormModel newAttendee, string returnUrl = null)
         {
 
             await LHS_AttendeesStateService.AddAttendeeAsync(newAttendee);

@@ -4,8 +4,8 @@
 
 
 <div class="nhsuk-button-container">
-
-    <button type="button"
+    @*a type enum with reset would be nice*@
+    <button type="@(IsSubmit?"submit":"button")"
             class="nhsuk-generic-button @ButtonType.GetButtonClass() @CustomCssClass"
             aria-label="@AriaLabel"
             aria-role="@AriaRole"
@@ -51,7 +51,8 @@
     [Parameter]
     public string AssistiveText { get; set; } = DefaultAssistiveText;
 
-
+    [Parameter]
+    public bool IsSubmit { get; set; } = false;
 
     // Tab index for keyboard navigation
     [EditorRequired]

@@ -1,7 +1,7 @@
 ﻿@inherits GB_ComponentBase
 @inject IGS_CharactersStateService GS_CharactersStateService
-
-<GB_EditForm Title=@FormTitle FormModel="@LHB_FavouriteCharacterFormModel" OnValidSubmit="@OnValidSubmit" OnInvalidSubmit="@OnInvalidSubmit" Action="@Action" AspFor="@AspFor">
+@* AspFor="@AspFor" *@
+<GB_EditForm Title=@FormTitle FormModel="@LHB_FavouriteCharacterFormModel" OnValidSubmit="@OnValidSubmit" OnInvalidSubmit="@OnInvalidSubmit" Action="@Action" >
     <EditFormContents>
         <div class="form-group">
             @{
