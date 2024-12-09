@@ -1,0 +1,13 @@
+﻿@page "/Attendees/InteractiveAutoPrerenderedFalse-BlazorPage"
+@inherits GB_PageBase
+@rendermode @(new InteractiveAutoRenderMode(prerender:false))
+<PageTitle>@PageTitle</PageTitle>
+<h1>@PageTitle</h1>
+<AttendeesPageComponent />
+
+
+@code {
+    //Dont really need it to cascade or be setable here but shows it working
+    [CascadingParameter] public override string PageTitle { get; set; } = "InteractiveAutoPrerenderedFalseWeather Blazor Page"; // Set this for each page
+
+}

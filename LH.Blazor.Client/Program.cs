@@ -7,6 +7,7 @@ using Package.Shared.Services.DependencyInjection;
 using Package.Shared.Services.StateServices;
 using Package.Shared.BlazorComponents.DependencyInjection;
 using Package.LH.BlazorComponents.DependencyInjection;
+using Microsoft.AspNetCore.Components;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
@@ -40,6 +41,12 @@ builder.Services.AddSingleton<IGS_JSEnabled>(sp =>
         TestingWhoAmI = "Client"
     };
 });
+
+
+
+
+//builder.Services.AddSingleton<NavigationManager>();
+
 //below works but want to try doing it via server program.cs
 
 //!!Leave in tested in release mode but based on stack overflow expect publishing issues tree shaking again - though expect better solution is the assemblies creation in server proj!!

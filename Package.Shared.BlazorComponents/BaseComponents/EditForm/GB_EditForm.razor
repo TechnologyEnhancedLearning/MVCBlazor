@@ -115,8 +115,15 @@
 
     private async Task ResetFormStatusAsync()
     {
-        await Task.Delay(3000);
+        //await Task.Delay(3000);
         isFormSubmitted = false;
+        //FormModel = new FormModel();
+
+        //May not be needed
+        EditContext = new EditContext(FormModel);
+        EditContext.NotifyValidationStateChanged();//qqqq
+
+
         StateHasChanged();
     }
 

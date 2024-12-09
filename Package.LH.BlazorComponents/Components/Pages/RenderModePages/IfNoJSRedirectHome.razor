@@ -1,0 +1,52 @@
+﻿
+@page "/IfNoJSRedirectHome"
+@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: true))//even to get to the noscript tag we need prerender true (though other options for redirect)
+@inject NavigationManager NavigationManager
+@inherits GB_PageBase
+<PageTitle>@PageTitle</PageTitle>
+<h1>@PageTitle</h1>
+<h3>IfNoJSRedirectHome</h3>
+
+
+ <noscript>
+    <h1>No Script Redirection in 20s</h1>
+    <h1>Navigation Manager can redirect on release mode due to debug settings but cannot render and use navigation manager because no lifecycles after render with no js</h1>
+    <meta http-equiv="refresh" content="20;url=/" />
+</noscript> 
+
+@if (JSIsEnabled)
+{
+    <h3 style="text-align: center;">JS Enabled</h3>
+}
+else
+{
+    <h3 style="text-align: center;">JS Disabled - we shouldnt see this on no prerender</h3>
+}
+
+@code {
+    //Dont really need it to cascade or be setable here but shows it working
+    [CascadingParameter] public override string PageTitle { get; set; } = "Interactive Auto Prerender False Blazor Page - rederict if no js"; // Set this for each page
+
+    //    protected override void OnInitialized()
+    //protected override async Task OnInitializedAsync()//This works in release mode, there are some debugging setting that need adjusting
+    // but the await will block the rendering so you do redirect but you wont see html
+    //protected override async Task OnAfterRenderAsync(bool firstRender) // wont be rendered if no js
+    // protected override async Task OnInitializedAsync()
+    // {
+    //     base.OnInitialized();
+        
+    //     // Check if JavaScript is disabled based on the FlagService
+    //     if (!JSIsEnabled)
+    //     {
+    //         _ = RedirectToHomeAsync(); // Fire-and-forget, rendering will proceed
+    //     }
+    // }
+
+    // private async Task RedirectToHomeAsync()
+    // {
+    //     await Task.Delay(3000); // Wait for 3 seconds
+    //     NavigationManager.NavigateTo("/", true); // Perform navigation
+    // }
+
+    
+}

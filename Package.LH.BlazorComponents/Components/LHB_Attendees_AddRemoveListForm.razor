@@ -19,7 +19,7 @@
         <div>
                 <label for="@($"newFirstName-{UniqueId}")">First Name:</label>
                 <InputText  DisplayName="First Name" placeholder="Enter first name"  @bind-Value="@newAttendee.FirstName" class="form-control" id="@($"newFirstName-{UniqueId}")" required/>
-                <ValidationMessage For="@(() => newAttendee.FirstName)" />
+                @* <ValidationMessage For="@(() => newAttendee.FirstName)" /> *@@*Just so can see seperately handled validation*@
         </div>
         <div>
                 <label for="@($"newSecondName-{UniqueId}")">Second Name:</label>
@@ -103,7 +103,7 @@ else
 
     [Parameter]
     public LH_AttendeeFormModel newAttendee { get; set; } = new();
-    
+
 
     protected override void OnInitialized() 
     {
@@ -127,7 +127,10 @@ else
 
         //Fire forget but would have service response object
         await LHS_AttendeesStateService.AddAttendeeAsync(newAttendee);
+        
         newAttendee = new();
+        //StateHasChanged(); doesnt help
+        //qqqq do we need state has changed to reset validation? so second input validates - is one within the validation form
 
     }
     // Handle invalid form submission (triggered if validation fails)

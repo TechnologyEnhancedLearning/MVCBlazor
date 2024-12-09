@@ -1,13 +1,13 @@
 ﻿@inherits LayoutComponentBase
-<h1>@(IsMVCHosted ? "IsMVCHosted" : "IsBlazorHosted")</h1>
+<h1 style="background-color:@(IsMVCHosted ? "lightpink" : "lightblue")!important;">@(IsMVCHosted ? "IsMVCHosted" : "IsBlazorHosted")</h1>
 <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
     <div class="container-fluid" style="background-color:@(IsMVCHosted ? "lightpink" : "lightblue")!important;">
-        <a class="navbar-brand" href="/" >LH.MVCBlazor.Server</a>
+        @* <a class="navbar-brand" href="/" >LH.MVCBlazor.Server</a>
         @*asp-area="" asp-controller="Home" asp-action="Index"*@
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+        @*<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                 aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
-        </button>
+        </button> *@
         <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
             <ul class="navbar-nav flex-grow-1 flex-wrap">
 
@@ -16,7 +16,9 @@
                 <li class="nav-item">
                     <a class="nav-link text-dark" style="border: 2px solid black" href="/">Home MVC ✅</a>@* asp-area="" asp-controller="Home" asp-action="Index" *@
                 </li>
-
+                <li class="nav-item">
+                    <a class="nav-link text-dark" style="border: 2px solid black" href="/IfNoJSRedirectHome">Return home if no js ✅</a>@* asp-area="" asp-controller="Home" asp-action="Index" *@
+                </li>
                 @*Weather Streaming Blazor Pages*@
                 <li class="nav-item">
                     <a class="nav-link text-dark " style="border: 2px solid black" href="/ViewComponentMVCPage">View Component MVC ✅</a>
@@ -27,16 +29,16 @@
                     <a class="nav-link text-dark attendee-mvc-nav-link" href="/Attendees/Static-MVCRendered">Attendees Static MVC ❌</a> @* asp-area="" asp-controller="MeetingAttendees" asp-action="Index" *@
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-dark attendee-mvc-nav-link" href="/Attendees/Server-MVCRendered">Attendees Server MVC ❌</a> @* asp-area="" asp-controller="MeetingAttendees" asp-action="Index" *@
+                    <a class="nav-link text-dark attendee-mvc-nav-link" href="/Attendees/Server-MVCRendered">Attendees Server MVC ✅</a> @* asp-area="" asp-controller="MeetingAttendees" asp-action="Index" *@
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-dark attendee-mvc-nav-link" href="/Attendees/ServerPrerendered-MVCRendered">Attendees ServerPrerendered MVC ❌</a> @* asp-area="" asp-controller="MeetingAttendees" asp-action="Index" *@
+                    <a class="nav-link text-dark attendee-mvc-nav-link" href="/Attendees/ServerPrerendered-MVCRendered">Attendees ServerPrerendered MVC ✅</a> @* asp-area="" asp-controller="MeetingAttendees" asp-action="Index" *@
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-dar attendee-mvc-nav-link" href="/Attendees/WebAssembly-MVCRendered">Attendees WebAssembly MVC ❌</a> @* asp-area="" asp-controller="MeetingAttendees" asp-action="Index" *@
+                    <a class="nav-link text-dar attendee-mvc-nav-link" href="/Attendees/WebAssembly-MVCRendered">Attendees WebAssembly MVC ✅</a> @* asp-area="" asp-controller="MeetingAttendees" asp-action="Index" *@
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-dark attendee-mvc-nav-link" href="/Attendees/WebAssemblyPrerendered-MVCRendered">Attendees WebAssemblyPrerendered MVC ❌</a> @* asp-area="" asp-controller="MeetingAttendees" asp-action="Index" *@
+                    <a class="nav-link text-dark attendee-mvc-nav-link" href="/Attendees/WebAssemblyPrerendered-MVCRendered">Attendees WebAssemblyPrerendered MVC ✅</a> @* asp-area="" asp-controller="MeetingAttendees" asp-action="Index" *@
                 </li>
 
                 @*Characters Controller*@
@@ -60,7 +62,28 @@
 
 
                 @*Attendees Blazor Pages*@
-                @*QQQQ ToDo if useful*@
+                <li class="nav-item">
+                    <a class="nav-link text-dark attendee-blazor-nav-link" href="/Attendees/Static-BlazorPage">Attendees Static BlazorPage ❌</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark attendee-blazor-nav-link" href="/Attendees/Server-BlazorPage">Attendees Server BlazorPage ✅</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark attendee-blazor-nav-link" href="/Attendees/ServerPrerenderedFalse-BlazorPage">Attendees ServerPrerenderedFalse BlazorPage ✅</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark attendee-blazor-nav-link" href="/Attendees/WebAssembly-BlazorPage">Attendees WebAssembly BlazorPage ✅</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark attendee-blazor-nav-link" href="/Attendees/WebAssemblyPrerenderedFalse-BlazorPage">Attendees WebAssemblyPrerenderedFalse BlazorPage ✅</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark attendee-blazor-nav-link" href="/Attendees/InteractiveAuto-BlazorPage">Attendees InteractiveAuto BlazorPage ✅</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark attendee-blazor-nav-link" href="/Attendees/InteractiveAutoPrerenderedFalse-BlazorPage">Attendees InteractiveAutoPrerenderFalse BlazorPage ✅</a>
+                </li>
+        
 
                 @*Characters Blazor Pages*@
                 

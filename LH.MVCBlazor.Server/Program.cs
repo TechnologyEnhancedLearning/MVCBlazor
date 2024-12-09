@@ -9,6 +9,7 @@ using LH.MVCBlazor.Server.Middleware;
 using Package.Shared.BlazorComponents.DependencyInjection;
 using Package.Shared.Services.ComponentServices;
 using Package.Shared.Services.DependencyInjection;
+using Microsoft.AspNetCore.Components;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
@@ -50,7 +51,7 @@ builder.Services.AddHttpClient(LH_DB_API_ClientName, client =>
     client.BaseAddress = new Uri(LH_DB_API_BaseURL);
 });
 
-
+//builder.Services.AddSingleton<NavigationManager>();
 // Register IHttpContextAccessor
 builder.Services.AddHttpContextAccessor();
 

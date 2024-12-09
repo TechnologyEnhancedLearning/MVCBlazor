@@ -91,7 +91,7 @@
 
     [Parameter, EditorRequired] public string ValueToSetPostName { get; set; }//This is so we can use the form pre hydrated as pure html otherwise it will default to the param name
     [Parameter, EditorRequired] public TValue RadioListValueToSet { get; set; }
-    [Parameter, EditorRequired] public EventCallback<TValue> RadioListValueToSetChanged { get; set; }
+    [Parameter] public EventCallback<TValue> RadioListValueToSetChanged { get; set; }//automatically generated
 
     private TValue _localRadioListValue;
 

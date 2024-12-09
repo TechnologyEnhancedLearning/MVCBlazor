@@ -139,6 +139,14 @@ both with or without js
 - it seems going from a route not found to a working blazor route doesnt rever the layout
 
 # Recommendations from project
+- prerender and static need to be wrapped with nojs or we will get partially working rendering
+	- its should be inert or html post, and we want the mvc as close to blazor as possible so it needs to work for most
+	- this mean completing a form during the prerender stage incorrectly requires redirection (the other options is exploring  a mediatr state hub)
+- with the right design we may be able to avoid ever 
+splitting logic based on nojs if we are happy wrapping 
+buttons in forms, or always having them seperate with a 
+for= to their form. or state submitting for interactive 
+always without a form. Likely we need to pass the rendermode and have static displayed as nojs
 - for every component we need to decide at what point do we split and become nojs OR where will we wrap this in a form
 - Controllers should use same service as blazor components so posts using same logic
 - Order of NoJs support priority
@@ -213,6 +221,7 @@ that encapsulates both the model data and the validation state. This allows you 
 		- do we avoid buttons in forms other than submit currently?
 	- therefore one component for js and not js of button which is always wrapped in an editform and a seperate editform button
 		- both buttons could be in the same button component with a submit bool but that would be better than needing the nojs bool
+	- But for blazor we will want their own submits (though dont need to be form based) for when their state is submitted so they may want a form around everything and nojs around the button. though it wouldnt need a form for blazor.
 - should components have their own copy of lists set by the service for example. so it can be set by nojs. rather than using a service to store it.
 	- if not does that mean everything a service would do should be passed by mvc
 	- would this mean recreating services functions where they happen on initialisation

@@ -37,13 +37,13 @@ namespace LH.MVCBlazor.Server.Controllers
         {
 
             AttendeesViewModel attendeesData = null;
-            if (TempData["CharactersData"] != null)
+            if (TempData["AttendeesData"] != null)
             {
                 attendeesData = JsonConvert.DeserializeObject<AttendeesViewModel>(TempData["AttendeesData"].ToString());
             }
 
             // Load the list of attendees from the service
-            var viewModel = new AttendeesViewModel { Attendees = (await _attendeesStateService.GetAttendeesAsync()).Data};
+            var viewModel = attendeesData ?? new AttendeesViewModel { Attendees = (await _attendeesStateService.GetAttendeesAsync()).Data};
             ViewBag.RenderMode = GetRenderModeStr();
             return View(viewModel);
         }

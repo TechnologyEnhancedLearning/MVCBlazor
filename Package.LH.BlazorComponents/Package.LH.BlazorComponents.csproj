@@ -31,16 +31,16 @@
     <Content Update="Components\Pages\RenderModePages\AttendeesRenderModePages\InteractiveAutoAttendeesPage.razor">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
     </Content>
-    <Content Update="Components\Pages\RenderModePages\AttendeesRenderModePages\InteractiveAutoPrerenderFalseAttendeesPage.razor">
+    <Content Update="Components\Pages\RenderModePages\AttendeesRenderModePages\InteractiveAutoPrerenderedFalseAttendeesPage.razor">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
     </Content>
-    <Content Update="Components\Pages\RenderModePages\AttendeesRenderModePages\ServerPageAttendeesPage.razor">
+    <Content Update="Components\Pages\RenderModePages\AttendeesRenderModePages\ServerAttendeesPage.razor">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
     </Content>
     <Content Update="Components\Pages\RenderModePages\AttendeesRenderModePages\ServerPrerenderedFalseAttendeesPage.razor">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
     </Content>
-    <Content Update="Components\Pages\RenderModePages\AttendeesRenderModePages\StaticAtendeesPage.razor">
+    <Content Update="Components\Pages\RenderModePages\AttendeesRenderModePages\StaticAtttendeesPage.razor">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
     </Content>
     <Content Update="Components\Pages\RenderModePages\AttendeesRenderModePages\WebAssemblyAttendeesPage.razor">

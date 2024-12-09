@@ -1,7 +1,17 @@
 ﻿@inherits GB_ComponentBase
 @inject IGS_CharactersStateService GS_CharactersStateService
 @* AspFor="@AspFor" *@
-<GB_EditForm Title=@FormTitle FormModel="@LHB_FavouriteCharacterFormModel" OnValidSubmit="@OnValidSubmit" OnInvalidSubmit="@OnInvalidSubmit" Action="@Action" >
+<GB_EditForm 
+    Title=@FormTitle 
+    FormModel="@LHB_FavouriteCharacterFormModel" 
+    OnValidSubmit="@OnValidSubmit" 
+    OnInvalidSubmit="@OnInvalidSubmit" 
+    Action="@Action" 
+    SubmitButtonAriaLabel="Save favourite character"
+    SubmitButtonAssistiveText="This button saves favourite character"
+    SubmitButtonText="Save Favourite Character"
+    SubmitButtonTitle="Save Favourite Character"
+>
     <EditFormContents>
         <div class="form-group">
             @{
