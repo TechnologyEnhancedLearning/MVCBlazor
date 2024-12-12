@@ -12,7 +12,7 @@ namespace Package.Shared.Entities.BaseClasses
     {
         public int Id { get; set; }
 
-        //qqqq fluent validation would mean dont need ittributes on base class
+
         [Required(ErrorMessage = "First name is required.")]
         [MinLength(3, ErrorMessage = "First name must be at least 3 characters long.")]
         [StringLength(50, ErrorMessage = "First name cannot exceed 50 characters.")]

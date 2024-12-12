@@ -64,16 +64,10 @@ else
         ButtonType=GB_ButtonType.Success
         OnClick="() => HandleSubmit()"
     />
-      @*   ActionUrl = "@(null)"
-           FormData = "@(null)" *@
+      
 }
 
-  @*   ActionUrl = "@ActionForRemoveAttendeeByTemporaryId"
-        FormData = "@(new Dictionary<string, string>(){ {"ClientTemporaryId", "qqqq"} })" *@
-
-            //qqqq button type not working for style
-        
-                
+ 
 }
      
 
@@ -129,8 +123,7 @@ else
         await LHS_AttendeesStateService.AddAttendeeAsync(newAttendee);
         
         newAttendee = new();
-        //StateHasChanged(); doesnt help
-        //qqqq do we need state has changed to reset validation? so second input validates - is one within the validation form
+        
 
     }
     // Handle invalid form submission (triggered if validation fails)
@@ -139,19 +132,6 @@ else
         //Nothing
 
     }
-
-
-    // private async Task AddAttendee()
-    // {
-    //     if (!string.IsNullOrWhiteSpace(newAttendee.FirstName) && !string.IsNullOrWhiteSpace(newAttendee.SecondName))
-    //     {
-    //         // Generate a temporary ID
-    //         await LHS_AttendeesStateService.AddAttendeeAsync(newAttendee);
-    //         newAttendee = new LH_AttendeeFormModel(); // Use constructor with defaults // Clear input fields
-    //         Console.WriteLine("Blazor Component : AddAttendee");
-    //         StateHasChanged();//because we change the list in the service rather than changing a blazor parameter, blazor doesnt know its changed so we need to tell it the state has change
-    //     }
-    // }
 
     private async Task RemoveAttendee(LH_AttendeeModel attendee)
     {
@@ -186,29 +166,6 @@ else
         }
     }
 
-    //qqqq Refactor
-    // private RenderFragment<LH_AttendeeModel> RenderDangerButton_Blazor => attendee => @<GB_Button_I 
-    //                      ButtonText="Remove"
-    //                      AriaLabel=@($"Remove attendee {attendee.FirstName} {attendee.SecondName}")
-    //                      Title="Remove the attendee from the list"
-    //                      AssistiveText=@($"Remove attendee {attendee.FirstName} {attendee.SecondName} via inline buttons preceeding list items")
-    //                      ShowIcon="true"
-    //                      TabIndex="0"
-    //                      ButtonType=GB_ButtonType.Danger
-    //                      OnClick="() => RemoveAttendee(attendee)" />;
-
-    // private RenderFragment<LH_AttendeeModel> RenderDangerButton_NoJS => attendee => @<GB_Button_S
-    //                      ButtonText="Remove"
-    //                      AriaLabel=@($"Remove attendee {attendee.FirstName} {attendee.SecondName}")
-    //                      Title="Remove the attendee from the list"
-    //                      AssistiveText=@($"Remove attendee {attendee.FirstName} {attendee.SecondName} via inline buttons preceeding list items")
-    //                      ShowIcon="true"
-    //                      TabIndex="0"
-    //                      ButtonType=GB_ButtonType.Danger
-    //                      ActionUrl="https://localhost:44326/api/lh-db/attendees/RemoveAttendeeByTemporaryId_NoJS"
-    //                      FormMethod="Post"
-    //                      FormData=@(new Dictionary<string, string>(){ {"clientTemporaryId", attendee.ClientTemporaryId.ToString()} })
-    //                       />;
 
     private RenderFragment<LH_AttendeeModel> RenderDangerButton => attendee => @<GB_Button
                         ButtonText="Remove"

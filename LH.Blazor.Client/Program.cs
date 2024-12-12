@@ -59,10 +59,11 @@ builder.Services.GS_AddConfiguration(builder.Configuration, "APIs:LH_DB_API");
 builder.Services.GS_AddStateServices();
 
 
-builder.Services.LHB_RegisterAllBlazorComponents();
+//builder.Services.LHB_RegisterAllBlazorComponents();
 builder.Services.LHB_RegisterAllBlazorPageRoutes();
 
-builder.Services.GB_RegisterAllGenericBlazorComponents();
+//builder.Services.GB_RegisterAllGenericBlazorComponents();
+
 
 
 // Add Configuration from appsettings.json

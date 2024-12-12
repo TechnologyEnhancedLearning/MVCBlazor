@@ -29,19 +29,13 @@ namespace LH.MVCBlazor.Server.Controllers
 
 
         ////!!!! This is just because of the way radiolist VC components bind name and asp-for
-        //[HttpPost("SetFavouriteCharacterByTopLevelForm")]//qqqq its get in example in lh
-        //public async Task<IActionResult> SetFavouriteCharacterByTopLevelForm(LHB_FavouriteCharacterFormModel LHB_FavouriteCharacterFormModel   /*int FavouriteCharacterId*/, string returnUrl = null)
-        //{
-        //    return await SetFavouriteCharacterHelper(LHB_FavouriteCharacterFormModel.FavouriteCharacterId, returnUrl);
-        //}        //!!!! This is just because of the way radiolist VC components bind name and asp-for
-        [HttpPost("SetFavouriteCharacterByTopLevelForm")]//qqqq its get in example in lh
+        [HttpPost("SetFavouriteCharacterByTopLevelForm")]
         public async Task<IActionResult> SetFavouriteCharacterByTopLevelForm(CharactersViewModel CharactersViewModel, string returnUrl = null)
         {
-            CharactersViewModel.LHB_FavouriteCharacterFormModel.ModelStateErrors = GetModelStateDictionary(ModelState);
-            //qqqq then we would need to redirect to returning the model with the view
+            //CharactersViewModel.LHB_FavouriteCharacterFormModel.ModelStateErrors = GetModelStateDictionary(ModelState);
             return await SetFavouriteCharacterHelper(CharactersViewModel.LHB_FavouriteCharacterFormModel.FavouriteCharacterId, returnUrl);
         }
-        [HttpPost("SetFavouriteCharacterByForm")]//qqqq its get in example in lh
+        [HttpPost("SetFavouriteCharacterByForm")]
         public async Task<IActionResult> SetFavouriteCharacterByForm(GE_FavouriteCharacterFormModel LHB_FavouriteCharacterFormModel, string returnUrl = null)
         {
 
@@ -61,7 +55,7 @@ namespace LH.MVCBlazor.Server.Controllers
                     //cant pass the validation data with current set up so redirect to the static page
                     TempData["CharactersData"] = JsonConvert.SerializeObject(viewModel); // Serialize to pass complex objects
                     return RedirectToAction("Static-MVCRendered", "Characters");
-                    //return RedirectToAction("Index", "Characters/Static-MVCRendered");
+                  
 
                 }
                 else
@@ -73,7 +67,7 @@ namespace LH.MVCBlazor.Server.Controllers
                 
             }
 
-            //qqqq then we would need to redirect to returning the model with the view
+
             return await SetFavouriteCharacterHelper(LHB_FavouriteCharacterFormModel.FavouriteCharacterId, returnUrl);
         }
 

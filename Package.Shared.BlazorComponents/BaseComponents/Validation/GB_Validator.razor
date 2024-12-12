@@ -11,8 +11,7 @@
 
     protected override void OnInitialized()
     {
-       // if (FormModel.HasModelStateValidationErrors) { EditContext.Validate(); } //qqqq hopefully this can trigger validation message even if no js, it just wont be dynamic
-        // Subscribe to EditContext events to re-render the component
+
         EditContext.OnValidationRequested += (sender, args) => StateHasChanged();
         EditContext.OnFieldChanged += (sender, args) => StateHasChanged();
     }

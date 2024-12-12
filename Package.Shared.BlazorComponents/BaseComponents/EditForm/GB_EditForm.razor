@@ -3,25 +3,22 @@
 @typeparam TModel where TModel:IGE_ModelStateValidation
 <h3>GB_EditFormTitle : @Title</h3>
 
-@if (isFormSubmitted)
+@if (showSubmissionCount)
 {
     <div class="alert alert-success">
         Form submitted successfully! You have submitted the form @submissionCount times.
     </div>
 }
-@* EditContext="@EditContext" *@
+
 <EditForm EditContext="@EditContext" OnValidSubmit="HandleValidSubmit" OnInvalidSubmit="HandleInvalidSubmit" method="post" action="@Action">
      <DataAnnotationsValidator /> 
      <CascadingValue Value="@formIsValid">
-@*         <CascadingValue Value="@EditContext"> *@
+
 
                 @EditFormContents
  
      </CascadingValue>
- @*    </CascadingValue> *@ 
 
-    @* Model="@EditContext.Model" *@
-@*     AspFor="@AspFor" *@
     <GB_Validator  EditContext="@EditContext" FormModel="@FormModel"/>
 
     @*qqqq Should be blazor button and have IAccessible*@
@@ -58,6 +55,7 @@
     [Parameter, EditorRequired]
     public EventCallback OnInvalidSubmit { get; set; }
 
+    private bool showSubmissionCount { get; set; } = false;
 
     // Track the success status and submission count
     private bool isFormSubmitted = false;
@@ -75,7 +73,7 @@
         EditContext = new EditContext(FormModel);
 
         //We don't need to manually do this unless nojs
-        if (FormModel.HasModelStateValidationErrors) { EditContext.Validate(); }//qqqq hopefull summary can use this if call in initialise
+        if (FormModel.HasModelStateValidationErrors) { EditContext.Validate(); }
     }
 
     private const string DefaultAriaLabel = "Danger button";
@@ -107,12 +105,19 @@
         if (OnValidSubmit.HasDelegate)
         {
             await OnValidSubmit.InvokeAsync();
+            showSubmissionCount = true;
         }
 
         await ResetFormStatusAsync();
+        _ = ResetShowSubmissionCount();//fireforget
 
     }
-
+    private async Task ResetShowSubmissionCount()
+    {
+        await Task.Delay(10000);
+        showSubmissionCount = false;
+        StateHasChanged();
+    }
     private async Task ResetFormStatusAsync()
     {
         //await Task.Delay(3000);
@@ -121,7 +126,7 @@
 
         //May not be needed
         EditContext = new EditContext(FormModel);
-        EditContext.NotifyValidationStateChanged();//qqqq
+        EditContext.NotifyValidationStateChanged();
 
 
         StateHasChanged();

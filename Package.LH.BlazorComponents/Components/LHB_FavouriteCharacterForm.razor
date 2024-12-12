@@ -1,6 +1,6 @@
 ﻿@inherits GB_ComponentBase
 @inject IGS_CharactersStateService GS_CharactersStateService
-@* AspFor="@AspFor" *@
+
 <GB_EditForm 
     Title=@FormTitle 
     FormModel="@LHB_FavouriteCharacterFormModel" 
@@ -47,21 +47,13 @@
             RequiredClientSideErrorMessage=""
            />
         }
-        @{
-            var x = 1;
-        }
-        @*    SelectedValueChanged="@(value => LHB_FavouriteCharacterFormModel.FavouriteCharacterId = value)" /> - Built in when bind*@
+
+   
     </EditFormContents>
 
 </GB_EditForm>
 <h3>"@LHB_FavouriteCharacterFormModel.FavouriteCharacterId if I change your interactive: " @LHB_FavouriteCharacterFormModel.FavouriteCharacterId</h3>
 @code {
-    //   SelectedValueChanged="@OnFavouriteCharacterChanged"
-    // private void OnFavouriteCharacterChanged(int value)
-    // {
-    //     LHB_FavouriteCharacterFormModel.FavouriteCharacterId = value;
-    //     // Optionally, you can add additional logic here (e.g., validation, side-effects).
-    // }
 
     [Parameter, EditorRequired]
     public string Action { get; set; }
@@ -73,15 +65,9 @@
     [Parameter, EditorRequired]
     public bool Required { get; set; }
 
-    /// <summary>
-    /// if this is private then we cant get errors off it
-    /// if it is provided we need to generate a list of these per cartoon model
-    /// we could use the cartoon itself as the model qqqq
-    /// Maybe as a DTO and add the selectedCharacterId to it and any other options for data changes
-    /// </summary>
-    /// 
+
     [Parameter]
-    public GE_FavouriteCharacterFormModel LHB_FavouriteCharacterFormModel { get; set; } = null; //qqqqqqqqqqqqqqqqqq
+    public GE_FavouriteCharacterFormModel LHB_FavouriteCharacterFormModel { get; set; } = null; 
 
     [Parameter]
     public string Label { get; set; } = "Label Not Set Would Be EditorRequired or null";

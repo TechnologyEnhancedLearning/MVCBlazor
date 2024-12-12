@@ -16,7 +16,6 @@ namespace LH.DB.API.Services
         {
             _database = database;
             //For the current scope just want a list
-            //_attendees = _database.Meetings.First().People;
             Console.WriteLine("AttendeeDbService : Constructor");
         }
 
@@ -27,7 +26,7 @@ namespace LH.DB.API.Services
         {
             Console.WriteLine("AttendeeDbService : LoadAttendeesAsync");
             // Return a copy of the list to avoid external modifications
-            return new GE_ServiceResponse<List<LH_AttendeeModel>>{ Data = _database.Meetings.First().People };//If real db then would really be async
+            return new GE_ServiceResponse<List<LH_AttendeeModel>>{ Data = _database.Meetings.First().People };//If real db then would really be async. // //                    ----!!!---- warning!!! for now just first group  ----!!!---- 
         }
 
         // Replace the entire list of attendees in the simulated database
@@ -48,13 +47,13 @@ namespace LH.DB.API.Services
             return new GE_ServiceResponse<List<LH_AttendeeModel>> { Data = _database.Meetings.First().People };
         }
 
-        public async Task<GE_ServiceResponse<List<LH_AttendeeModel>>> AddAttendeeToMeeting(LH_AttendeeModel attendee) //qqqq warning!!! for now just first group
+        public async Task<GE_ServiceResponse<List<LH_AttendeeModel>>> AddAttendeeToMeeting(LH_AttendeeModel attendee) 
         {
 
 
             _database.AddAttendeeToMeeting(_database.Meetings.First().Id,attendee);  // Add the new attendees
 
-            return new GE_ServiceResponse<List<LH_AttendeeModel>> { Data = _database.Meetings.First().People };
+            return new GE_ServiceResponse<List<LH_AttendeeModel>> { Data = _database.Meetings.First().People }; //                    ----!!!---- warning!!! for now just first group  ----!!!---- 
         }
 
         public async Task<GE_ServiceResponse<bool>> RemoveAttendeeByTemporaryId_NoJS(Guid ClientTemporaryId)

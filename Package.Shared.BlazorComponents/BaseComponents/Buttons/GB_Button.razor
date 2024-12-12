@@ -3,8 +3,9 @@
 
 @if (JSIsEnabled)
 {
-    @*Splatting example but a common button class using just IAccessibleComponent may make a better example qqqq*@
+    @*Splatting example but a common button class using just IAccessibleComponent may make a better example *@
     <GB_Button_I @attributes="GetCommonButtonAttributes()"
+                 ButtonType="@ButtonType"
                  OnClick="@OnClick" />
 }
 else

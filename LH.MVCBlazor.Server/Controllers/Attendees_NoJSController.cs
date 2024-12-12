@@ -27,8 +27,7 @@ namespace LH.MVCBlazor.Server.Controllers
         {
             this._LHS_AttendeesStateService = LHS_AttendeesStateService;
         }
-        //qqqq initial focus just on blazor
-        // POST: /Attendees_NoJS/RemoveAttendee 
+  
         [HttpPost("RemoveAttendeeByTemporaryId")]
         public async Task<IActionResult> RemoveAttendeeByTemporaryId(Guid clientTemporaryId, string returnUrl = null)
         {
@@ -60,7 +59,7 @@ namespace LH.MVCBlazor.Server.Controllers
                     //cant pass the validation data with current set up so redirect to the static page
                     TempData["AttendeesData"] = JsonConvert.SerializeObject(viewModel); // Serialize to pass complex objects
                     return RedirectToAction("Static-MVCRendered", "Attendees");
-                    //return RedirectToAction("Index", "Characters/Static-MVCRendered");
+
 
                 }
                 else
@@ -116,7 +115,7 @@ namespace LH.MVCBlazor.Server.Controllers
                 // Default to Static if no match
                 renderMode = GB_ComponentTagRenderMode.Static;
                 //This could be the noJs so lets do static as a fallback
-                //throw new Exception("Rendermode not in the enum"); //this is just for convenience we wouldnt have render mode routes
+
             }
 
             return renderMode.ToString();

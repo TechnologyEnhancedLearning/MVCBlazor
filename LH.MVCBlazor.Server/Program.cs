@@ -18,16 +18,8 @@ builder.Services.AddRazorComponents()
                 .AddInteractiveWebAssemblyComponents();
 
 
-// .AddInteractiveWebAssemblyRenderMode(); // Blazor WebAssembly may want this
-
-
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-
-//builder.Services.AddHttpClient("LHAPIServiceHttpClient", client =>
-//{
-//    client.BaseAddress = new Uri("https://localhost:44306/");//API SSL
-//});
 
 
 string LH_DB_API_BaseURL;
@@ -63,7 +55,7 @@ builder.Services.GS_AddConfiguration(builder.Configuration, "APIs:LH_DB_API");
 builder.Services.GS_AddStateServices();
 
 
-builder.Services.LHB_RegisterAllBlazorComponents();
+//builder.Services.LHB_RegisterAllBlazorComponents();
 builder.Services.LHB_RegisterAllBlazorPageRoutes();
 
 builder.Services.AddSession(options =>
@@ -120,34 +112,19 @@ app.UseRouting();
 app.UseAuthorization();
 app.UseAntiforgery(); //qqq-FromBlazorWebAppTemplate
 
-//qqqq hmm no useblazorframeworkfiles here wasnt in the microsoft talk
-//app.UseBlazorFrameworkFiles(); //qqqq just trying it
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
-
-//app.MapBlazorHub();//there isnt here the interactive webapp stuff either qqqq so expecting
-//it will get complicated later - this is suppost to be better with cshtml without changing index page
-//if using server blazor script
-
-//app.UseBlazorFrameworkFiles(); //if using wasm script js
-//this is what we have in mvcwasmnuget app.maprazorcomponents<app> is what is in the microsoft docs but theyre not for mvc set up
 
 //if using interactive
 //https://learn.microsoft.com/en-us/aspnet/core/blazor/components/integration?view=aspnetcore-8.0#use-non-routable-components-in-pages-or-views
 app.MapRazorComponents<App>() //The microsoft video though said .net 8 was .net 7 approach and webserver to dodge the issue of non blazor routed projects but here we have a special App.razor just with a comment from 
     .AddInteractiveServerRenderMode()
     .AddInteractiveWebAssemblyRenderMode()
-    .AddAdditionalAssemblies(typeof(Package.LH.BlazorComponents.Components.Pages.RenderModePages.CharactersRenderModePages.WebAssemblyCharactersPage).Assembly);
-//Leave this in too for reference!!!
-// , prerendering: false); we can add this to the end if wanting to globally disable prerendering. Though lets leave it in unless its a problem.
+    //.AddAdditionalAssemblies(typeof(Package.LH.BlazorComponents.Components.Pages.RenderModePages.CharactersRenderModePages.WebAssemblyCharactersPage).Assembly);
+    .AddAdditionalAssemblies(typeof(Package.LH.BlazorComponents._Imports).Assembly);
+//we are getting generic components via LH BlazorComponents it seems
 
-//added to try and enable blazor pages to be in a package
-//!!Leave in tested in release mode but based on stack overflow expect publishing issues tree shaking again!!
-//  .AddAdditionalAssemblies(typeof(MVCWebApp.BlazorWasmClient._Imports).Assembly); //qqqq this should be explored may be how we get access to all packages
-
-// Keeping this i can have fallback in App logic but this lets MVC handle it
-// **(q)** qqqq but what is blazor got to do with it it could be any failed route
 app.MapFallbackToController("Blazor", "Home"); /*.net 8 is thos still doing something useful? qqqq*/
 
 app.Run();

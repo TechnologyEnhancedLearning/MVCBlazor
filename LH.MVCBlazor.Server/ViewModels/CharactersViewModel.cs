@@ -12,12 +12,10 @@ namespace LH.MVCBlazor.Server.ViewModels
     {
         //Kind of makes sense to be list cartoon qqqq
 
-        public GE_FavouriteCharacterFormModel LHB_FavouriteCharacterFormModel { get; set; } = new();//qqqqqq new LHB_FavouriteCharacterFormModel();
+        public GE_FavouriteCharacterFormModel LHB_FavouriteCharacterFormModel { get; set; } = new();
         public string some_CharactersViewModel_specific_UI_String { get; set; } = "UnSet";
-        public List<GE_CharacterModel> Characters { get; set; } = null;//qqqq new List<GE_CharacterModel>();
+        public List<GE_CharacterModel> Characters { get; set; } = null;
 
-        //asp-for doesnt allow seperate name setting so model and controller must match
-        //radiolist not detecting LHB_FavouriteCharacterFormModel.FavouriteCharacterIdStr and doesnt set it on initial load unless its string
         public string FavouriteCharacterIdStr
         {
             get => LHB_FavouriteCharacterFormModel.FavouriteCharacterId.ToString();

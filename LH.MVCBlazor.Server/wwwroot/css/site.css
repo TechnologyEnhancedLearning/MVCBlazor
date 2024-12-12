@@ -86,3 +86,79 @@ button.accept-policy {
 .attendee-blazor-nav-link {
     border: 2px solid #f1c40f; /* Yellow border */
 }
+
+/* Default button style (Generic button) */
+.nhsuk-generic-button {
+    background-color: #0b0c0c; /* Dark background */
+    color: #fff; /* White text */
+    border: 1px solid #1d1f1c; /* Darker border */
+    padding: 10px 20px;
+    font-size: 16px;
+    text-align: center;
+    display: inline-block;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+    /* Generic button hover effect */
+    .nhsuk-generic-button:hover {
+        background-color: #404a48; /* Lighter shade on hover */
+    }
+
+/* Danger button style (red) */
+.nhsuk-danger-button {
+    background-color: #d4351c; /* Red background */
+    color: #fff; /* White text */
+    border: 1px solid #a52717; /* Dark red border */
+    padding: 10px 20px;
+    font-size: 16px;
+    text-align: center;
+    display: inline-block;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+    /* Danger button hover effect */
+    .nhsuk-danger-button:hover {
+        background-color: #b52a1c; /* Darker red on hover */
+    }
+
+/* Success button style (green) */
+.nhsuk-success-button {
+    background-color: #007f3a; /* Green background */
+    color: #fff; /* White text */
+    border: 1px solid #00632e; /* Darker green border */
+    padding: 10px 20px;
+    font-size: 16px;
+    text-align: center;
+    display: inline-block;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+    /* Success button hover effect */
+    .nhsuk-success-button:hover {
+        background-color: #00632e; /* Darker green on hover */
+    }
+
+/* Info button style (blue) */
+.nhsuk-info-button {
+    background-color: #005eb8; /* Blue background */
+    color: #fff; /* White text */
+    border: 1px solid #004a8b; /* Darker blue border */
+    padding: 10px 20px;
+    font-size: 16px;
+    text-align: center;
+    display: inline-block;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+    /* Info button hover effect */
+    .nhsuk-info-button:hover {
+        background-color: #004a8b; /* Darker blue on hover */
+    }

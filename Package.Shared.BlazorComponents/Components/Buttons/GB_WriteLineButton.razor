@@ -2,9 +2,22 @@
 @inherits GB_ComponentBase
 
 
-<GB_Button @onclick="HandleClick">Write to console @TextToPrintToConsole</GB_Button>
+<GB_Button 
+    ButtonType="@ButtonType"
+    ButtonText="@($"Write to console {TextToPrintToConsole}")"
+    ActionUrl="ActionURL" 
+    FormData=@(new Dictionary<string, string>()) 
+    AssistiveText="Button"  
+    Title="Title" 
+    AriaLabel="AriaLabel" 
+    OnClick="HandleClick"/>
+
+
 
 @code {
+    [Parameter]
+    public GB_ButtonType ButtonType { get; set; } = GB_ButtonType.Danger;
+
     [EditorRequired]
     [Parameter]
     public string TextToPrintToConsole { get; set; }

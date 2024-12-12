@@ -15,28 +15,22 @@ namespace Package.Shared.BlazorComponents.DependencyInjection
 {
     public static class DependencyInjection
     {
-        public static IServiceCollection GB_RegisterAllGenericBlazorComponents(this IServiceCollection services/*, qqqq IOptions<ILHBlazorWasmClientServiceLibraryConfiguration> config*/)
-        {
-            services.AddTransient(typeof(GB_Validator<IGE_ModelStateValidation>));
-            services.AddTransient(typeof(GB_EditForm<IGE_ModelStateValidation>));
+        //public static IServiceCollection GB_RegisterAllGenericBlazorComponents(this IServiceCollection services/*, qqqq IOptions<ILHBlazorWasmClientServiceLibraryConfiguration> config*/)
+        //{
+        //    services.AddTransient(typeof(GB_Validator<IGE_ModelStateValidation>));
+        //    services.AddTransient(typeof(GB_EditForm<IGE_ModelStateValidation>));
 
-            //services.AddTransient<GB_Validator>();
-            //services.AddTransient<GB_EditForm>();
 
-            //services.AddTransient(typeof(RadioListVCB<,>));
-            //services.AddTransient<RadioList_TestSpace>();
-            //services.AddTransient<TestBlazor_VCB>();
+        //    //Components can be transcient its the service that may need scope (i think)
+        //    services.AddTransient<GB_Button>();
+        //    services.AddTransient<GB_Button_I>();
+        //    services.AddTransient<GB_Button_S>();
+        //    services.AddTransient<GB_Button_Submit>();
 
-            //Components can be transcient its the service that may need scope (i think)
-            services.AddTransient<GB_Button>();
-            services.AddTransient<GB_Button_I>();
-            services.AddTransient<GB_Button_S>();
-
-            services.AddTransient<GB_WriteLineButton>();
-            // services.AddTransient<ListWithButtons<TItem>>();
-            services.AddTransient(typeof(GB_ListWithButtons<>));//qqqq notice we need type of because takes a generic (TItem)
-            return services;
-        }
+        //    services.AddTransient<GB_WriteLineButton>();
+        //    services.AddTransient(typeof(GB_ListWithButtons<>));//we need type of because takes a generic (TItem)
+        //    return services;
+        //}
 
 
 

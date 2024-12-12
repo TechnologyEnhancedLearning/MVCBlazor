@@ -23,23 +23,18 @@ namespace Package.LH.BlazorComponents.DependencyInjection
         //we do this so we can prevent tree shaking of components consumed by the server asking the wasm to produce them from its package reference
 
         //Reflection of the components folder would mean we dont forget to register
-        // */
-        // qqqq try replacing with import assemblies
-        /// </summary>
-        /// <param name="services"></param>
-        /// <returns></returns>
-        public static IServiceCollection LHB_RegisterAllBlazorComponents(this IServiceCollection services)
-        {
 
-            services.AddTransient<LHB_Attendees_AddRemoveListForm>();
-            services.AddTransient<LHB_FavouriteCharacterForm>();
+        //public static IServiceCollection LHB_RegisterAllBlazorComponents(this IServiceCollection services)
+        //{
+
+        //    services.AddTransient<LHB_Attendees_AddRemoveListForm>();
+        //    services.AddTransient<LHB_FavouriteCharacterForm>();
     
 
 
-            //services.AddTransient<CharactersPageComponent>();
-            //services.AddTransient<RenderModeDisplayer>();
-            return services;
-        }
+          
+        //    return services;
+        //}
         public static IServiceCollection LHB_RegisterAllBlazorPageRoutes(this IServiceCollection services)
         {
 

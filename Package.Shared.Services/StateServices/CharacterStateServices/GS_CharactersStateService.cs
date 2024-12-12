@@ -25,7 +25,7 @@ namespace Package.Shared.Services.StateServices.CharacterStateServices
         public List<GE_CharacterModel> Characters { get; private set; } = new List<GE_CharacterModel>();
  
 
-        public GS_CharactersStateService(IHttpClientFactory httpClientFactory, IOptions<GS_CharactersAPIConfiguration> charactersAPIConfiguration)//qqqq i want this as an interface but wasnt previously will it error
+        public GS_CharactersStateService(IHttpClientFactory httpClientFactory, IOptions<GS_CharactersAPIConfiguration> charactersAPIConfiguration)
         {
             _charactersAPIConfiguration = charactersAPIConfiguration.Value;
             _charactersAPIEndpoints = _charactersAPIConfiguration.Endpoints.Characters;

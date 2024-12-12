@@ -12,7 +12,7 @@ using Package.Shared.Entities.Communication;
 
 namespace Package.LH.Services.StateServices
 {
-    public class LHS_AttendeesStateService: ILHS_AttendeesStateService //qqqq maybe should be in server side qqqq
+    public class LHS_AttendeesStateService: ILHS_AttendeesStateService 
     {
         private readonly HttpClient _http;
         private LHS_AttendeesAPIConfiguration _attendeesAPIConfiguration;
@@ -46,7 +46,7 @@ namespace Package.LH.Services.StateServices
             return new GE_ServiceResponse<List<LH_AttendeeModel>> { Data = Attendees };
         }
 
-        //QQQQ? adding bool so sharing service doesnt reset or rest on refresh
+
         private async Task LoadAttendeesAsync(bool replaceExisting)
         {
 

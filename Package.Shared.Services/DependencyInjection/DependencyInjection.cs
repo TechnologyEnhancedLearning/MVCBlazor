@@ -14,7 +14,7 @@ namespace Package.Shared.Services.DependencyInjection
 {
     public static class DependencyInjection
     {
-        // qqqq we should inject everything required to run the package - this is true of all the dependencys
+        
         public static IServiceCollection GS_AddStateServices(this IServiceCollection services)
         {
 
@@ -27,7 +27,6 @@ namespace Package.Shared.Services.DependencyInjection
         {
             
             //Add Configuration
-            //services.Configure<GS_CharactersAPIEndpoints>(configuration.GetSection("apiSection"));
             services.Configure<GS_CharactersAPIConfiguration>(configuration.GetSection(apiSection));
             return services;
         }
