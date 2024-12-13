@@ -113,7 +113,7 @@ app.MapControllerRoute(
 
 //if using interactive
 //https://learn.microsoft.com/en-us/aspnet/core/blazor/components/integration?view=aspnetcore-8.0#use-non-routable-components-in-pages-or-views
-app.MapRazorComponents<App>() //The microsoft video though said .net 8 was .net 7 approach and webserver to dodge the issue of non blazor routed projects but here we have a special App.razor just with a comment from 
+app.MapRazorComponents<App>() 
     .AddInteractiveServerRenderMode()
     .AddInteractiveWebAssemblyRenderMode()
     .AddAdditionalAssemblies(typeof(Package.LH.BlazorComponents._Imports).Assembly);
