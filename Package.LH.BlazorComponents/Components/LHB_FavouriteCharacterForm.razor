@@ -73,8 +73,8 @@
     [Parameter]
     public bool IsPageHeading { get; set; } = true;
 
-
-    [Parameter, EditorRequired]
+    //qqqq should this actually be from the service
+    [Parameter]
     public List<GE_CharacterModel> Characters { get; set; } = null; //For model seeding for speed
 
     private string FormTitle = "Favourite Character Form";

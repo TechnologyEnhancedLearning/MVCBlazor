@@ -3,19 +3,14 @@
     <div class="attendees-form-container">
         <h3 style="margin:10px;text-align:center">"Model.CartoonName"</h3>
         <LHB_FavouriteCharacterForm
-                   AspFor=@("FavouriteCharacterId")
-                   Required=true
                    Action=@("Characters/NoJS/SetFavouriteCharacterByForm")
                    Label=@("EditFormLabel Here")
                    RadioListHint=@("Edit form hint here ")
                    IsPageHeading=true
                     />
-        @*LHB_FavouriteCharacterFormModel=@LHB_FavouriteCharacterFormModel*@
-                   @* LHB_FavouriteCharacterFormModel=@Model.LHB_FavouriteCharacterFormModel *@
+
     </div>
 </div>
-
-
 
 <RenderModeDisplayer/> 
 
@@ -23,9 +18,5 @@
 
 @code
 {
-    //Only accessible in LH.Server
 
-    //private LHB_FavouriteCharacterFormModel LHB_FavouriteCharacterFormModel {get;set;}= new();
-    //[Parameter, EditorRequired]
-    // public string renderMode { get; set; } = "UnSet";
 }

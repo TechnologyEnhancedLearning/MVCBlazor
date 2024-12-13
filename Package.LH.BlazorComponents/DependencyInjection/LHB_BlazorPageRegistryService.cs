@@ -34,16 +34,6 @@ namespace Package.LH.BlazorComponents.DependencyInjection
                 "/Characters/InteractiveWebAssemblyPrerenderedFalse-BlazorPage",
 
                 "/StreamRenderingWeather-BlazorPage"
-
-
-
-
-
-
-
-
-
-
             };
         }
     }

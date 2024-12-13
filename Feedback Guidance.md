@@ -22,6 +22,11 @@ components and pages they belong to, to function without JS.
 			- The solution may be blazorised storage
 			- an example is the search is blazor, and has some text in it. A form is posted, everything refreshes. Text is lost.
 				- This kind of state loss is more true for blazor because unlike NoJS approaches it will do more before submitting.
+		- in our state service we store a list but we also pass one from the view from the same service
+			- we can use the list from the view to speed the process
+				- then should it update the service created for the component
+				- or should the stateservice update the components list
+				
 	- Services
 	- A Mediator Pattern API of somekind
 	- Blazorised Storage (can't work in NoJS)
@@ -50,3 +55,10 @@ generic top level components and less specific for MVC components.
 		- What was useful and what wasnt?
 - review controller base routing it is just for seperation in the project but would like to talk about it.
 	- How will parameters and different routing options affect the Blazor Host do we expect a conflict
+
+### Minor questions
+- ReassignListGroupPeopleIds<GE_CharacterModel>(Cartoons.Cast<GE_GroupBase<GE_CharacterModel>>().ToList()); wanted not to use a cast here
+- //Want to pass a configuration that is a configuration just of what is relevant to the package. And interface to error in the server by not fitting appsettings.
+builder.Services.LHS_AddConfiguration(builder.Configuration, "APIs:LH_DB_API"); Tried various approaches with IOptions
+-   public CharactersViewModel(List<GE_CharacterModel> characters, GE_FavouriteCharacterFormModel CurrentFormData = null) 
+here we do logic in the view. this setup is needed because state is not in the service for incomplete forms from nojs, which is why we are putting in modelstate value

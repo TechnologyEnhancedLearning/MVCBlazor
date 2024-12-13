@@ -13,32 +13,8 @@ namespace Package.LH.BlazorComponents.DependencyInjection
     public static class DependencyInjection
     {
 
-        /// <summary>
-        /// To prevent tree shaking
-        /// To enable package update to not require client code update for adding components
-        /// Should contain all or all components not directly references in client wasm, and all component directly referenced in server (though server doesnt need this as it can get directly from package as it is referencing it directly)
-        ///m qqqq in actuality the server may never need this only the client
-        ///        - !!! they are not really services so ultimately i dont like this !!!
-
-        //we do this so we can prevent tree shaking of components consumed by the server asking the wasm to produce them from its package reference
-
-        //Reflection of the components folder would mean we dont forget to register
-
-        //public static IServiceCollection LHB_RegisterAllBlazorComponents(this IServiceCollection services)
-        //{
-
-        //    services.AddTransient<LHB_Attendees_AddRemoveListForm>();
-        //    services.AddTransient<LHB_FavouriteCharacterForm>();
-    
-
-
-          
-        //    return services;
-        //}
         public static IServiceCollection LHB_RegisterAllBlazorPageRoutes(this IServiceCollection services)
         {
-
-
 
             //Components can be transcient its the service that may need scope (i think)
             services.AddSingleton<LHB_BlazorPageRegistryService>();

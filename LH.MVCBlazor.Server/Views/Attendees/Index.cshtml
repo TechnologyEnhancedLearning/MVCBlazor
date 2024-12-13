@@ -24,10 +24,15 @@
     <div class="attendees-form-container">
         <h3 style="margin:10px;text-align:center">"Model.MeetingName"</h3>
         <component type="typeof(LHB_Attendees_AddRemoveListForm)"
-                   param-UniqueId=@("9")
-                   param-ListAttendeesProvidedByView="@Model.Attendees"
                    param-newAttendee="@Model.LH_AttendeeFormModel"
                    render-mode="@renderMode" />
+                    @* param-ListAttendeesProvidedByView="@Model.Attendees" 
+
+                    For speed could use this whist load. 
+                    Or it could be for passing back and forth part finished data like when validating 
+                    But if the service is providing state not the component then this doesnt work.
+                    
+                    *@
     </div>
 </div>
 

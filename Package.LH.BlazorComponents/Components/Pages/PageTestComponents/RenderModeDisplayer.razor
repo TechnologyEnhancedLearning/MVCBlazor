@@ -5,7 +5,7 @@
     <h4> I am @WhoAmI </h4>
     <div>
 
-        <!-- Form for adding a new attendee -->
+      
         @if (JSIsEnabled)
         {
               <h3 style="text-align: center;">JS Enabled</h3>
@@ -18,22 +18,19 @@
         <div style="border: 2px solid black; padding: 10px; margin: 10px;">
             @if (_isLoading)
             {
-                <h3>Loading...</h3>
+                <h3>Loading (+5s delay so can see it)...</h3>
             }
             else
             {
                 <h3>Load Finished</h3>
             }
-            <h4>Rendermode msg: @RenderModeDetected/</h4>
+            <h4>Rendermode msg: @RenderModeDetected</h4>
             <noscript>
                 <div style="color: red; font-weight: bold;">
                     JavaScript is disabled or not loading. Prerender content shown.
                 </div>
             </noscript>
-    
-            <div class="prerender-fallback">
-                Prerender Fallback Content
-            </div>
+   
         </div>
      </div>
 </div>
@@ -49,7 +46,6 @@
     private bool _isLoading = true;
 
     [Parameter]
-
     public string RenderModeDetected { get; set; } = "UnSet rendermode detected string";
 
      protected override void OnInitialized ()

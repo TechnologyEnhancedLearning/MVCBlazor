@@ -27,26 +27,6 @@ else
     //Dont really need it to cascade or be setable here but shows it working
     [CascadingParameter] public override string PageTitle { get; set; } = "Interactive Auto Prerender False Blazor Page - rederict if no js"; // Set this for each page
 
-    //    protected override void OnInitialized()
-    //protected override async Task OnInitializedAsync()//This works in release mode, there are some debugging setting that need adjusting
-    // but the await will block the rendering so you do redirect but you wont see html
-    //protected override async Task OnAfterRenderAsync(bool firstRender) // wont be rendered if no js
-    // protected override async Task OnInitializedAsync()
-    // {
-    //     base.OnInitialized();
-        
-    //     // Check if JavaScript is disabled based on the FlagService
-    //     if (!JSIsEnabled)
-    //     {
-    //         _ = RedirectToHomeAsync(); // Fire-and-forget, rendering will proceed
-    //     }
-    // }
+    //If nojs no code will run after prerender and update the render so we can on initialise navigate away, or have a message, but not both.
 
-    // private async Task RedirectToHomeAsync()
-    // {
-    //     await Task.Delay(3000); // Wait for 3 seconds
-    //     NavigationManager.NavigateTo("/", true); // Perform navigation
-    // }
-
-    
 }

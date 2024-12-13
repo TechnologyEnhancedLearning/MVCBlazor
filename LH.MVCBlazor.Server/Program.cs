@@ -14,13 +14,12 @@ using Microsoft.AspNetCore.Components;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents()
-                .AddCircuitOptions(opt => opt.DetailedErrors = true) //commenting out due to debugger error
+                .AddCircuitOptions(opt => opt.DetailedErrors = true)
                 .AddInteractiveWebAssemblyComponents();
 
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-
 
 string LH_DB_API_BaseURL;
 string LH_DB_API_ClientName;
@@ -43,8 +42,7 @@ builder.Services.AddHttpClient(LH_DB_API_ClientName, client =>
     client.BaseAddress = new Uri(LH_DB_API_BaseURL);
 });
 
-//builder.Services.AddSingleton<NavigationManager>();
-// Register IHttpContextAccessor
+
 builder.Services.AddHttpContextAccessor();
 
 //Want to pass a configuration that is a configuration just of what is relevant to the package. And interface to error in the server by not fitting appsettings.
@@ -53,9 +51,6 @@ builder.Services.LHS_AddStateServices();
 
 builder.Services.GS_AddConfiguration(builder.Configuration, "APIs:LH_DB_API");
 builder.Services.GS_AddStateServices();
-
-
-//builder.Services.LHB_RegisterAllBlazorComponents();
 builder.Services.LHB_RegisterAllBlazorPageRoutes();
 
 builder.Services.AddSession(options =>
@@ -110,7 +105,7 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthorization();
-app.UseAntiforgery(); //qqq-FromBlazorWebAppTemplate
+app.UseAntiforgery(); 
 
 app.MapControllerRoute(
     name: "default",
@@ -121,10 +116,8 @@ app.MapControllerRoute(
 app.MapRazorComponents<App>() //The microsoft video though said .net 8 was .net 7 approach and webserver to dodge the issue of non blazor routed projects but here we have a special App.razor just with a comment from 
     .AddInteractiveServerRenderMode()
     .AddInteractiveWebAssemblyRenderMode()
-    //.AddAdditionalAssemblies(typeof(Package.LH.BlazorComponents.Components.Pages.RenderModePages.CharactersRenderModePages.WebAssemblyCharactersPage).Assembly);
     .AddAdditionalAssemblies(typeof(Package.LH.BlazorComponents._Imports).Assembly);
-//we are getting generic components via LH BlazorComponents it seems
 
-app.MapFallbackToController("Blazor", "Home"); /*.net 8 is thos still doing something useful? qqqq*/
+app.MapFallbackToController("Blazor", "Home"); 
 
 app.Run();

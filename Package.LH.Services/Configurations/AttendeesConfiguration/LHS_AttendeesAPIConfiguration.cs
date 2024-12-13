@@ -10,9 +10,6 @@ namespace Package.LH.Services.Configurations.AttendeesConfiguration
 
     public class LHS_AttendeesAPIConfiguration : APIConfigurationBase<LHS_AttendeesAPIEndpointGroup>, ILHS_AttendeesAPIConfiguration
     {
-        //public string ClientName { get; set; } = "UnSet";
-        //public string BaseAddress { get; set; } = "UnSet";
-        //public LHS_AttendeesAPIEndpointGroup Endpoints { get; set; } = new LHS_AttendeesAPIEndpointGroup();
 
         public LHS_AttendeesAPIConfiguration()
         {

@@ -28,7 +28,7 @@
 </GB_EditForm>
 
   
-@if (InitialiseWithControllerLHS_AttendeesStateServiceData == false && LHS_AttendeesStateService.DataIsLoaded == false  )
+@if (LHS_AttendeesStateService.DataIsLoaded == false  )
 {
     if (halfSecondPassed == true)
     {
@@ -69,38 +69,24 @@ else
      
 
 @code {
-    private string FormTitleForAddAttendee { get; set; } = "Add Attendee Form";
-
-    /// Not currently in use below
-    [Parameter]
-    public List<LH_AttendeeModel> ListAttendeesProvidedByView { get; set; } // **Todo**  not currently using we would use it with the flag InitialiseWithControllerLHS_AttendeesStateServiceData or pass it to LHS_AttendeesStateService to seed data during loading
-    [Parameter]
-    public bool InitialiseWithControllerLHS_AttendeesStateServiceData { private get; set; } = false; // **Todo** remove and build into the service
-
-    private string ActionForRemoveAttendeeByTemporaryId { get; set; } = "/Attendees/NoJS/RemoveAttendeeByTemporaryId";
-    private string ActionForAddAttendee { get; set; } = "/Attendees/NoJS/AddAttendee";
-    private string SubmitNameForAddAttendee { get; set; } = "Submit : Add Attendee";
-
-
-
-    /// Not currently in use above
-
-    [Parameter]//not in use really but so old components still work
-    public string UniqueId { get; set; } = Guid.NewGuid().ToString();
-
-    private bool halfSecondPassed { get; set; } = false; //otherwise it flashes loaded and you dont knwo what youve seen so if it take less than half a second to load dont show loading
+    
 
     //To enable NoJS to persist with validation failed data
 
     [Parameter]
     public LH_AttendeeFormModel newAttendee { get; set; } = new();
 
+    private string ActionForRemoveAttendeeByTemporaryId { get; set; } = "/Attendees/NoJS/RemoveAttendeeByTemporaryId";
+    private string ActionForAddAttendee { get; set; } = "/Attendees/NoJS/AddAttendee";
+    private string SubmitNameForAddAttendee { get; set; } = "Submit : Add Attendee";
 
-    protected override void OnInitialized() 
-    {
-        base.OnInitialized();
-        // Additional logic for MyComponent
-    }
+    //not in use really but so old components still work
+    private string UniqueId { get; set; } = Guid.NewGuid().ToString();
+
+    private bool halfSecondPassed { get; set; } = false; //otherwise it flashes loaded and you dont knwo what youve seen so if it take less than half a second to load dont show loading
+    private string FormTitleForAddAttendee { get; set; } = "Add Attendee Form";
+
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -145,7 +131,7 @@ else
 
     }
 
-    //Not resolved the reload flash
+    //Not resolved the reload flash replace when introduce loader
     private async Task WaitHalfSecondBeforeShowingLoadingText()
     {
         if (!halfSecondPassed)

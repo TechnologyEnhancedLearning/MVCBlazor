@@ -9,6 +9,8 @@
 - redo buttons rather than static or nojs or interactive, just submit, formsubmit, button maybe
 - services still named correctly?
 
+
+
 # About
 .Net 8 MVC Blazor project, with View Components.
 
@@ -238,6 +240,9 @@ This project is not currently a reference for how to but an example of what can 
 
 
 ## Desired Future Additions
+- Revisit stateservices to include  public event Action AttendeesChanged; subscribe statehaschanged to this
+	- all handling occuring in state service
+	
 - Exploration of design allowing **ZERO** nojs splits and design principles to support it
 	- if there are none then static, prerender pages will just work
 	- also investigate option of tracking prerender and static so they are rendered as if NoJS 
