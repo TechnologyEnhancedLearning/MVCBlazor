@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Package.Shared.BlazorComponents.Enums;
 using Package.Shared.Services.StateServices.CharacterStateServices;
+using static LH.MVCBlazor.Server.Helpers.ControllerHelpers.ControllerHelper;
 
 namespace LH.MVCBlazor.Server.Controllers
 {
@@ -42,40 +43,11 @@ namespace LH.MVCBlazor.Server.Controllers
            
 
             var viewModel = charactersData ?? new CharactersViewModel((await _charactersStateService.GetCharactersAsync()).Data);
-            ViewBag.RenderMode = GetRenderModeStr();//Returns static if no rendermode so can use /Characters/
+            ViewBag.RenderMode = GetRenderModeStr(HttpContext.Request.Path.Value,"Characters");//Returns static if no rendermode so can use /Characters/
             return View(viewModel);
         }
 
-        
-
-        //Default Blazor page nojs redirect routes
-
-
-
-
-        private string GetRenderModeStr()
-        {
-            // Get the current route from the request path
-            string route = HttpContext.Request.Path.Value; // E.g., "/Attendees/Static-MVCRendered"
-
-            // Extract the part of the route that matches the render mode
-            string renderModeString = route.Replace("/Characters/", "").Replace("-MVCRendered", "");
-
-            // Try to parse the extracted string into the enum
-            if (Enum.TryParse(renderModeString, true, out GB_ComponentTagRenderMode renderMode))
-            {
-                // Successfully parsed render mode
-            }
-            else
-            {
-                // Default to Static if no match
-                renderMode = GB_ComponentTagRenderMode.Static;
-                //This could be the noJs so lets do static as a fallback
-                //throw new Exception("Rendermode not in the enum"); //this is just for convenience we wouldnt have render mode routes
-            }
-
-            return renderMode.ToString();
-        }
+       
     }
 }
     

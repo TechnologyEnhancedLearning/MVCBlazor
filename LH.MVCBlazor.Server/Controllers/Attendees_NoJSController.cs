@@ -1,4 +1,5 @@
 ﻿using LH.MVCBlazor.Server.Controllers.BaseControllers;
+using LH.MVCBlazor.Server.Helpers.ControllerHelpers;
 using LH.MVCBlazor.Server.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -7,6 +8,7 @@ using Package.LH.Entities.Models;
 using Package.LH.Entities.Models.FormModels;
 using Package.LH.Services.StateServices;
 using Package.Shared.BlazorComponents.Enums;
+using static LH.MVCBlazor.Server.Helpers.ControllerHelpers.ControllerHelper;
 
 namespace LH.MVCBlazor.Server.Controllers
 {
@@ -51,7 +53,7 @@ namespace LH.MVCBlazor.Server.Controllers
 
                 var viewModel = new AttendeesViewModel((await _LHS_AttendeesStateService.GetAttendeesAsync()).Data, newAttendee);
 
-                ViewBag.RenderMode = GetRenderModeStr();
+                ViewBag.RenderMode = GetRenderModeStr(HttpContext.Request.Path.Value, "Attendees");
 
                 bool IsBlazorPage = true;
                 if (IsBlazorPage)
@@ -97,28 +99,6 @@ namespace LH.MVCBlazor.Server.Controllers
             return String.IsNullOrEmpty(returnUrl) ? DefaultRedirectAction() : ReturnRedirect(returnUrl);
         }
 
-        private string GetRenderModeStr()
-        {
-            // Get the current route from the request path
-            string route = HttpContext.Request.Path.Value; // E.g., "/Attendees/Static-MVCRendered"
-
-            // Extract the part of the route that matches the render mode
-            string renderModeString = route.Replace("/Attendees/", "").Replace("-MVCRendered", "");
-
-            // Try to parse the extracted string into the enum
-            if (Enum.TryParse(renderModeString, true, out GB_ComponentTagRenderMode renderMode))
-            {
-                // Successfully parsed render mode
-            }
-            else
-            {
-                // Default to Static if no match
-                renderMode = GB_ComponentTagRenderMode.Static;
-                //This could be the noJs so lets do static as a fallback
-
-            }
-
-            return renderMode.ToString();
-        }
+     
     }
 }

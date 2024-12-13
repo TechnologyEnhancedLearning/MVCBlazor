@@ -5,7 +5,7 @@
 @typeparam TValue
 @inherits GB_ComponentBase
 
-<div class="nhsuk-form-group @(!formIsValid ? "nhsuk-form-group--error" :"")">
+<div class="nhsuk-form-group @(!formIsValid ? "nhsuk-form-group--error" :"") @Class">
     <fieldset class="nhsuk-fieldset" aria-describedby="@Label.RemoveWhitespace()-hint">
         <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--m">
             @if (IsPageHeading)
@@ -27,8 +27,7 @@
                 @((MarkupString)HintText)
             </div>
         }
-        @* @onchange="HandleRadioChange" *@
-        @* @bind-Value="RadioListValueToSet" *@
+
         <InputRadioGroup TValue="@TValue" Name="@ValueToSetPostName" @bind-Value="@LocalRadioListValue">
             <div id="RadioGroup-@RadioGroupId" class="nhsuk-radios">
                 @*Maybe loader for null*@
@@ -77,17 +76,12 @@
     [Parameter, EditorRequired] public Func<TItem, string> GetLabel { get; set; }
         <!-- Function to extract label -->
     [Parameter, EditorRequired] public Func<TItem, string> GetHint { get; set; }
-         <!-- Function to extract hint -->
+    <!-- Function to extract hint -->
 
 
     /// <summary>
     /// Blazor setup
     /// </summary>
-
-    ///
-
-
-
 
     [Parameter, EditorRequired] public string ValueToSetPostName { get; set; }//This is so we can use the form pre hydrated as pure html otherwise it will default to the param name
     [Parameter, EditorRequired] public TValue RadioListValueToSet { get; set; }
@@ -109,23 +103,13 @@
             }
         }
     }
-     protected override void OnInitialized()
+    protected override void OnInitialized()
     {
         // Initialize the local value with the parent value
         _localRadioListValue = RadioListValueToSet;
     }
 
     [Parameter, EditorRequired] public string RadioGroupId { get; set; }
-
-    // [parameter, editorrequired]
-    // public eventcallback<tvalue> selectedvaluechanged { get; set; }
-    // private void handleradiochange(changeeventargs e)
-    // {
-    //     // manually trigger the event callback on value change
-    //     var newvalue = (tvalue)e.value;
-    //     radiolistvaluetoset = newvalue; // update the local state
-    //     selectedvaluechanged.invokeasync(newvalue); // notify parent
-    // }
 
 
 
@@ -136,8 +120,6 @@
     [Parameter]
     public IEnumerable<TItem> RadioItems { get; set; } = Enumerable.Empty<TItem>();//Because if we dont seed with the model then we get the data async. We could put in a loader.
 
-    [Parameter, EditorRequired]
-    public string AspFor { get; set; } = String.Empty;
 
     [Parameter, EditorRequired]
     public string Label { get; set; } = String.Empty;
@@ -148,10 +130,6 @@
     [Parameter, EditorRequired]
     public string? Class { get; set; }
 
-    // [Parameter]
-    // public IEnumerable<string> ErrorMessages { get; set; } = new List<string>();
-
-    //Just because view component has the bool i want to tidy it
     private bool? _isPageHeading = false;
 
     [Parameter, EditorRequired]
@@ -161,11 +139,7 @@
         set { _isPageHeading = value; }
     }
 
-    [Parameter, EditorRequired]
-    public bool Required { get; set; }
 
-    [Parameter, EditorRequired]
-    public string RequiredClientSideErrorMessage { get; set; } = String.Empty;
 
 }
 

@@ -4,8 +4,10 @@
 - Complete todos in readme like architecture diagram
 - make layout warning unnested for blazor
 - top to bottom refactor
-
-
+- extract the add person to a generic component
+- nolonger nhsuk css from issue with the library need to reinstate
+- redo buttons rather than static or nojs or interactive, just submit, formsubmit, button maybe
+- services still named correctly?
 
 # About
 .Net 8 MVC Blazor project, with View Components.
@@ -15,6 +17,7 @@ The project has lists as a database and an API for it.
 They are in a list of lists to represent some database complexity.
 Currently First() is used throughout just for simplicity and only the first list in lists is used.
 
+The routes show the No
 
 ## Purpose
 - Attempt unified hosted .net 8 webapp application **this was not possible**
@@ -281,9 +284,6 @@ This project is not currently a reference for how to but an example of what can 
 	- Uses fluent validation, which requires JS, so maybe not, attributes are better
 	- Refactoring the approach used here to combine viewstate and blazor validation may be better
 
-# current issues to come back to
-- When a page is visited that doesnt exist, then we return to a correct page the warning isnt removed
-
 
 # Recommendations from project
 In no particular order.
@@ -330,6 +330,10 @@ custom validation component to handle modelstate validation and Blazors validato
 - Interactive Auto Prerendered Blazor pages and WebAssembly Prerender is probably they way we want to go. As the browser does more work.
 - Have a browser set to NoJs for testing components
 
+# Setup **TODO**
+- NoJSBaseController ReturnRedirect uses the localhost address so needs changing
+- 
+
 # Trouble Shooting
 - if assembled files break try deleting them and then starting not rebuilding.
 - blazor not detecting any components! - restarted visual studio i was running two instances for comparison
@@ -338,19 +342,4 @@ custom validation component to handle modelstate validation and Blazors validato
 - We have an IAccessible interface for our components leveraging C# functionality is an advantage of using blazor so we should see where it can be implemented
 	- This project does do this, though it is necessary to chain the parameters down through the components, which means the summaries are lost.
 	There is probably a better way of doing this. It may be with cascading. It maybe with inheritance rather than interfaces.
-
-
-
-# End of readme this is just notes for project and project review, also see other md docs in this folder
-
-
-
-
-## Carpark
-
-"
-Model Binding: By using EditContext, you're not directly binding the model to the form; rather, you're binding the form to an object 
-that encapsulates both the model data and the validation state. This allows you to keep validation state and data separate if needed.
-
-"
 

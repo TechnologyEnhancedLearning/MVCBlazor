@@ -10,7 +10,7 @@ namespace LH.MVCBlazor.Server.ViewModels
 {
     public class CharactersViewModel
     {
-        //Kind of makes sense to be list cartoon qqqq
+    
 
         public GE_FavouriteCharacterFormModel LHB_FavouriteCharacterFormModel { get; set; } = new();
         public string some_CharactersViewModel_specific_UI_String { get; set; } = "UnSet";
@@ -23,7 +23,7 @@ namespace LH.MVCBlazor.Server.ViewModels
         }
 
 
-
+        // QQQQ Logic here to handle model state for noJS should it be
         public CharactersViewModel(List<GE_CharacterModel> characters, GE_FavouriteCharacterFormModel CurrentFormData = null)
         {
             LHB_FavouriteCharacterFormModel = CurrentFormData?? LHB_FavouriteCharacterFormModel;

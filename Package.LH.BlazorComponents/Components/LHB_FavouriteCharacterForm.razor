@@ -35,7 +35,6 @@
             @bind-RadioListValueToSet="@LHB_FavouriteCharacterFormModel.FavouriteCharacterId"
             RadioGroupId=@($"characterRadioGroup-{"Cartoon.Id"}")
             RadioItems="@Characters" 
-            AspFor="@AspFor" 
             Label="@Label" 
             HintText="@RadioListHint" 
             Class=""
@@ -43,8 +42,7 @@
             GetLabel="@(character => $"{character.ToString()}")"
             GetValue="@(character => character.Id)"
             IsPageHeading="@IsPageHeading"
-            Required="@Required"
-            RequiredClientSideErrorMessage=""
+
            />
         }
 
@@ -61,12 +59,6 @@
     [Parameter, EditorRequired]
     public string Action { get; set; }
 
-
-    [Parameter, EditorRequired]
-    public string AspFor { get; set; }
-
-    [Parameter, EditorRequired]
-    public bool Required { get; set; }
 
 
     [Parameter]
