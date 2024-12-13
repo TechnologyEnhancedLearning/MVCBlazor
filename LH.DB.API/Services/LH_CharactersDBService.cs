@@ -44,7 +44,6 @@ namespace LH.DB.API.Services
 
         }
 
-       
 
         public async Task<GE_ServiceResponse<List<GE_CharacterModel>>> ReplaceDBWithList(List<GE_CharacterModel> characters)
         {

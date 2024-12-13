@@ -11,11 +11,6 @@ namespace LH.DB.API.Data
 
         public List<GE_CartoonModel> Cartoons { get; private set; }
         public List<LH_MeetingModel> Meetings { get; private set; }
-        //public void AddAttendeeToMeeting(int meetingId, LH_AttendeeModel attendee)
-        //{
-        //    Meetings.Single(x => meetingId == x.Id).People.Add(attendee);
-        //    ReassignIds<LH_AttendeeModel>(Meetings); // Reassign IDs after adding the character
-        //}
         public SimulatedDatabase()
         {
             Cartoons = new List<GE_CartoonModel>();
@@ -27,13 +22,8 @@ namespace LH.DB.API.Data
         public void AddCharacterToCartoon(int cartoonId, GE_CharacterModel character)
         {
             Cartoons.Single(x=>cartoonId == x.Id).People.Add(character);
-           // ReassignCartoonsIds(Cartoons); // Reassign IDs after adding the character
-           // ReassignListGroupPeopleIds<GE_CharacterModel>(Cartoons); //GE_PersonBase
+
             ReassignListGroupPeopleIds<GE_CharacterModel>(Cartoons.Cast<GE_GroupBase<GE_CharacterModel>>().ToList());
-
-            //        'System.Collections.Generic.List<Package.Shared.Entities.Models.GE_CartoonModel>' to 
-            //'System.Collections.Generic.List<Package.Shared.Entities.BaseClasses.GE_GroupBase<Package.Shared.Entities.Models.GE_CharacterModel>>'  
-
 
         }
         public void AddAttendeeToMeeting(int meetingId, LH_AttendeeModel attendee)
@@ -45,52 +35,11 @@ namespace LH.DB.API.Data
         }
 
 
-        private void ReassignCartoonsIds(List<GE_CartoonModel> listToReassign)
-        {
-            foreach (GE_CartoonModel group in listToReassign)
-            {
-                // Reassign Ids for each person in the group
-                for (int i = 0; i < group.People.Count; i++)
-                {
-                    // Assuming IGE_Person has an Id property that can be set
-                    group.People[i].Id = i + 1;
-                }
-            }
-        }
 
-        //Public because not being a real db its not adding it own ids etc
         public void ReassignListGroupPeopleIds<T>(List<GE_GroupBase<T>> groups) where T : IGE_Person
         {
             foreach (GE_GroupBase<T>  group in groups)
             {
-                ReassignGroupPeopleIds<T>(group);
-            }
-        }
-        private void ReassignGroupPeopleIds<T>(GE_GroupBase<T> group) where T : IGE_Person
-        {
-
-                ReassignPeopleIds<T>(group.People);
-         
-        }
-        private void ReassignPeopleIds<T>(List<T> people) where T : IGE_Person
-        {
-      
-                // Reassign Ids for each person in the group
-                for (int i = 0; i < people.Count; i++)
-                {
-                    // Assuming IGE_Person has an Id property that can be set
-                    people[i].Id = i + 1;
-                }
-            
-        }
-
-        private void ReassignIds<T, TGroup>(List<TGroup> listToReassign)
-            where T : IGE_Person
-            where TGroup : GE_GroupBase<T>
-       // private void ReassignIds<T>(List<GE_GroupBase<T>> listToReassign) where T : GE_PersonBase
-        {
-            foreach (var group in listToReassign)
-            {
                 // Reassign Ids for each person in the group
                 for (int i = 0; i < group.People.Count; i++)
                 {
@@ -99,6 +48,7 @@ namespace LH.DB.API.Data
                 }
             }
         }
+   
         private void PrepopulateCartoonsAndCharacters()
         {
             // Create cartoons and add characters to them
@@ -125,17 +75,8 @@ namespace LH.DB.API.Data
             edgerunners.People.Add(new GE_CharacterModel(14, "Lucy", "of the Edgerunner Gang", false, true, "https://example.com/lucy.png"/*, edgerunners*/));
             Cartoons.Add(edgerunners);
 
-            // Assign IDs based on character position in their respective cartoon
-            //AssignCharacterIds();
+
         }
-
-       
-
-
-
-
-
-
         private void PrepopulateMeetingsAndAttendees()
         {
             // Create meetings and add attendees to them

@@ -10,7 +10,7 @@ using Package.Shared.BlazorComponents.Enums;
 
 namespace LH.MVCBlazor.Server.Controllers
 {
-    [Route("Attendees/NoJS")] //Throughout would be nice to clearly show the difference as a seperate route
+    [Route("Attendees/NoJS")]
     public class Attendees_NoJSController : NoJSBaseController
     {
 

@@ -9,7 +9,6 @@ using Package.Shared.Services.Interfaces;
 namespace LH.DB.API.Controllers
 {
     [ApiController]
-    //[Route("api/[controller]")]
     [Route("api/lh-db/characters")]
     public class LH_CharactersDBController : ControllerBase
     {
@@ -21,7 +20,6 @@ namespace LH.DB.API.Controllers
             Console.WriteLine("API : Constructor");
         }
 
-        // GET: api/characters/loadCharacters
         [HttpGet("loadCharacters")]
         public async Task<ActionResult<GE_ServiceResponse<List<GE_CharacterModel>>>> LoadCharacters()
         {
@@ -31,12 +29,10 @@ namespace LH.DB.API.Controllers
             return Ok(result);
         }
 
-        // POST: api/characters/replaceDBWithList
         [HttpPost("replaceDBWithList")]
         public async Task<ActionResult<GE_ServiceResponse<List<GE_CharacterModel>>>> ReplaceDBWithList([FromBody] List<GE_CharacterModel> characters)
         {
             
-
             // Update the database with the provided characters list
             await _charactersDbService.ReplaceDBWithList(characters);
 

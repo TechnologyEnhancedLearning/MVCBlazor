@@ -16,9 +16,6 @@ namespace LH.MVCBlazor.Server.Controllers
         {
             _attendeesStateService = attendeesStateService;
         }
-
-        //Here the MVCRendered is added because we can render these same modes in our Blazor pages and we dont have to have seperate path stems for our blazor pages
-        //So to illustrate this it is in the page name
         
         //Get
         [HttpGet("/Attendees/Static-MVCRendered")]
@@ -66,7 +63,7 @@ namespace LH.MVCBlazor.Server.Controllers
                 // Default to Static if no match
                 renderMode = GB_ComponentTagRenderMode.Static;
                 //This could be the noJs so lets do static as a fallback
-                //throw new Exception("Rendermode not in the enum"); //this is just for convenience we wouldnt have render mode routes
+
             }
 
             return renderMode.ToString();

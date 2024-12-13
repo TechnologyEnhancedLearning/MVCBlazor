@@ -37,9 +37,7 @@
 </h3>
 
 <h3>A generic component because so far consuming them all via LH components</h3>
-@{
-    GB_ButtonType ButtonType = GB_ButtonType.Success;
-}
+
 <component type="typeof(GB_WriteLineButton)" render-mode="ServerPrerendered"
            param-TextToPrintToConsole="@("Hello from MVC!")" 
-           param-ButtonType="@(ButtonType)"/>
+           param-ButtonType="@(GB_ButtonType.Success)" />

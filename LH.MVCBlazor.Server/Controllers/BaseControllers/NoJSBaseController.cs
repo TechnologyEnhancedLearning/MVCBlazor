@@ -34,13 +34,11 @@ namespace LH.MVCBlazor.Server.Controllers.BaseControllers
         }
         protected ActionResult ReturnRedirect(string returnUrl)
         {
-            //qqqq check this is safe
-            // Check if the return URL is a local URL
+
             //!!! Warning not for production
-            // Assuming returnUrl is defined and you want to trim the protocol (http:// or https://)
             string trimmedReturnUrlNotForProduction = returnUrl.Replace("https://", "")
                                                                .Replace("http://", "")
-                                                                .Replace("localhost:44343", "");
+                                                               .Replace("localhost:44343", "");
 
             if (IsValidMVCPageRoute(trimmedReturnUrlNotForProduction) //MVC Routes
                 || BlazorPageRegistryService.BlazorPageRoutes.Contains(trimmedReturnUrlNotForProduction) //Blazor page routes
@@ -67,14 +65,7 @@ namespace LH.MVCBlazor.Server.Controllers.BaseControllers
         {
             returnUrl = returnUrl ?? Request.Headers["Referer"].ToString();
             return View(DefaultViewRouteController, viewModel);
-            // If the viewModel is not provided, simply return the "Index" view with the default action and controller
-            if (viewModel == null)
-            {
-                return View(DefaultRouteAction, DefaultRouteController);
-            }
-
-            // Return the "Index" view with the provided viewModel
-            return View(DefaultRouteAction, viewModel);
+           
         }
         private bool IsValidMVCPageRoute(string url)
         {

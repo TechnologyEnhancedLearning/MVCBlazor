@@ -7,7 +7,6 @@ using Package.Shared.Entities.Communication;
 namespace LH.DB.API.Controllers
 {
     [ApiController]
-    //[Route("api/[controller]")]
     [Route("api/lh-db/attendees")]
     public class LH_AttendeesDBController : ControllerBase
     {
@@ -19,7 +18,7 @@ namespace LH.DB.API.Controllers
             Console.WriteLine("API : Constructor");
         }
 
-        // GET: api/attendees/loadAttendees
+   
         [HttpGet("loadAttendees")]
         public async Task<ActionResult<GE_ServiceResponse<List<LH_AttendeeModel>>>> LoadAttendees()
         {
@@ -28,7 +27,7 @@ namespace LH.DB.API.Controllers
             return Ok(result); 
         }
 
-        // POST: api/attendees/replaceDBWithList
+ 
         [HttpPost("replaceDBWithList")]
         public async Task<ActionResult<GE_ServiceResponse<List<LH_AttendeeModel>>>> ReplaceDBWithList([FromBody] List<LH_AttendeeModel> attendees)
         {

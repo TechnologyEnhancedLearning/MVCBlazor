@@ -11,7 +11,7 @@ namespace LH.DB.API.Services
     public class LH_AttendeesDBService : ILHS_AttendeesDbService
     {
         private readonly ISimulatedDatabase _database;
-        private readonly List<LH_AttendeeModel> _attendees;
+        
         public LH_AttendeesDBService(ISimulatedDatabase database)
         {
             _database = database;
@@ -61,10 +61,10 @@ namespace LH.DB.API.Services
 
             try
             {
-                LH_AttendeeModel attendeeToRemove = _attendees.Single(x => x.ClientTemporaryId == ClientTemporaryId);
+                LH_AttendeeModel attendeeToRemove = _database.Meetings.First().People.Single(x => x.ClientTemporaryId == ClientTemporaryId);
 
-                _attendees.Remove(attendeeToRemove);
-                //await _database.SaveChangesAsync(); isnt a real  db
+                _database.Meetings.First().People.Remove(attendeeToRemove);
+                //would have an await but isnt a real  db
 
                 return new GE_ServiceResponse<bool>{ Data = true} ;
 

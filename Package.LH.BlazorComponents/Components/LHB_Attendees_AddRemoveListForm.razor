@@ -1,8 +1,6 @@
 ﻿@inherits GB_ComponentBase 
 @inject ILHS_AttendeesStateService LHS_AttendeesStateService
-@* 
-    method="post"
-    id="AddAttendeeForm-UniqueId" *@
+
 <GB_EditForm 
     Title=@FormTitleForAddAttendee 
     Action="@ActionForAddAttendee" 
@@ -15,18 +13,17 @@
     SubmitButtonAssistiveText="Adds an attendee"
     >
         <EditFormContents>
-        @*It is in the LH client but it is hardcoded we could extract this form **TODO** *@
+        @*QQQQ this could be extracted as label input and validation, or a first second name generic component - would need our own version of validation message to handle nojs*@
         <div>
                 <label for="@($"newFirstName-{UniqueId}")">First Name:</label>
                 <InputText  DisplayName="First Name" placeholder="Enter first name"  @bind-Value="@newAttendee.FirstName" class="form-control" id="@($"newFirstName-{UniqueId}")" required/>
-                @* <ValidationMessage For="@(() => newAttendee.FirstName)" /> *@@*Just so can see seperately handled validation*@
+                <ValidationMessage For="@(() => newAttendee.FirstName)" /> 
         </div>
         <div>
                 <label for="@($"newSecondName-{UniqueId}")">Second Name:</label>
                 <InputText  DisplayName="Second Name" placeholder="Enter Second name"  @bind-Value="@newAttendee.SecondName" class="form-control" id="@($"newSecondName-{UniqueId}")" required/>
                 <ValidationMessage For="@(() => newAttendee.SecondName)" />
         </div>
-        <p>We would need a GB_ version of validation message using our interface for viewstate to have these validators showing with nojs </p>
     </EditFormContents>
 </GB_EditForm>
 
@@ -51,10 +48,10 @@ else
             ListTitle="Attendee List"
             GetItemText="@(attendee => attendee.ToString())"
             ListButton="@(RenderDangerButton)" />
-@*Probably should be part of the list as optional*@
+@*QQQQ Probably should be part of the list as optional*@
 @if(JSIsEnabled){
     <GB_Button_I 
-        ButtonText="Set Database To This (Currently changes are in the clientside stateservice)"
+        ButtonText="Set Database To This"
         AriaLabel="Save the current list to the database"
         Title="Save List"
         AssistiveText="Click to save the current list"

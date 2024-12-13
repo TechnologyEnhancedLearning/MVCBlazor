@@ -3,13 +3,17 @@
 - refactor components now working well, especially parameter passing
 - Complete todos in readme like architecture diagram
 - make layout warning unnested for blazor
-
+- top to bottom refactor
 
 
 
 # About
 .Net 8 MVC Blazor project, with View Components.
 
+## Good to know
+The project has lists as a database and an API for it.
+They are in a list of lists to represent some database complexity.
+Currently First() is used throughout just for simplicity and only the first list in lists is used.
 
 
 ## Purpose
