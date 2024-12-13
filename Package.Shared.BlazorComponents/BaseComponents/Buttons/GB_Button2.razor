@@ -20,27 +20,46 @@ SubmitButtonForForm and ButtonWithFallBackNoJSFormSubmission
 Maybe a bool for FallBackForm
 By design we do want to force JS functionality to be supported
 
+This will not change the need for a flag for NoJS because buttons will need to be submit. 
+
+Could all buttons be editforms and the button be submit and form action just be what a button action would be
+so blazor and NoJS can work
 
 *@
 
-@if (JSIsEnabled)
-{
-    @*Splatting example but a common button class using just IAccessibleComponent may make a better example *@
-    <GB_Button_I @attributes="GetCommonButtonAttributes()"
-                 ButtonType="@ButtonType"
-                 OnClick="@OnClick" />
-}
-else
-{
-    <GB_Button_S @attributes="GetCommonButtonAttributes()"
-                 ButtonType="@ButtonType"
-                 ActionUrl="@ActionUrl"
-                 FormMethod="@FormMethod"
-                 FormData="@FormData" />
-}
 
 
-@code {
+<div class="nhsuk-button-container">
+    @*a type enum with reset would be nice*@
+    <button type="@(IsSubmit?"submit":"button")"
+            class="nhsuk-generic-button @ButtonType.GetButtonClass() @CustomCssClass"
+            aria-label="@AriaLabel"
+            aria-role="@AriaRole"
+            aria-describedby="@AriaDescribedBy"
+            title="@Title"
+            tabindex="@TabIndex"
+            @onclick="OnClick">
+
+        @if (ShowIcon)
+        {
+            <i class="bi bi-exclamation-triangle nhsuk-icon" aria-hidden="true"></i> <!-- Example Bootstrap Icon -->
+        }
+        @ButtonText
+        @if (!string.IsNullOrEmpty(AssistiveText))
+        {
+            <span id="@AriaDescribedBy" class="nhsuk-assistive-text">@AssistiveText</span> <!-- Hidden for screen readers -->
+        }
+    </button>
+    @*Hidden form for nojs*@
+     <form action="@ActionUrl"
+          style="display:inline;"
+          role="form"
+          tabindex="-1"
+          method="@FormMethod"/>
+</div>
+
+@code 
+{
 
     [Parameter] public GB_ButtonType ButtonType { get; set; } = GB_ButtonType.Generic; // Default to Generic
 
@@ -110,4 +129,6 @@ else
             { "AssistiveText", AssistiveText }
         };
     }
+
+
 }

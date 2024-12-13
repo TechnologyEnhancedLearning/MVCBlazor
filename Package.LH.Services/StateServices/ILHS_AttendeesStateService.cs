@@ -25,6 +25,8 @@ namespace Package.LH.Services.StateServices
 
         List<LH_AttendeeModel> Attendees { get;  }
 
+        //QQQQ Event Action Subscription here and make it fully handle state and components less stateful
+
 
     }
 }

@@ -23,7 +23,7 @@ namespace Package.LH.Services.StateServices
 
         public LHS_AttendeesStateService(IHttpClientFactory httpClientFactory, IOptions<LHS_AttendeesAPIConfiguration> attendeesAPIConfiguration)
         {
-            // _http = http;
+        
             _attendeesAPIConfiguration = attendeesAPIConfiguration.Value;
             _attendeesAPIEndpoints = _attendeesAPIConfiguration.Endpoints.Attendees;
             _http = httpClientFactory.CreateClient(_attendeesAPIConfiguration.ClientName);
