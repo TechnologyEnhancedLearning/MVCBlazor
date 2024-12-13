@@ -292,7 +292,8 @@ This project is not currently a reference for how to but an example of what can 
 
 # Recommendations from project
 In no particular order.
-
+- if all buttons are to work NoJS and for ease of not splitting to two implementations of html. Use editform with submit buttons for all buttons. and onsubmit will be overriden by blazor.
+This will require buttons to not be used within editforms at all (excluding a forms submit). This way it can be NoJS compatible
 - If we want to redirect from blazor pages for nojs use nojs script tag and meta tag to redirect. This is because we 
 run the code as we prerender, using 
 navigationmanager in prerendering stages will happen 

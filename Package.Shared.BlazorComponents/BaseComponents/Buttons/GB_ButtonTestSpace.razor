@@ -1,5 +1,5 @@
-﻿@inherits GB_ComponentBase
-@implements IGB_AccessibleComponent
+﻿@* @inherits GB_ComponentBase
+ @implements IGB_AccessibleComponent *@
 
 
 
@@ -27,15 +27,18 @@ so blazor and NoJS can work
 
 
 1. Handle Submit Vs Not Submit
-    - Submit would have editform so would simply 
+    - Submit would have editform
+    - extract button for this and call ButtonForForm
+2. OnClick to become OnSubmit
+3. Accessibility
 
 *@
 
-@
 
-<div class="nhsuk-button-container">
+
+@* <div class="nhsuk-button-container">
     @*a type enum with reset would be nice*@
-    <button type="@(IsSubmit?"submit":"button")"
+@*     <button type="@(IsSubmit?"submit":"button")"
             class="nhsuk-generic-button @ButtonType.GetButtonClass() @CustomCssClass"
             aria-label="@AriaLabel"
             aria-role="@AriaRole"
@@ -53,15 +56,15 @@ so blazor and NoJS can work
         {
             <span id="@AriaDescribedBy" class="nhsuk-assistive-text">@AssistiveText</span> <!-- Hidden for screen readers -->
         }
-    </button>
+    </button> *@
     @*Hidden form for nojs*@
-    <form action="@ActionUrl"
+@*     <form action="@ActionUrl"
           style="display:inline;"
           role="form"
           tabindex="-1"
           method="@FormMethod" />
-</div>
-
+</div> *@
+@* 
 @code
 {
 
@@ -85,4 +88,4 @@ so blazor and NoJS can work
 
 
 
-}
+} *@
