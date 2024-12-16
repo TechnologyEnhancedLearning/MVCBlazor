@@ -212,3 +212,10 @@ button.accept-policy {
     /*padding: 0.5rem 0;*/ /* Add some vertical padding */
     /*border-bottom: 1px solid #d8d8d8;*/ /* Optional: Separator line */
 }
+.mvcHosted {
+    background-color:lightpink!important;
+}
+.blazorHosted {
+    background-color: lightblue !important;
+}
+

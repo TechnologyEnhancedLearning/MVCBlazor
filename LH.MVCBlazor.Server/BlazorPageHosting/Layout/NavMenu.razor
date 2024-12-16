@@ -1,5 +1,6 @@
 ﻿@inherits LayoutComponentBase
-<h1 style="background-color:@(IsMVCHosted ? "lightpink" : "lightblue")!important;">@(IsMVCHosted ? "IsMVCHosted" : "IsBlazorHosted")</h1>
+@* <h1 style="background-color:@(IsMVCHosted ? "lightpink" : "lightblue")!important;">@(IsMVCHosted ? "IsMVCHosted" : "IsBlazorHosted")</h1> *@
+<GB_BoolH1 Bool="IsMVCHosted" ClassStyles1="mvcHosted" Text1="MVC Hosted" ClassStyles2="blazorHosted" Text2="Blazor Hosted"/>
 <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
     <div class="container-fluid" style="background-color:@(IsMVCHosted ? "lightpink" : "lightblue")!important;">
         <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">

@@ -240,9 +240,9 @@ This project is not currently a reference for how to but an example of what can 
 
 
 ## Desired Future Additions
+- use layoutcomponentbase for render pages (ensure the way we are hosting it works)
 - Revisit stateservices to include  public event Action AttendeesChanged; subscribe statehaschanged to this
 	- all handling occuring in state service
-	
 - Exploration of design allowing **ZERO** nojs splits and design principles to support it
 	- if there are none then static, prerender pages will just work
 	- also investigate option of tracking prerender and static so they are rendered as if NoJS 
@@ -349,3 +349,5 @@ custom validation component to handle modelstate validation and Blazors validato
 	- This project does do this, though it is necessary to chain the parameters down through the components, which means the summaries are lost.
 	There is probably a better way of doing this. It may be with cascading. It maybe with inheritance rather than interfaces.
 
+# Things to try in the project to gain familiarity
+- replace the li links with a blazor component that takes class the href or two one for mvc and blazor

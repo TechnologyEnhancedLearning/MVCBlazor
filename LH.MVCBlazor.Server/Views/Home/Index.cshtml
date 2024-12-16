@@ -1,9 +1,10 @@
 ﻿@using Package.Shared.BlazorComponents.Components.Buttons
 @using Package.Shared.BlazorComponents.Enums
 @{
-    ViewData["Title"] = "Home Page";
+    string Title = "Home Page";
+    ViewData["Title"] = Title;
 }
-
+<h1 class="mvcHosted">@Title</h1>
 <h3>
     Pages and what they show
 </h3>
