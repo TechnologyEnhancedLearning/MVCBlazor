@@ -1,4 +1,5 @@
-﻿@using Package.Shared.BlazorComponents.Components.Buttons
+﻿@using Package.LH.BlazorComponents.Components.Pages.RenderModePages.AttendeesRenderModePages
+@using Package.Shared.BlazorComponents.Components.Buttons
 @using Package.Shared.BlazorComponents.Enums
 @{
     string Title = "Home Page";
@@ -42,3 +43,7 @@
 <component type="typeof(GB_WriteLineButton)" render-mode="ServerPrerendered"
            param-TextToPrintToConsole="@("Hello from MVC!")" 
            param-ButtonType="@(GB_ButtonType.Success)" />
+
+<h1>Little test its a page rendereed as a component using a different render mode in theory should work but doesnt</h1>
+<component type="typeof(WebAssemblyPrerenderedFalseAttendeesPage)" render-mode="ServerPrerendered" />
+           

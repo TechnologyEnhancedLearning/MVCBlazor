@@ -3,9 +3,10 @@
 @rendermode @(new InteractiveWebAssemblyRenderMode(prerender: true))//even to get to the noscript tag we need prerender true (though other options for redirect)
 @inject NavigationManager NavigationManager
 @inherits GB_PageBase
-<PageTitle>@PageTitle</PageTitle>
-<h1>@PageTitle</h1>
-<h3>IfNoJSRedirectHome</h3>
+<LHB_RenderModePage PageTitle="@PageTitle">
+    <h3>IfNoJSRedirectHome</h3>
+</LHB_RenderModePage>
+
 
 
  <noscript>
@@ -25,7 +26,7 @@ else
 
 @code {
     //Dont really need it to cascade or be setable here but shows it working
-    [CascadingParameter] public override string PageTitle { get; set; } = "Interactive Auto Prerender False Blazor Page - rederict if no js"; // Set this for each page
+    [Parameter] public override string PageTitle { get; set; } = "Interactive Auto Prerender False Blazor Page - rederict if no js"; // Set this for each page
 
     //If nojs no code will run after prerender and update the render so we can on initialise navigate away, or have a message, but not both.
 

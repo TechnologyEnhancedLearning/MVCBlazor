@@ -1,11 +1,12 @@
 ﻿@page "/Attendees/InteractiveAuto-BlazorPage"
 @rendermode InteractiveAuto
 @inherits GB_PageBase
-<PageTitle>@PageTitle</PageTitle>
-<h1 class="blazorHosted">@PageTitle</h1>
-<AttendeesPageComponent />
+@layout LHB_RenderModePageLayout
+<LHB_RenderModePage PageTitle="@PageTitle">
+    <AttendeesPageComponent />
+</LHB_RenderModePage>
 
 @code {
     //Dont really need it to cascade or be setable here but shows it working
-    [CascadingParameter] public override string PageTitle { get; set; } = "InteractiveAuto Blazor Page"; // Set this for each page
+    [Parameter] public override string PageTitle { get; set; } = "InteractiveAuto Blazor Page"; // Set this for each page
 }

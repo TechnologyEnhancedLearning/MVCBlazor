@@ -1,12 +1,12 @@
 ﻿@page "/Characters/WebAssemblyPrerenderedFalse-BlazorPage"
-
 @rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
 @inherits GB_PageBase
-<PageTitle>@PageTitle</PageTitle>
-<h1>@PageTitle</h1>
+@layout LHB_RenderModePageLayout
 
-<CharactersPageComponent />
+<LHB_RenderModePage PageTitle="@PageTitle">
+    <CharactersPageComponent />
+</LHB_RenderModePage>
 @code {
     //Dont really need it to cascade or be setable here but shows it working
-    [CascadingParameter] public override string PageTitle { get; set; } = "InteractiveWebAssemblyPrerenderedFalse Blazor Page"; // Set this for each page
+    [Parameter] public override string PageTitle { get; set; } = "InteractiveWebAssemblyPrerenderedFalse Blazor Page"; // Set this for each page
 }
