@@ -240,7 +240,7 @@ This project is not currently a reference for how to but an example of what can 
 
 
 ## Desired Future Additions
-- use layoutcomponentbase for render pages (ensure the way we are hosting it works)
+- use layoutcomponentbase for render pages (ensure the way we are hosting it works) replace gb_pagebase
 - Revisit stateservices to include  public event Action AttendeesChanged; subscribe statehaschanged to this
 	- all handling occuring in state service
 - Exploration of design allowing **ZERO** nojs splits and design principles to support it
