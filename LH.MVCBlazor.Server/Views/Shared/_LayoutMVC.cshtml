@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <base href="~/" />
@@ -10,7 +11,7 @@
     <link rel="stylesheet" href="~/css/main.css" />
     <link rel="stylesheet" href="~/css/nhsuk/nhsuk.css" />
     <link rel="stylesheet" href="~/css/nhsuk/core/all.css" />
-    @*     <script src="~/Scripts/nhsuk.js" defer></script> @*qqqq check works*@
+    @*     <script src="~/Scripts/nhsuk.js" defer></script> *@
     <script src="~/js/nhsuk-9.0.1.min.js" defer></script>
     <component type="typeof(Microsoft.AspNetCore.Components.Web.HeadOutlet)" render-mode="ServerPrerendered" /> @* qqqq can we try the webassembly come back to this OR not specify*@
 </head>
@@ -24,7 +25,7 @@
         //this one is just for nhsuk components
     </script>
     <header>
-        @*qqqq We use the controller options this way, but its shared, could seperate controller and blazor pages*@
+        @* We lose the controller options this way, but its shared, could seperate controller and blazor pages*@
            <component type="typeof(NavMenu)" param-IsMVCHosted="true" render-mode="Static" />
     </header>
     <div class="container">

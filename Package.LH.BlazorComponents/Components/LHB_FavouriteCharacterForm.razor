@@ -13,14 +13,14 @@
     SubmitButtonTitle="Save Favourite Character"
 >
     <EditFormContents>
-        <div class="form-group">
+        <div class="form-group" style="margin:10px;padding:10px;">
             @{
-                string placeholderTxt = "We just want to see ModelStateErrors in nojs so let me be empty so i can error;";
+                string placeholderTxt = "We just want to see ModelStateErrors in nojs so let me be empty so i can error";
             }
-            <label for="TestModelStateWithRequired">placeholderTxt</label>
+            <label for="TestModelStateWithRequired">@placeholderTxt</label>
             <InputText id="TestModelStateWithRequired"
             class="form-control"
-            DisplayName="@placeholderTxt"
+            DisplayName="@(placeholderTxt)"
             @bind-Value="LHB_FavouriteCharacterFormModel.TestModelStateWithRequired" />
             <ValidationMessage For="@(() => LHB_FavouriteCharacterFormModel.TestModelStateWithRequired)" />
         </div>
@@ -28,22 +28,25 @@
         {
             <h3>...Characters Are Loading</h3>
         }else{
-        <GB_VCB_Radios
-            TItem="GE_CharacterModel"
-            TValue="int"
-            ValueToSetPostName="@($"{nameof(LHB_FavouriteCharacterFormModel)}.{nameof(LHB_FavouriteCharacterFormModel.FavouriteCharacterId)}")"
-            @bind-RadioListValueToSet="@LHB_FavouriteCharacterFormModel.FavouriteCharacterId"
-            RadioGroupId=@($"characterRadioGroup-{"Cartoon.Id"}")
-            RadioItems="@Characters" 
-            Label="@Label" 
-            HintText="@RadioListHint" 
-            Class=""
-            GetHint="@(character => "Click to select")"
-            GetLabel="@(character => $"{character.ToString()}")"
-            GetValue="@(character => character.Id)"
-            IsPageHeading="@IsPageHeading"
+            <div style="margin:10px;padding:10px;">
+                <GB_VCB_Radios
+                    TItem="GE_CharacterModel"
+                    TValue="int"
+                    ValueToSetPostName="@($"{nameof(LHB_FavouriteCharacterFormModel)}.{nameof(LHB_FavouriteCharacterFormModel.FavouriteCharacterId)}")"
+                    @bind-RadioListValueToSet="@LHB_FavouriteCharacterFormModel.FavouriteCharacterId"
+                    RadioGroupId=@($"characterRadioGroup-{"Cartoon.Id"}")
+                    RadioItems="@Characters" 
+                    Label="@Label" 
+                    HintText="@RadioListHint" 
+                    Class=""
+                    GetHint="@(character => "Click to select")"
+                    GetLabel="@(character => $"{character.ToString()}")"
+                    GetValue="@(character => character.Id)"
+                    IsPageHeading="@IsPageHeading"
+            
+                   />
 
-           />
+           </div>
         }
 
    
@@ -77,7 +80,7 @@
     [Parameter]
     public List<GE_CharacterModel> Characters { get; set; } = null; //For model seeding for speed
 
-    private string FormTitle = "Favourite Character Form";
+    private string FormTitle = "Required text field for submitting test input";
     private bool CharactersAreLoading { get; set; } = true;
 
 

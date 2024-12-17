@@ -99,6 +99,7 @@ button.accept-policy {
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    margin:10px;
 }
 
     /* Generic button hover effect */
@@ -162,3 +163,59 @@ button.accept-policy {
     .nhsuk-info-button:hover {
         background-color: #004a8b; /* Darker blue on hover */
     }
+
+.nhsuk-assistive-text {
+    border: 0;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+}
+
+.nhsuk-button-container
+{
+    display: flex; /* Use flexbox for alignment */
+    flex-wrap: wrap; /* Allow buttons to wrap on smaller screens */
+    gap: 1rem; /* Add spacing between buttons */
+    justify-content: flex-start; /* Align buttons to the left by default */
+    margin: 1rem 0; /* Add space around the container */
+    padding: 0; /* Ensure no padding in the container */
+}
+.nhsuk-inline-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: nowrap;
+    width: 100%;
+}
+.nhsuk-ul {
+    display: flex; /* Flexbox layout for the entire list */
+    flex-direction: column;
+}
+.list-container {
+    display: block;
+    margin: 0;
+    padding: 0;
+    width: fit-content;
+}
+
+/* Ensure each list item grows with its content */
+.nhsuk-list-item {
+    display: flex; /* Use flexbox for layout within each list item */
+    justify-content: space-between; /* Align content on either end */
+    align-items: center; /* Vertically align content */
+    flex-wrap: nowrap; /* Prevent wrapping of elements */
+    /*min-width: 0;*/ /* Prevent overflow issues */
+    /*padding: 0.5rem 0;*/ /* Add some vertical padding */
+    /*border-bottom: 1px solid #d8d8d8;*/ /* Optional: Separator line */
+}
+.mvcHosted {
+    background-color:lightpink!important;
+}
+.blazorHosted {
+    background-color: lightblue !important;
+}
+

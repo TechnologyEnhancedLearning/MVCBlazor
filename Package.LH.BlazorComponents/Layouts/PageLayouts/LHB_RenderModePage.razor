@@ -1,0 +1,28 @@
+﻿@layout LHB_RenderModePageLayout
+@inherits GB_PageBase
+<div class="renderPage">
+    <div class="renderPageTitleContainer">
+        <PageTitle>@PageTitle</PageTitle>
+        <h1 class="blazorHosted">@PageTitle</h1>
+        <div class="renderPageContentContainer">
+                @ChildContent
+        </div>
+    </div>
+    <RenderModeDisplayer />
+</div>
+
+
+@code {
+
+    [Parameter, EditorRequired]
+    public override string PageTitle { get; set; } = "Unset";
+    [Parameter, EditorRequired] public required RenderFragment ChildContent { get; set; }
+ 
+}
+
+@* 
+   //TODO
+        // - implement GB_PageBase
+        // - share interface maybe with basecomponent
+        // - have a layout component in a layout component
+        // *@

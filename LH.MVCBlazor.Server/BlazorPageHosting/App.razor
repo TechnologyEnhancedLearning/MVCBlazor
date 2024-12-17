@@ -13,7 +13,7 @@
 
 
      <script src="/js/nhsuk-9.0.1.min.js" defer></script> 
-    <HeadOutlet />
+    <HeadOutlet  /> @* @rendermode="InteractiveWebAssembly" *@<!--qqqq added because layout static //qqqq added because getting static layout" -->
     <PageTitle>Page Title</PageTitle>
 </head>
 <body>
@@ -25,7 +25,8 @@
         document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');
         //this one is just for nhsuk components
     </script>
-    <Routes />
+    
+    <Routes />@* @rendermode="InteractiveWebAssembly"  *@<!--qqqq added because layout static //qqqq added because getting static layout" -->
 
 
     <script src="lib/jquery/dist/jquery.min.js"></script>

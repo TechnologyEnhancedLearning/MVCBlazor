@@ -1,0 +1,22 @@
+﻿@inherits GB_ComponentBase
+<h1 class="@($"{AdditonalClassStyle} {(Bool ? @ClassStyles1 : ClassStyles2)}")">
+    @(Bool ? Text1 : Text2)
+</h1>
+@code {
+    [Parameter,EditorRequired]
+    public bool Bool {get;set;}
+
+    [Parameter, EditorRequired]
+    public string Text1 { get; set; }
+    [Parameter, EditorRequired]
+    public string Text2 { get; set; }
+
+    [Parameter, EditorRequired]
+    public string ClassStyles1 { get; set; }
+    [Parameter, EditorRequired]
+    public string ClassStyles2 { get; set; }
+
+    [Parameter]
+    public string AdditonalClassStyle { get; set; } = "";
+
+}

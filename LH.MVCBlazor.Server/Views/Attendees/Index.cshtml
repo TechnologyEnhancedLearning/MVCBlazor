@@ -16,13 +16,13 @@
     string Title = $"Attendees Page MVC RenderMode: {ViewBag.RenderMode}";
     ViewData["Title"] = Title;
 }
-<h1>@Title</h1>
+<h1 class="mvcHosted">@Title</h1>
 
 
 
 <div class="attendees-wrapper">
     <div class="attendees-form-container">
-        <h3 style="margin:10px;text-align:center">"Model.MeetingName"</h3>
+        <h3 style="margin:10px;text-align:center">Meeting</h3>
         <component type="typeof(LHB_Attendees_AddRemoveListForm)"
                    param-newAttendee="@Model.LH_AttendeeFormModel"
                    render-mode="@renderMode" />
