@@ -1,12 +1,12 @@
 ﻿@inherits LayoutComponentBase
 @layout _LayoutBlazor
-
+@* @rendermode InteractiveWebAssembly *@ //qqqq added because getting static layout
 
 <h3> Render Page Using Render Page Layout Nested Within _MainBlazorLayout</h3>
 <div class="renderPageContents" style="border:solid black 5px; padding:10px;">
     @Body
 </div>
-<RenderModeDisplayer />
+<h1>The layout is not interactive currently so only static components can go here</h1>
 
 @code {
     // [Parameter]
