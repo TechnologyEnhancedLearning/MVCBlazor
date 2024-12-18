@@ -1,0 +1,71 @@
+﻿@inherits GB_ComponentBase
+@implements IGB_AccessibleComponent
+
+
+<button type="submit"
+        class="nhsuk-generic-button @ButtonType.GetButtonClass() @ButtonSize.GetSizeClass() @CustomCssClass"
+        aria-label="@AriaLabel"
+        aria-role="@AriaRole"
+        aria-describedby="@AriaDescribedBy"
+        title="@ToolTipTitle"
+        tabindex="@TabIndex"
+    >
+
+    @if (!string.IsNullOrEmpty(IconCssClass) && ShowIcon)
+    {
+        <i class="bi @IconCssClass nhsuk-icon" aria-hidden="true"/>
+    }
+    @ButtonText
+    @if (!string.IsNullOrEmpty(AssistiveText))
+    {
+        <span id="@AriaDescribedBy" class="nhsuk-assistive-text">@AssistiveText</span> <!-- Hidden for screen readers -->
+    }
+</button>
+
+@code{
+
+    /// <summary>
+    /// Button Options
+    ///</summary>
+    [Parameter]
+    public GB_ButtonType ButtonType { get; set; } = GB_ButtonType.Generic; // Default to Generic
+
+    [Parameter]
+    public GB_ButtonSize ButtonSize { get; set; } = GB_ButtonSize.Medium;
+
+    [EditorRequired, Parameter]
+    public required string ButtonText { get; set; }
+
+    // Optional parameters for icon
+    [Parameter]
+    public bool ShowIcon { get; set; } = false; // Default is false
+
+    [Parameter]
+    public string IconCssClass { get; set; } = ""; // Default Bootstrap icon class
+
+    [Parameter] public string CustomCssClass { get; set; } = ""; // Custom CSS classes for additional styling
+
+
+    /// <summary>
+    /// Assisitive
+    /// </summary>
+    // This property is public, satisfying the interface, but not a Parameter because I wanted to force it to be used in the contract of the interface but the component can do that itself
+    public string AriaRole { get; set; } = "Button"; // Set to button by default
+    public string AriaDescribedBy { get; set; } = $"assistive-text-{Guid.NewGuid()}"; // Default ARIA described by (can be empty)
+
+    [EditorRequired, Parameter]
+    public required string AriaLabel { get; set; }
+
+    [EditorRequired, Parameter]
+    public required string AssistiveText { get; set; } 
+
+    // Tab index for keyboard navigation
+    [EditorRequired, Parameter]
+    public required int TabIndex { get; set; } = 0;
+
+    [EditorRequired, Parameter]
+    public required string ToolTipTitle { get; set; }
+
+    
+
+}

@@ -53,7 +53,7 @@ else
     <GB_Button_I 
         ButtonText="Set Database To This"
         AriaLabel="Save the current list to the database"
-        Title="Save List"
+        ToolTipTitle="Save List"
         AssistiveText="Click to save the current list"
         ShowIcon="true"
         IconCssClass="bi bi-save"
@@ -153,7 +153,7 @@ else
     private RenderFragment<LH_AttendeeModel> RenderDangerButton => attendee => @<GB_Button
                         ButtonText="Remove"
                         AriaLabel=@($"Remove attendee {attendee.FirstName} {attendee.SecondName}")
-                        Title="Remove the attendee from the list"
+                        ToolTipTitle="Remove the attendee from the list"
                         AssistiveText=@($"Remove attendee {attendee.FirstName} {attendee.SecondName} via inline buttons preceeding list items")
                         ShowIcon="true"
                         TabIndex="0"

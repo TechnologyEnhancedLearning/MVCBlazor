@@ -67,7 +67,6 @@ namespace LH.MVCBlazor.Server.Controllers
                     //"https://localhost:44343/Characters/ServerPrerendered-MVCRendered"
                     return RedirectToAction(returnUrl.Split('/').Last(), "Characters");
 
-      
                 }
                 
             }

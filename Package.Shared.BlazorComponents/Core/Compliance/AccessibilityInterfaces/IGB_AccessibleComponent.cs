@@ -28,7 +28,7 @@ namespace Package.Shared.BlazorComponents.Core.Compliance.AccessibilityInterface
         /// Example: "Click to save the current list".
         /// Tooltips can provide additional context or information to users hovering over the button.
         /// </remarks>
-        public string Title { get; set; }
+        public string ToolTipTitle { get; set; }
 
         /// <summary>
         /// Additional text for assistive technologies.

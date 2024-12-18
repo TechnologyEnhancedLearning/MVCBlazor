@@ -222,3 +222,44 @@ button.accept-policy {
     background-color: lightblue !important;
 }
 
+.nhsuk-large-button {
+    padding: 1.2em 2.4em; /* Larger padding for large buttons */
+    font-size: 18px;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.3s, transform 0.2s ease;
+}
+
+.nhsuk-medium-button {
+    padding: 0.8em 1.6em; /* Default padding for medium buttons */
+    font-size: 16px;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.3s, transform 0.2s ease;
+}
+
+.nhsuk-small-button {
+    padding: 0.4em 0.8em; /* Smaller padding for small buttons */
+    font-size: 14px;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.3s, transform 0.2s ease;
+}
+
+.nhsuk-inline-button {
+    padding: 0.4em 1.2em; /* Padding adjusted for inline buttons */
+    font-size: 14px;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    display: inline-block;
+    transition: background-color 0.3s, transform 0.2s ease;
+}
+
