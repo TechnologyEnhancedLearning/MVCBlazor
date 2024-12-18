@@ -27,12 +27,16 @@ Then there is less duplication.
             AssistiveText="@AssistiveText"
             TabIndex="@TabIndex"
             ToolTipTitle="@ToolTipTitle"
-            CustomCssClass="@CustomCssClass" />
+            CustomCssClass="@CustomCssClass" 
+            />
   
     }
     else
     {
-          <EditForm OnSubmit="OnClick"
+        @*FormData as the model doesnt really mean anything were not using it if its blazor*@
+          <EditForm 
+              Model="FormData"
+              OnSubmit="OnClick"
               action="@NoJSActionUrl"
               role="form"
               tabindex="-1"

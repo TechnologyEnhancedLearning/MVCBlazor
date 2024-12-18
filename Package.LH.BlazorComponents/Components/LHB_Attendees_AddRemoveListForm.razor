@@ -13,7 +13,7 @@
     SubmitButtonAssistiveText="Adds an attendee"
     >
         <EditFormContents>
-        @*QQQQ this could be extracted as label input and validation, or a first second name generic component - would need our own version of validation message to handle nojs*@
+        @* this could be extracted as label input and validation, or a first second name generic component - would need our own version of validation message to handle nojs*@
         <div>
                 <label for="@($"newFirstName-{UniqueId}")">First Name:</label>
                 <InputText  DisplayName="First Name" placeholder="Enter first name"  @bind-Value="@newAttendee.FirstName" class="form-control" id="@($"newFirstName-{UniqueId}")" required/>
@@ -50,17 +50,22 @@ else
             ListButton="@(RenderDangerButton)" />
 @*QQQQ Probably should be part of the list as optional*@
 @if(JSIsEnabled){
-    <GB_Button_I 
-        ButtonText="Set Database To This"
-        AriaLabel="Save the current list to the database"
-        ToolTipTitle="Save List"
-        AssistiveText="Click to save the current list"
-        ShowIcon="true"
-        IconCssClass="bi bi-save"
-        TabIndex="0"
-        ButtonType=GB_ButtonType.Success
-        OnClick="() => HandleSubmit()"
-    />
+
+        <GB_Button2 
+            IsSubmitButtonForEditForm="false"
+            ButtonSize="GB_ButtonSize.Medium"
+            ButtonText="Set Database To This"
+            AriaLabel="Save the current list to the database"
+            ToolTipTitle="Save List"
+            AssistiveText="Click to save the current list"
+            ShowIcon="true"
+            IconCssClass="bi bi-save"
+            TabIndex="0"
+            ButtonType=GB_ButtonType.Success
+            NoJSActionUrl=""
+            CustomCssClass=""
+            OnClick="() => HandleSubmit()" />
+            @* FormData = "null" *@
       
 }
 
@@ -150,16 +155,22 @@ else
     }
 
 
-    private RenderFragment<LH_AttendeeModel> RenderDangerButton => attendee => @<GB_Button
+  
+
+    private RenderFragment<LH_AttendeeModel> RenderDangerButton => attendee => @<GB_Button2
+                        IsSubmitButtonForEditForm="false"
+                        ButtonSize="GB_ButtonSize.Inline"
                         ButtonText="Remove"
                         AriaLabel=@($"Remove attendee {attendee.FirstName} {attendee.SecondName}")
                         ToolTipTitle="Remove the attendee from the list"
                         AssistiveText=@($"Remove attendee {attendee.FirstName} {attendee.SecondName} via inline buttons preceeding list items")
                         ShowIcon="true"
+                        IconCssClass="bi bi-trash"
                         TabIndex="0"
                         ButtonType=GB_ButtonType.Danger
-                        ActionUrl="Attendees/NoJS/RemoveAttendeeByTemporaryId"
-                        FormMethod="Post"
+                        NoJSActionUrl="Attendees/NoJS/RemoveAttendeeByTemporaryId"
                         FormData=@(new Dictionary<string, string>(){ {"clientTemporaryId", attendee.ClientTemporaryId.ToString()} })
-                        OnClick="() => RemoveAttendee(attendee)" />;
+                        CustomCssClass=""
+                        OnClick="() => RemoveAttendee(attendee)" 
+                        />;
 }
