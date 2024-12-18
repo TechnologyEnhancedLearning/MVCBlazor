@@ -5,7 +5,7 @@
 - make layout warning unnested for blazor
 - top to bottom refactor
 - extract the add person to a generic component
-- nolonger nhsuk css from issue with the library need to reinstate
+- nolonger nhsuk css from issue with the library need to reinstate - done 
 - redo buttons rather than static or nojs or interactive, just submit, formsubmit, button maybe
 - services still named correctly?
 
@@ -13,11 +13,19 @@
 
 # About
 .Net 8 MVC Blazor project, with View Components.
+Has Blazor pages and MVC Blazor components.
+
 
 ## Good to know
 The project has lists as a database and an API for it.
 They are in a list of lists to represent some database complexity.
 Currently First() is used throughout just for simplicity and only the first list in lists is used.
+
+The project has separate controllers for NoJS to illustrate Blazor components need only a view no data. 
+But this seperation bis nit recommended for production or required for Blazor.
+
+Also rendermode is passed so we can render different rendermode components off one conroller this is not required
+its only useful for this project displaying.
 
 The routes show the No
 
@@ -241,6 +249,11 @@ This project is not currently a reference for how to but an example of what can 
 
 ## Desired Future Additions
 - use layoutcomponentbase for render pages (ensure the way we are hosting it works) replace gb_pagebase
+	- read [Didnt work but worth more investigation for interactive layouts](https://stackoverflow.com/a/78574209/22951851)
+	- *Also this may be worth coming back to if we choose a global interactivity as the errors and some discussion suggest there is a clash* 
+	- maybe layouts need to be passed by a view if consuming pages as components??? 
+	- the outcome maybe to avoid layouts except main
+	- this could be important as its nice to change the layout based on admin privilage for example [layout patrick god]()
 - Revisit stateservices to include  public event Action AttendeesChanged; subscribe statehaschanged to this
 	- all handling occuring in state service
 - Exploration of design allowing **ZERO** nojs splits and design principles to support it
@@ -292,6 +305,13 @@ This project is not currently a reference for how to but an example of what can 
 
 # Recommendations from project
 In no particular order.
+- I think from discussing webassembly prerender will be the choice. Without blazor pages. but this project as reference if we want to introduce them.
+
+- current we do not have interactive layoutcomponents this is done via the header and route render mode being set in the app
+	- if we do blazor pages we should avoid all but the MainLayout as layout and rendermode are stripped when MVC renders MVC pages as components
+- currently we have blazor components rendered by mvc but not blazor pages.
+	- there is design choices to be made with these components so mvc can pass models back and forth with them
+		- it may just be always exposing the parameters
 - if all buttons are to work NoJS and for ease of not splitting to two implementations of html. Use editform with submit buttons for all buttons. and onsubmit will be overriden by blazor.
 This will require buttons to not be used within editforms at all (excluding a forms submit). This way it can be NoJS compatible
 - If we want to redirect from blazor pages for nojs use nojs script tag and meta tag to redirect. This is because we 
@@ -335,6 +355,8 @@ custom validation component to handle modelstate validation and Blazors validato
 	- However we may have unit tests
 - Interactive Auto Prerendered Blazor pages and WebAssembly Prerender is probably they way we want to go. As the browser does more work.
 - Have a browser set to NoJs for testing components
+- Decide whether a global rendermode should be used
+	- like interactive auto prerender but components cant do it so will it just be serverside so would webassembly prerender be better
 
 # Setup **TODO**
 - NoJSBaseController ReturnRedirect uses the localhost address so needs changing

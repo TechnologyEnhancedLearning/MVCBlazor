@@ -42,6 +42,9 @@ namespace LH.MVCBlazor.Server.Controllers
             return String.IsNullOrEmpty(returnUrl) ? DefaultRedirectAction() : ReturnRedirect(returnUrl);
         }
 
+
+
+
         [HttpPost("AddAttendee")]
         public async Task<IActionResult> AddAttendee(LH_AttendeeFormModel newAttendee, string returnUrl = null)
         {
@@ -55,8 +58,8 @@ namespace LH.MVCBlazor.Server.Controllers
 
                 ViewBag.RenderMode = GetRenderModeStr(HttpContext.Request.Path.Value, "Attendees");
 
-                bool IsBlazorPage = true;
-                if (IsBlazorPage)
+
+                if (IsBlazorPage())
                 {
                     //cant pass the validation data with current set up so redirect to the static page
                     TempData["AttendeesData"] = JsonConvert.SerializeObject(viewModel); // Serialize to pass complex objects
@@ -67,8 +70,15 @@ namespace LH.MVCBlazor.Server.Controllers
                 else
                 {
                     //its mvc so just return model to where it came from now it has validation state errors on it
+                    //its mvc so just return model to where it came from now it has validation state errors on it
+                    TempData["AttendeesData"] = JsonConvert.SerializeObject(viewModel);
 
-                    return ReturnViewWithModel(viewModel);
+                    returnUrl = returnUrl ?? Request.Headers["Referer"].ToString();
+                    //"https://localhost:44343/Characters/ServerPrerendered-MVCRendered"
+                    return RedirectToAction(returnUrl.Split('/').Last(), "Attendees");
+
+           
+                    
                 }
 
             }

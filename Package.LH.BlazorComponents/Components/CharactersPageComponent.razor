@@ -1,14 +1,10 @@
 ﻿@inherits GB_ComponentBase
-<div class="attendees-wrapper">
-    <div class="attendees-form-container">
-        <h3 style="margin:10px;text-align:center">Characters</h3>
+<GB_ComponentWrapper WrapperTitle="Characters">
         <LHB_FavouriteCharacterForm
                    Action=@("Characters/NoJS/SetFavouriteCharacterByForm")
                    Label=@("Pick your favourite character from the list")
                    RadioListHint=@("Click the radios then save")
                    IsPageHeading=true
                     />
-
-    </div>
-</div>
+</GB_ComponentWrapper>
 

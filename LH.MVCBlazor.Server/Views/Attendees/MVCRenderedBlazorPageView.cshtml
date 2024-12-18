@@ -1,0 +1,36 @@
+﻿
+@model AttendeesViewModel
+@{
+
+    Microsoft.AspNetCore.Mvc.Rendering.RenderMode renderMode = Microsoft.AspNetCore.Mvc.Rendering.RenderMode.Static;
+    if (Enum.TryParse(ViewBag.RenderMode, out renderMode))
+    {
+        // Parsing succeeded
+        Console.WriteLine($"Render mode is: {renderMode}");
+    }
+    else
+    {
+        // Parsing failed, use a default
+        renderMode = Microsoft.AspNetCore.Mvc.Rendering.RenderMode.Static; // Default value
+        Console.WriteLine("Invalid render mode string, defaulting to Static.");
+    }
+    string Title = $"Attendees Page MVC RenderMode: {ViewBag.RenderMode} - MVCRenderedBlazorPage";
+    ViewData["Title"] = Title;
+}
+<h1 class="mvcHosted">@Title</h1>
+<p>We are rendering a blazor page via MVC so we see MVC main layout, 
+    we see interactive auto but thats hard coded text its rendermode is overrided by the component rendermode (its prerenderered web assem).
+    The layout is removed which is good for _Main but is bad for the layout we want for the specific component.
+    
+</p>
+@*QQQQ need newAttendee passing*@
+<component type="typeof(InteractiveAutoAttendeesPage)"
+            
+            render-mode="@renderMode" /> 
+           @*  param-newAttendee="@Model.LH_AttendeeFormModel" *@
+
+
+
+
+
+
