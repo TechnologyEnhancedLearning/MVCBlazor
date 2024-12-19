@@ -10,7 +10,7 @@
             aria-label="@AriaLabel"
             aria-role="@AriaRole"
             aria-describedby="@AriaDescribedBy"
-            title="@Title"
+            title="@ToolTipTitle"
             tabindex="@TabIndex"
             @onclick="OnClick">
 
@@ -45,7 +45,7 @@
 
     [EditorRequired]
     [Parameter]
-    public string Title { get; set; } = DefaultTitle;  //Or ButtonText???
+    public string ToolTipTitle { get; set; } = DefaultTitle;  //Or ButtonText???
 
     [EditorRequired]
     [Parameter]

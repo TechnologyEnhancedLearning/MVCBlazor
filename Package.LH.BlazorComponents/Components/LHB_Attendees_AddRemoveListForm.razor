@@ -1,32 +1,32 @@
 ﻿@inherits GB_ComponentBase 
 @inject ILHS_AttendeesStateService LHS_AttendeesStateService
-
-<GB_EditForm 
-    Title=@FormTitleForAddAttendee 
-    Action="@ActionForAddAttendee" 
-    SubmitButtonText="@SubmitNameForAddAttendee"
-    FormModel="@newAttendee" 
-    OnValidSubmit="@OnValidSubmitForAddAttendee" 
-    OnInvalidSubmit="@OnInvalidSubmitForAddAttendee"
-    SubmitButtonAriaLabel="Add an attendee to the meeting list"
-    SubmitButtonTitle="Add attendee"
-    SubmitButtonAssistiveText="Adds an attendee"
-    >
-        <EditFormContents>
-        @*QQQQ this could be extracted as label input and validation, or a first second name generic component - would need our own version of validation message to handle nojs*@
-        <div>
-                <label for="@($"newFirstName-{UniqueId}")">First Name:</label>
-                <InputText  DisplayName="First Name" placeholder="Enter first name"  @bind-Value="@newAttendee.FirstName" class="form-control" id="@($"newFirstName-{UniqueId}")" required/>
-                <ValidationMessage For="@(() => newAttendee.FirstName)" /> 
-        </div>
-        <div>
-                <label for="@($"newSecondName-{UniqueId}")">Second Name:</label>
-                <InputText  DisplayName="Second Name" placeholder="Enter Second name"  @bind-Value="@newAttendee.SecondName" class="form-control" id="@($"newSecondName-{UniqueId}")" required/>
-                <ValidationMessage For="@(() => newAttendee.SecondName)" />
-        </div>
-    </EditFormContents>
-</GB_EditForm>
-
+<GB_ComponentWrapper WrapperTitle="Meeting">
+    <GB_EditForm 
+        Title=@FormTitleForAddAttendee 
+        Action="@ActionForAddAttendee" 
+        SubmitButtonText="@SubmitNameForAddAttendee"
+        FormModel="@newAttendee" 
+        OnValidSubmit="@OnValidSubmitForAddAttendee" 
+        OnInvalidSubmit="@OnInvalidSubmitForAddAttendee"
+        SubmitButtonAriaLabel="Add an attendee to the meeting list"
+        SubmitButtonTitle="Add attendee"
+        SubmitButtonAssistiveText="Adds an attendee"
+        >
+            <EditFormContents>
+            @* this could be extracted as label input and validation, or a first second name generic component - would need our own version of validation message to handle nojs*@
+            <div>
+                    <label for="@($"newFirstName-{UniqueId}")">First Name:</label>
+                    <InputText  DisplayName="First Name" placeholder="Enter first name"  @bind-Value="@newAttendee.FirstName" class="form-control" id="@($"newFirstName-{UniqueId}")" required/>
+                    <ValidationMessage For="@(() => newAttendee.FirstName)" /> 
+            </div>
+            <div>
+                    <label for="@($"newSecondName-{UniqueId}")">Second Name:</label>
+                    <InputText  DisplayName="Second Name" placeholder="Enter Second name"  @bind-Value="@newAttendee.SecondName" class="form-control" id="@($"newSecondName-{UniqueId}")" required/>
+                    <ValidationMessage For="@(() => newAttendee.SecondName)" />
+            </div>
+        </EditFormContents>
+    </GB_EditForm>
+</GB_ComponentWrapper>
   
 @if (LHS_AttendeesStateService.DataIsLoaded == false  )
 {
@@ -48,21 +48,26 @@ else
             ListTitle="Attendee List"
             GetItemText="@(attendee => attendee.ToString())"
             ListButton="@(RenderDangerButton)" />
-@*QQQQ Probably should be part of the list as optional*@
-@if(JSIsEnabled){
-    <GB_Button_I 
-        ButtonText="Set Database To This"
-        AriaLabel="Save the current list to the database"
-        Title="Save List"
-        AssistiveText="Click to save the current list"
-        ShowIcon="true"
-        IconCssClass="bi bi-save"
-        TabIndex="0"
-        ButtonType=GB_ButtonType.Success
-        OnClick="() => HandleSubmit()"
-    />
+
+    @if(JSIsEnabled){
+
+            <GB_Button2 
+                IsSubmitButtonForEditForm="false"
+                ButtonSize="GB_ButtonSize.Medium"
+                ButtonText="Set Database To This"
+                AriaLabel="Save the current list to the database"
+                ToolTipTitle="Save List"
+                AssistiveText="Click to save the current list"
+                ShowIcon="true"
+                IconCssClass="bi bi-save"
+                TabIndex="0"
+                ButtonType=GB_ButtonType.Success
+                NoJSActionUrl=""
+                CustomCssClass=""
+                OnClick="() => HandleSubmit()" />
+                @* FormData = "null" *@
       
-}
+    }
 
  
 }
@@ -150,16 +155,22 @@ else
     }
 
 
-    private RenderFragment<LH_AttendeeModel> RenderDangerButton => attendee => @<GB_Button
+  
+
+    private RenderFragment<LH_AttendeeModel> RenderDangerButton => attendee => @<GB_Button2
+                        IsSubmitButtonForEditForm="false"
+                        ButtonSize="GB_ButtonSize.Inline"
                         ButtonText="Remove"
                         AriaLabel=@($"Remove attendee {attendee.FirstName} {attendee.SecondName}")
-                        Title="Remove the attendee from the list"
+                        ToolTipTitle="Remove the attendee from the list"
                         AssistiveText=@($"Remove attendee {attendee.FirstName} {attendee.SecondName} via inline buttons preceeding list items")
                         ShowIcon="true"
+                        IconCssClass="bi bi-trash"
                         TabIndex="0"
                         ButtonType=GB_ButtonType.Danger
-                        ActionUrl="Attendees/NoJS/RemoveAttendeeByTemporaryId"
-                        FormMethod="Post"
+                        NoJSActionUrl="Attendees/NoJS/RemoveAttendeeByTemporaryId"
                         FormData=@(new Dictionary<string, string>(){ {"clientTemporaryId", attendee.ClientTemporaryId.ToString()} })
-                        OnClick="() => RemoveAttendee(attendee)" />;
+                        CustomCssClass=""
+                        OnClick="() => RemoveAttendee(attendee)" 
+                        />;
 }

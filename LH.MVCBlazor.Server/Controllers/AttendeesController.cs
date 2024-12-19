@@ -46,7 +46,22 @@ namespace LH.MVCBlazor.Server.Controllers
             return View(viewModel);
         }
 
-       
+        [HttpPost("/Attendees/MVCRenderedBlazorPage")]
+        [HttpGet("/Attendees/MVCRenderedBlazorPage")]
+        public async Task<IActionResult> MVCRenderedBlazorPageView()
+        {
+            AttendeesViewModel attendeesData = null;
+            if (TempData["AttendeesData"] != null)
+            {
+                attendeesData = JsonConvert.DeserializeObject<AttendeesViewModel>(TempData["AttendeesData"].ToString());
+            }
+
+            // Load the list of attendees from the service
+            var viewModel = attendeesData ?? new AttendeesViewModel { Attendees = (await _attendeesStateService.GetAttendeesAsync()).Data };
+            ViewBag.RenderMode = GB_ComponentTagRenderMode.WebAssemblyPrerendered.ToString();
+
+            return View("MVCRenderedBlazorPageView", viewModel);
+        }
 
     }
 }

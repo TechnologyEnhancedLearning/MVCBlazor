@@ -1,18 +1,16 @@
 ﻿@inherits LayoutComponentBase
 @layout _LayoutBlazor
-@* @rendermode InteractiveWebAssembly *@ //qqqq added because getting static layout
+@* @rendermode InteractiveWebAssembly  // added because getting static layout *@
 
 <h3> Render Page Using Render Page Layout Nested Within _MainBlazorLayout</h3>
 <div class="renderPageContents" style="border:solid black 5px; padding:10px;">
     @Body
 </div>
-<h3>Inside the box is ineractive. The box and this test are from one of the layouts. The layout is not interactive currently so only static components can go here</h3>
+<p>This layout is in main layout. Its the rendermodepage layout we can switch layouts per user to based on admin - though how compatible this will be with mvc is unclear</p>
+<h3>Inside the box is interactive. The box and this test are from one of the layouts. The layout is not interactive currently so only static components can go here</h3>
 
 @code {
-    // [Parameter]
-    // public string PageTitle { get; set; }
-    // Can do sectionoutlet to recieve static html but few good ways of passing back parameter.
-    // Can pass this currently unsure full implications of that approach.
- 
+
 }
+
 

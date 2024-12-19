@@ -74,6 +74,9 @@ button.accept-policy {
 .attendee-mvc-nav-link {
     border: 2px solid #3498db; /* Blue border */
 }
+.attendee-page-mvc-nav-link {
+    border: 2px solid #00ffef; /* cyan border */
+}
 
 .character-mvc-nav-link {
     border: 2px solid #e74c3c; /* Red border */
@@ -99,7 +102,8 @@ button.accept-policy {
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    margin:10px;
+    margin: 10px;
+    gap: 10px;
 }
 
     /* Generic button hover effect */
@@ -217,5 +221,46 @@ button.accept-policy {
 }
 .blazorHosted {
     background-color: lightblue !important;
+}
+
+.nhsuk-large-button {
+    padding: 1.2em 2.4em; /* Larger padding for large buttons */
+    font-size: 18px;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.3s, transform 0.2s ease;
+}
+
+.nhsuk-medium-button {
+    padding: 0.8em 1.6em; /* Default padding for medium buttons */
+    font-size: 16px;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.3s, transform 0.2s ease;
+}
+
+.nhsuk-small-button {
+    padding: 0.4em 0.8em; /* Smaller padding for small buttons */
+    font-size: 14px;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.3s, transform 0.2s ease;
+}
+
+.nhsuk-inline-button {
+    padding: 0.4em 1.2em; /* Padding adjusted for inline buttons */
+    font-size: 14px;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    display: inline-block;
+    transition: background-color 0.3s, transform 0.2s ease;
 }
 

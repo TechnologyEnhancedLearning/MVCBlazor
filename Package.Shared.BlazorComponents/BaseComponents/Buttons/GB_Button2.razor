@@ -1,0 +1,122 @@
+﻿@inherits GB_ComponentBase
+@implements IGB_AccessibleComponent
+
+@*
+
+The intention of this button is to be useable in nojs environment, static or prerender (e.g. not interactivity hydration).
+To enable this the button must not be within a form because it needs a form to work nojs.
+If it is a submit button it will have no form because it will be the only button and will already be in a form.
+If the button is being used as an anchor link the button needs to handle it.
+The form now needs to handle the actions for blazor too.
+
+The intent is not to need the NoJS bool. 
+Then there is less duplication.
+
+*@
+<div class="nhsuk-button-container">
+    @if (IsSubmitButtonForEditForm)
+    {
+ 
+        <GB_Button2SubComponent 
+            ButtonType="@ButtonType"
+            ButtonSize="@ButtonSize"
+            ButtonText="@ButtonText"
+            ShowIcon="@ShowIcon"
+            IconCssClass="@IconCssClass"
+            AriaLabel="@AriaLabel"
+            AssistiveText="@AssistiveText"
+            TabIndex="@TabIndex"
+            ToolTipTitle="@ToolTipTitle"
+            CustomCssClass="@CustomCssClass" 
+            />
+  
+    }
+    else
+    {
+        @*FormData as the model doesnt really mean anything were not using it if its blazor*@
+          <EditForm 
+              Model="FormData"
+              OnSubmit="OnClick"
+              action="@NoJSActionUrl"
+              role="form"
+              tabindex="-1"
+              method="post">
+                @foreach (var keyValuePair in FormData)
+                {
+                    <input tabindex="-1" type="hidden" name="@keyValuePair.Key" value="@keyValuePair.Value" />
+                }
+            <GB_Button2SubComponent 
+                ButtonType="@ButtonType"
+                ButtonSize="@ButtonSize"
+                ButtonText="@ButtonText"
+                ShowIcon="@ShowIcon"
+                IconCssClass="@IconCssClass"
+                AriaLabel="@AriaLabel"
+                AssistiveText="@AssistiveText"
+                TabIndex="@TabIndex"
+                ToolTipTitle="@ToolTipTitle"
+                CustomCssClass="@CustomCssClass" />
+          </EditForm>
+    }
+</div>
+
+@code {
+
+    ///<summary>
+    /// All buttons will be submit. But if this is a submit for a form then true.
+    /// They all will actually be submit because for NoJS we have to put then in editform
+    ///</summary>
+    [Parameter] public bool IsSubmitButtonForEditForm { get; set; } = false;
+    // If we need to not support some features for NoJS we then need to build in flagging Static/Prerender/NoJS together or our buttons will look usable and fail
+    //[Parameter] public bool DisableForNoJS { get; set; } = false;
+
+    [EditorRequired, Parameter]
+    public required string NoJSActionUrl { get; set; } // URL for the form submission
+
+    [Parameter]
+    public Dictionary<string, string> FormData { get; set; } = new Dictionary<string, string>();
+
+    //Not required because the submit wont use it. 
+    [Parameter] 
+    public EventCallback OnClick { get; set; }
+
+    ///<summary>
+    /// Button Params
+    ///<summary/>
+    [Parameter] public GB_ButtonType ButtonType { get; set; } = GB_ButtonType.Generic; // Default to Generic
+    [Parameter] public GB_ButtonSize ButtonSize { get; set; } = GB_ButtonSize.Medium; 
+
+    [EditorRequired, Parameter]
+    public required string ButtonText { get; set; }
+
+    // Optional parameters for icon
+    [Parameter]
+    public bool ShowIcon { get; set; } = false; // Default is false
+
+    [Parameter]
+    public string IconCssClass { get; set; } = ""; // Default Bootstrap icon class
+
+    [Parameter] public string CustomCssClass { get; set; } = ""; // Custom CSS classes for additional styling
+
+    ///<summary>
+    /// Button accessibility Params
+    ///<summary/>
+
+    // This property is public, satisfying the interface, but not a Parameter because I wanted to force it to be used in the contract of the interface but the component can do that itself
+    public string AriaRole { get; set; } = "Button"; // Set to button by default
+    public string AriaDescribedBy { get; set; } = $"assistive-text-{Guid.NewGuid()}"; // Default ARIA described by (can be empty)
+
+    [EditorRequired, Parameter]
+    public required string AriaLabel { get; set; }
+
+    [EditorRequired, Parameter]
+    public required string AssistiveText { get; set; }
+
+    // Tab index for keyboard navigation
+    [EditorRequired, Parameter]
+    public required int TabIndex { get; set; } = 0;
+
+    [EditorRequired, Parameter]
+    public required string ToolTipTitle { get; set; }
+
+}

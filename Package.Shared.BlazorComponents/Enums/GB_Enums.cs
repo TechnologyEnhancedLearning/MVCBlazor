@@ -13,6 +13,16 @@ namespace Package.Shared.BlazorComponents.Enums
         Success,
         Info
     }
+
+    public enum GB_ButtonSize
+    {
+        Large,
+        Medium,
+        Small,
+        Inline
+
+    }
+        
     public enum GB_ComponentTagRenderMode
     { 
         Static, //in blazor pages serverStatic
@@ -36,6 +46,19 @@ namespace Package.Shared.BlazorComponents.Enums
                 GB_ButtonType.Info => "nhsuk-info-button",
 
                 _ => "nhsuk-generic-button" // Default to Generic button if not specified
+            };
+        }
+
+        public static string GetSizeClass(this GB_ButtonSize size)
+        {
+
+            return size switch
+            {
+                GB_ButtonSize.Large => "nhsuk-large-button",
+                GB_ButtonSize.Medium => "nhsuk-medium-button",
+                GB_ButtonSize.Small => "nhsuk-small-button",
+                GB_ButtonSize.Inline => "nhsuk-inline-button",
+                _ => "nhsuk-medium-button" // Default to Generic button if not specified
             };
         }
     }

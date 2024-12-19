@@ -1,6 +1,7 @@
 ﻿
 @inherits GB_ComponentBase
 @typeparam TModel where TModel:IGE_ModelStateValidation
+@* @implements IGB_AccessibleComponent We would apply accessible options to this component too*@
 <h3>@Title</h3>
 
 @if (showSubmissionCount)
@@ -13,37 +14,40 @@
 <EditForm EditContext="@EditContext" OnValidSubmit="HandleValidSubmit" OnInvalidSubmit="HandleInvalidSubmit" method="post" action="@Action">
      <DataAnnotationsValidator /> 
      <CascadingValue Value="@formIsValid">
-
-
                 @EditFormContents
- 
      </CascadingValue>
 
     <GB_Validator  EditContext="@EditContext" FormModel="@FormModel"/>
-
-    @*qqqq Should be blazor button and have IAccessible*@
-    <GB_Button_Submit 
-        ButtonText="@SubmitButtonText"
-        AriaLabel="@SubmitButtonAriaLabel"
-        Title="@SubmitButtonTitle"
-        AssistiveText="@SubmitButtonAssistiveText"
-        />
+ 
+    <GB_Button2 IsSubmitButtonForEditForm="true"
+                ButtonSize="GB_ButtonSize.Medium"
+                ButtonText="@SubmitButtonText"
+                AriaLabel="@SubmitButtonAriaLabel"
+                ToolTipTitle="@SubmitButtonTitle"
+                AssistiveText="@SubmitButtonAssistiveText"
+                ShowIcon="true"
+                IconCssClass="bi bi-save"
+                TabIndex="0"
+                ButtonType=GB_ButtonType.Success
+                NoJSActionUrl=""
+                CustomCssClass=""
+                />
+    @* OnClick="() => HandleSubmit()"*@
+    @* FormData = "null" *@
 
 </EditForm>
 
 @code {
-    [Parameter]
-    public string SubmitButtonText { get; set; } = "Submit Button";
-    [Parameter,EditorRequired]
-    public RenderFragment EditFormContents { get; set; }
-
-    [Parameter, EditorRequired]
-    public string Title { get; set; }
-
-    [Parameter, EditorRequired]
-    public string Action { get; set; }
-
+    /// <summary>
+    /// Form
+    /// </summary>
     private EditContext EditContext { get; set; }
+
+    [Parameter, EditorRequired]
+    public required string Title { get; set; }
+
+    [Parameter, EditorRequired]
+    public required string Action { get; set; }
 
     [Parameter, EditorRequired]
     public EventCallback OnValidSubmit { get; set; }
@@ -57,12 +61,39 @@
     private bool isFormSubmitted = false;
     private int submissionCount = 0;
 
-    // Maybe just an OR would be better 
+    // Maybe just an OR would be better
     private bool formIsValid => JSIsEnabled ? blazorFormIsValid : !FormModel.HasModelStateValidationErrors;
     private bool blazorFormIsValid = true;
 
     [Parameter, EditorRequired]
-    public TModel FormModel { get; set; }
+    public required TModel FormModel { get; set; }
+
+    [Parameter, EditorRequired]
+    public RenderFragment EditFormContents { get; set; }
+
+    /// <summary>
+    /// Button
+    /// </summary>
+    [Parameter]
+    public string SubmitButtonText { get; set; } = "Submit Button";
+
+
+    /// /// <summary>
+    /// Button Assistive
+    /// </summary>
+    [EditorRequired, Parameter]
+    public required string SubmitButtonAriaLabel { get; set; }
+
+    [EditorRequired, Parameter]
+    public required string SubmitButtonTitle { get; set; }
+
+    [EditorRequired, Parameter]
+    public required string SubmitButtonAssistiveText { get; set; }
+
+
+    ///<summary>
+    /// Functionality
+    /// </summary>
 
     protected override void OnInitialized()
     {
@@ -71,24 +102,6 @@
         //We don't need to manually do this unless nojs
         if (FormModel.HasModelStateValidationErrors) { EditContext.Validate(); }
     }
-
-    private const string DefaultAriaLabel = "Danger button";
-    private const string DefaultTitle = "Perform a dangerous action";
-    private const string DefaultAssistiveText = "Click to perform a dangerous action";
-
-    [EditorRequired]
-    [Parameter]
-    public string SubmitButtonAriaLabel { get; set; } = DefaultAriaLabel;
-
-    [EditorRequired]
-    [Parameter]
-    public string SubmitButtonTitle { get; set; } = DefaultTitle;  //Or ButtonText???
-
-    [EditorRequired]
-    [Parameter]
-    public string SubmitButtonAssistiveText { get; set; } = DefaultAssistiveText;
-
-
 
     // Handle the form submission
     private async Task HandleValidSubmit()
@@ -124,7 +137,6 @@
         EditContext = new EditContext(FormModel);
         EditContext.NotifyValidationStateChanged();
 
-
         StateHasChanged();
     }
 
@@ -142,7 +154,5 @@
         }
         blazorFormIsValid = false;
     }
-
-
 
 }

@@ -1,0 +1,15 @@
+﻿@inherits GB_ComponentBase
+<div class="gb-component-wrapper">
+    <div class="gb-component-container">
+        @if (!string.IsNullOrEmpty(WrapperTitle))
+        {
+            <h3 style="margin:10px;text-align:center">@WrapperTitle</h3>
+        }
+        @ChildContent
+    </div>
+</div>
+@code
+{
+    [Parameter] public string? WrapperTitle { get; set; } = null;
+    [Parameter, EditorRequired] public required RenderFragment ChildContent { get; set; }
+}

@@ -10,33 +10,11 @@
     Pages and what they show
 </h3>
 
+<ul>
+    <li>Try with a browser with no js</li>
+    <li>try with one letter names and no letter names with js and without, on blazor pages and not blazor pages</li>
+</ul>
 <h3>Try with a browser with no js</h3>
-
-<h3>
-
-
-    <ul>
-        <li>
-            Statics not working because:
-            <ul>
-                <li>They are not truly static; they have NoJS post routes.</li>
-                <li>They are not NoJS; the flag is not triggered, so they do not render NoJS components where there is a choice between interactive or static.</li>
-            </ul>
-        </li>
-        <li>
-            Recommendation:
-            <ul>
-                <li>Pass the rendermode to <code>base_component</code>.</li>
-                <li>Pass prerendering to <code>base_component</code>.</li>
-                <li>Use prerendering, static, and NoJS to render static components that use specific components and track NoJS-Static-Prerender as a joint flag.</li>
-                <li>Or make all compatible to be both, carefully ensuring no redundant forms in forms, but rendered if interactive.</li>
-                <li>We want to avoid using only MVC components for NoJS and handling it all by a boolean split in MVC.</li>
-            </ul>
-        </li>
-    </ul>
-
-
-</h3>
 
 <h3>A generic component because so far consuming them all via LH components</h3>
 
@@ -44,6 +22,3 @@
            param-TextToPrintToConsole="@("Hello from MVC!")" 
            param-ButtonType="@(GB_ButtonType.Success)" />
 
-<h1>Little test its a page rendereed as a component using a different render mode in theory should work but doesnt</h1>
-@* <component type="typeof(WebAssemblyPrerenderedFalseAttendeesPage)" render-mode="ServerPrerendered" />
-            *@

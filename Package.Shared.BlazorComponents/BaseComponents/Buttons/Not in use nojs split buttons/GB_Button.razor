@@ -1,4 +1,6 @@
 ﻿@inherits GB_ComponentBase
+
+@*<inheritdoc /> <- doesnt work blazor*@
 @implements IGB_AccessibleComponent
 
 
@@ -51,7 +53,7 @@ else
 
     [EditorRequired]
     [Parameter]
-    public string Title { get; set; } = "Perform a dangerous action";
+    public string ToolTipTitle { get; set; } = "Perform a dangerous action";
 
     [Parameter]
     public int TabIndex { get; set; } = 0;
@@ -101,7 +103,7 @@ else
         return new Dictionary<string, object>
         {
             { "AriaLabel", AriaLabel },
-            { "Title", Title },
+            { "ToolTipTitle", ToolTipTitle },
             { "TabIndex", TabIndex },
             { "ShowIcon", ShowIcon },
             { "IconCssClass", IconCssClass },

@@ -2,15 +2,16 @@
 @inherits GB_ComponentBase
 
 
-<GB_Button 
+<GB_Button2 
     ButtonType="@ButtonType"
     ButtonText="@($"Write to console {TextToPrintToConsole}")"
-    ActionUrl="ActionURL" 
     FormData=@(new Dictionary<string, string>()) 
     AssistiveText="Button"  
-    Title="Title" 
+    ToolTipTitle="Title" 
     AriaLabel="AriaLabel" 
-    OnClick="HandleClick"/>
+    OnClick="HandleClick"
+    NoJSActionUrl="nothingJustATestButton"
+    TabIndex="1"/>
 
 
 
