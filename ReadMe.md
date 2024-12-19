@@ -1,9 +1,9 @@
 # TODO
 
 - Complete todos in readme like architecture diagram
-- top to bottom refactor
-- redo home page with info
-
+- redo home page with info or markdig
+- is this ILHS_AttendeesDbService in the wrong place in the project. API has a reference to LH for its db service but not shared
+- setup notes
 
 # About
 .Net 8 MVC Blazor project, with View Components.
@@ -202,7 +202,7 @@ The project did have all the view components in and css in previously. It has be
 
 ## Design
 ### Architecture
-[Bottom file tree diagram of solution](#Folder%20Structures%20and%20Comments)
+[Bottom file tree diagram of solution](#folder-structures-and-comments)
 It is common to have a shared project that both WASM and Server rely on. For us we could bring in all our packages by it a injection collection potentially.
 But for now it is only a nicety that could make the project seem more complex. So is not included.
 
@@ -226,12 +226,18 @@ without having to do anything except add the component you want to use in the pl
 
 #### Structure
 
-**TODO** - Dependency Diagram, Table explaining why and what each project in solution is for
-- Naming should help
+**TODO** **Out of scope** - Dependency Diagram, Table explaining why and what each project in solution is for
+LH.Server and LH.Client have references to all the packages with Server also having a reference to Client.
+Shared Services has a reference to Shared Entities and Shared BlazorComponents has a reference to the other two Shared packages
+
+This is the same with the LH packages. Which in addition have a reference to the shared packages. 
+
+The API does depend on some service interfaces they may be in the wrong place.
+
 
 #### Naming
 In order to easily identify where components come from so we can see how general components are used within LH 
-components for example alot of files have a suffix.
+components for example a lot of files have a suffix.
 So LH_CharactersDBService : IGS_CharactersDBService
 Means the implementation is specific for learning hub the but this service is from the general/generic package
 so characters simulates a generic component/service of some kind. (Attendees is very similar but represents a purely LH one).
