@@ -55,9 +55,6 @@ builder.Services.LHB_RegisterAllBlazorPageRoutes();
 
 builder.Services.AddSession(options =>
 {
-    //Not necessary, but for efficiency I want to know when staticly rendering whether to use the no js version so we need a session as 
-    // the blazor will run staticly first before any checks it can run on the browser for the js. i dont want to render the noJs version if its not needed
-    //so lets find out if it is and then store it - there is the slight disadavantage of not checking per page or per component that turning js back on may not update the value but its out of scope
 
     options.IdleTimeout = TimeSpan.FromMinutes(20); // Set the timeout for the session
     options.Cookie.HttpOnly = true; // Session cookie is only accessible via HTTP

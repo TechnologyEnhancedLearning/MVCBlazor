@@ -14,13 +14,14 @@ function Generate-Tree {
     )
 	$spacePrefix = "$Prefix`&#160;`&#160;`&#160;`&#160;"  # Add four non-compressing spaces for indentation
     # Relevant file extensions to include
-    $extensions = @(".cs", ".html", ".razor")
+    $extensions = @(".cs", ".html", ".razor", ".cshtml")
 
     # Directories to exclude from traversal
     $excludedDirs = @("bin", "obj", ".git", ".github", ".vs", "node_modules", "packages", "Migrations", "logs", "Properties", "wwwroot", "MVCWasmNuget")
 
     # Files to exclude
-    $excludedFiles = @(".csproj", ".dll", ".exe", ".pdb", ".user", ".log", ".json", ".xml", "Program.cs")
+    $excludedFiles = @(".csproj", ".dll", ".exe", ".pdb", ".user", ".log", ".json", ".xml")
+#, "Program.cs"
 
     # Get all directories and relevant files in the current path
     $items = Get-ChildItem -Path $Path -Force | Where-Object {
@@ -54,7 +55,18 @@ function Generate-Tree {
 
     return $outputLines  # Return the generated lines
 }
-
+#style width - not tried yet in this may need tweaking
+Add-Content -Path $outputFile -Value "
+<style>
+tr th:nth-child(2), 
+tr td:nth-child(2) {
+  white-space: nowrap;       /* Prevent wrapping */
+  overflow: visible;         /* Allow overflow */
+  text-overflow: unset;      /* Remove ellipsis or clipping */
+  word-wrap: normal;         /* Prevent word breaks */
+  word-break: normal;        /* Prevent breaking within words */
+}
+</style>"
 # Add the top-level entry for MVCWasmNuget
 Add-Content -Path $outputFile -Value "# Project Structure" -Encoding UTF8  # Markdown header
 Add-Content -Path $outputFile -Value "|  Description  | File Structure |" -Encoding UTF8  # Table header
