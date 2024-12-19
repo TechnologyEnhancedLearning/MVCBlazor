@@ -23,11 +23,10 @@
     The layout is removed which is good for _Main but is bad for the layout we want for the specific component.
     
 </p>
-@*QQQQ need newAttendee passing*@
-<component type="typeof(InteractiveAutoAttendeesPage)"
-            
-            render-mode="@renderMode" /> 
-           @*  param-newAttendee="@Model.LH_AttendeeFormModel" *@
+@*This is just to show layout rendermode are stripped we would want to expose newattendee and pass that too 
+for full functionality param-newAttendee="@Model.LH_AttendeeFormModel" *@
+
+<component type="typeof(InteractiveAutoAttendeesPage)" render-mode="@renderMode" /> 
 
 
 

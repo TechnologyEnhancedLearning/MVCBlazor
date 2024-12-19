@@ -15,7 +15,7 @@ namespace Package.Shared.BlazorComponents.DependencyInjection
 {
     public static class DependencyInjection
     {
-        //public static IServiceCollection GB_RegisterAllGenericBlazorComponents(this IServiceCollection services/*, qqqq IOptions<ILHBlazorWasmClientServiceLibraryConfiguration> config*/)
+        //public static IServiceCollection GB_RegisterAllGenericBlazorComponents(this IServiceCollection services/*,  IOptions<ILHBlazorWasmClientServiceLibraryConfiguration> config*/)
         //{
         //    services.AddTransient(typeof(GB_Validator<IGE_ModelStateValidation>));
         //    services.AddTransient(typeof(GB_EditForm<IGE_ModelStateValidation>));

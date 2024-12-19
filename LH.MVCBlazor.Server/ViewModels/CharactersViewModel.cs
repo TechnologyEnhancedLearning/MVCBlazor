@@ -23,13 +23,15 @@ namespace LH.MVCBlazor.Server.ViewModels
         }
 
 
-        // QQQQ Logic here to handle model state for noJS should it be
+       
         public CharactersViewModel(List<GE_CharacterModel> characters, GE_FavouriteCharacterFormModel CurrentFormData = null)
         {
             LHB_FavouriteCharacterFormModel = CurrentFormData?? LHB_FavouriteCharacterFormModel;
             
             if (CurrentFormData != null && CurrentFormData.FavouriteCharacterId != 0)
             {
+                // Logic here to handle model state for noJS should it be ???
+
                 //set favourite from form
                 characters.ForEach(x => x.IsFavourite = false);
                 characters.Single(x => x.Id == CurrentFormData.FavouriteCharacterId).IsFavourite = true;

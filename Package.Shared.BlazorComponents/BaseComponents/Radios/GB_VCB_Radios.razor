@@ -90,7 +90,7 @@
     private TValue _localRadioListValue;
 
     // Local property used to capture changes and invoke the callback
-    //Must be a better way qqqq
+    //Must be a better way ... we are not binding with default options due to making own base components so this is probably best
     public TValue LocalRadioListValue
     {
         get => _localRadioListValue;
@@ -118,7 +118,7 @@
     /// </summary>
     ///
     [Parameter]
-    public IEnumerable<TItem> RadioItems { get; set; } = Enumerable.Empty<TItem>();//Because if we dont seed with the model then we get the data async. We could put in a loader.
+    public IEnumerable<TItem> RadioItems { get; set; } = Enumerable.Empty<TItem>();
 
 
     [Parameter, EditorRequired]

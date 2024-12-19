@@ -1,14 +1,7 @@
 # TODO
-- rewrite the blazor components so all use new gb_ blazor components not built in
-- refactor components now working well, especially parameter passing
-- Complete todos in readme like architecture diagram
-- make layout warning unnested for blazor
-- top to bottom refactor
-- extract the add person to a generic component
-- nolonger nhsuk css from issue with the library need to reinstate - done 
-- redo buttons rather than static or nojs or interactive, just submit, formsubmit, button maybe
-- services still named correctly?
 
+- Complete todos in readme like architecture diagram
+- top to bottom refactor
 
 
 # About
@@ -21,20 +14,47 @@ The project has lists as a database and an API for it.
 They are in a list of lists to represent some database complexity.
 Currently First() is used throughout just for simplicity and only the first list in lists is used.
 
-The project has separate controllers for NoJS to illustrate Blazor components need only a view no data. 
-But this seperation bis nit recommended for production or required for Blazor.
+The project has separate controllers for NoJS to illustrate Blazor components need only a view no data (they do seed data and provide it because a mixed MVC Blazor application would want it for non-Blazor MVC elements). 
+But this separation is not recommended for production or required for Blazor, it is just illustrative.
 
-Also rendermode is passed so we can render different rendermode components off one conroller this is not required
-its only useful for this project displaying.
+Also rendermode is passed so we can render different rendermode components off one controller this is not required
+its only useful for this project in order for exploration of all the different rendermodes.
 
-The routes show the No
+The project should work in a browser with JS disabled by using MVC to do the NoJS interactivity. 
+
+The project has a NoJS flag so we can render one component or another based on whether JS is present. See previous commits and out of use buttons.
+The expected to be preferred design is using design constraints and designed components to work for either.
+The alternative is to have a NoJS flag that include prerender and static Blazor, or flags on components to not support NoJS and not render or render disabled with and explanation.
+This option is not shown in this project, but is legitimate as static and prerender a component wont be interactive anyway and it wont work NoJS with being disabled.
+
+Prerender and static wouldn't normally want to be interactive. We are using prerender to enable us to have a NoJS fallback. That is why our design will be different.
+
+The project uses *Package.* to signify what would be a package, but actually uses references. To properly package Blazor any JS for interacting with preexisting JS and scoped CSS needs
+to be accounted for as well. So there is a correct way of doing it and setting it up and several tutorials on how to do this.
+
+We may find if Blazor is handling alot of interactivity that it is handling alot more steps in its state and then at a certain point needs to submit that state e.g. to a DB.
+If currently all buttons are NoJS and every interaction is resulting in a db change then Blazor may need an additional button in its html to the NoJS, because its actions are not submitting constantly.
+
+This project uses, and previously did so more, service collections to enable changes to packages to only be required in the package. 
+This is less necessary in the case of Blazor components now that we get assemblies from _Imports where previously it was achieved by every components having dependency injection in order to avoid "tree shaking" issues.
+
+The project has two main components. *Characters* *Attendees* this is to illustrate generic components for which *characters* is the example, and LH specific which is *Attendees* following how they differ and when a generic component is used in a LH one 
+should illustrated how the separation could be handled. 
+
+### Good to know about Blazor
+- Blazor require JS for its lifecycle stages after the initial render. The JS is to set up the WASM for Client side or SignalR for serverside.
+- Blazor can be made to interact with prexisting JS and be triggered by other components or manipulate other components. This project does not cover this.
+- Blazor components, base components, are not out of the box designed to work without JS. This means validation from models, and forms and other elements need to be created
+to be built upon.
+- Components do not know how they are being rendered.
+
 
 ## Purpose
 - Attempt unified hosted .net 8 webapp application **this was not possible**
 	- The project uses MVC Server that serves blazor pages, mvc pages, and mvc pages with blazor components
 	- The project uses a client project this enables all the components and pages to be Server or Client side
 		- in the case of the full blazor pages they can be full auto
-			- (Components cant be interactive auto if served via component tag in MVC)
+			- (Components cant be interactive auto if served via component tag in MVC, they can be all the other render modes)
 	- Layout is not shared between MVC and Blazor pages. Its duplicated. In the example it shares NavMenu. Which is 
 the bit most likely to be updated.
 	- We can have the same routes for blazor and MVC they do not need separate domains
@@ -57,10 +77,8 @@ on what to create (like a factory, I don't recommend this for now, though there 
 - Ease in adding components **Yes**
 	- Components can be added to projects and via service collections when made into packages would automatically be available as long 
 		as the package was updated (currently the project uses project references for ease)
-- Ease in creating components **Should be ok except for base components**
+- Ease in creating components **Should be ok except for base components (due to nojs requirement)**
 	- components should be easy to create
-	- **however for nojs our own base components will need creating which may be more difficult and very important 
-to get right as these are the building blocks for future components.**
 - Explore challenges of adding Blazor to MVC and converting View Components
 	- Some viewcomponents do not support separate naming of inputs and endpoints or nested models
 		- Models being created for use with blazor will need to work for VC as well.
@@ -124,8 +142,11 @@ With interactive auto we first render pages serverside which is quicker. Then au
 There is also Static, static just puts up the html. Though its static in our case it probably won't be if we have posts built in to out html for 
 NoJS requirement.
 
-From these WASM for components renderered in views and interactive auto for pages seems the most desireable.
-Components do not know how they are being rendered.
+~~From these WASM for components renderered in views and interactive auto for pages seems the most desireable.~~
+Initial discussions suggest WASM Prerendered globally is the best option. This requires a little more set up as we need a client project.
+The work is done by the browser and quickly, the prerender is done by our server. So the prerender and WASM will inject their own version of services (ussually identical).
+The prerendering giving us NoJS functionality.
+
 
 Prerendering is an option for WASM, Server, Interactive Auto. We would want to use prerendering.
 Prerendering creates first a static page. This is good for SEO and providing quickly an uninteractive UI initially for the user
@@ -135,7 +156,7 @@ We are interested in prerendering because Blazor can prerender without JS. The p
 Which means if a user has nojs they get the static UI. Which can be interactive via html with posts etc.
 
 In this project we inherit from a base component and inject a service to tell the component if JS is enabled.
-If it isn't we will render some components differently. Ideally we should aim for components that are exactly the same
+~~If it isn't we will render some components differently~~ (We now have components that do both without a split).  Ideally we should aim for components that are exactly the same
 in NoJS and that seems possible as with refactoring it has become increasingly the case, and design decision can be made to support this.
 If we don't prerender and a user does not have JS they will see nothing. A way around this is to have the JSIsEnabled in the views and render 
 a different component, but this has not been explored as a desireable option here as we dont want to duplicate all top level components though may accept having
@@ -144,7 +165,7 @@ some base level NoJS components.
 
 
 The prerender rendering stage is followed by other lifecycle stages which "hydrate" it with functionality and rerender.
-When we provide elements like an edit form with a post, the post will work in the prerender phase giving us our NoJS functionality if there are no further phases.
+When we provide elements like an *EditForm* with a post, the post will work in the prerender phase giving us our NoJS functionality if there are no further phases.
 When the component is hydrated and a service/event is applied to the form this functionality overrides the post.
 This means we can avoid having a seperate NoJS element and an interactive element. This approach is what we would hope to acheive we all elements.
 
@@ -152,16 +173,15 @@ This means we can avoid having a seperate NoJS element and an interactive elemen
 
 Using prerender in this way does introduce some challenges/opportunities.
 - If it is a blazor page, we are not passing it a view. Therefore we will not return validation to it, and so to handle more than html validation we must redirect to an MVC page
-- Prerender is static, and we are putting in functionality to allow it to operate no js if a user is quick enough
-	- they could use the UI nojs functionality (currently we don't track render stage or mode so it will break where 
+- Prerender is static, and we are putting in functionality to allow it to operate no js if a user is quick enough they could use the UI nojs functionality (currently we don't track render stage or mode so it will break where 
 a NoJS flag is used to provide a different component. But this flag could be changed to track NoJs Prerender 
 lifecycle stage or static render mode )
-	- for pages if they interact with the prerender and post to an endpoint requiring returning data to the page then they will have to be redirected to an MVC version of the page.
-	- prerendering using an injected service will receive the server side version of that service, even if it is rendered WASM and is hydrated with WASM version of a service.
+
+- prerendering using an injected service will receive the server side version of that service, even if it is rendered WASM and is hydrated with WASM version of a service.
 - there is built in a lifecycle render stage with a provided first render flag that is likely to be useful.
 - the intention should be for prerender html to be as close to the hydrated version as possible so the screen does not flicker.
 - we dont have to prerender everything we can have loaders that wait until lifecycle stages that happen after prerender
-- we cant async then apply it to the prerender NoJS anything that would alter it after render require life cycle stages that require JS
+- Anything *Async* that updates after initial render will not happen in NoJS because lifecycles top after rendering.
 
 
 ## Further Information
@@ -248,36 +268,24 @@ This project is not currently a reference for how to but an example of what can 
 
 
 ## Desired Future Additions
-- use layoutcomponentbase for render pages (ensure the way we are hosting it works) replace gb_pagebase
-	- read [Didnt work but worth more investigation for interactive layouts](https://stackoverflow.com/a/78574209/22951851)
-	- *Also this may be worth coming back to if we choose a global interactivity as the errors and some discussion suggest there is a clash* 
-	- maybe layouts need to be passed by a view if consuming pages as components??? 
-	- the outcome maybe to avoid layouts except main
-	- this could be important as its nice to change the layout based on admin privilage for example [layout patrick god]()
-- Revisit stateservices to include  public event Action AttendeesChanged; subscribe statehaschanged to this
-	- all handling occuring in state service
-- Exploration of design allowing **ZERO** nojs splits and design principles to support it
-	- if there are none then static, prerender pages will just work
-	- also investigate option of tracking prerender and static so they are rendered as if NoJS 
-		- however if it looks different prerendering like this will show one UI then another
-- Refactor buttons can we have a design principle where we have a submit wrapped in an editform for NoJS but useable by blazor too
+- Extract the add person to a generic component - We would also need the JS supported inline validator so do as an addition
+- StateService 
+	- should have an Event Action Subscription and handling it all in the service ensure no list of data in the components
+		- Different components via MVC view means losing the circuit and the state but only needed for component life 
+	- Revisit stateservices to include  public event Action AttendeesChanged; subscribe statehaschanged to this
+		- all handling occuring in state service
 - Auth headers and auth tokens in blazor see [This patrick god ecommerce repo does have and there is a confluence project for how to set it up](https://github.com/patrickgod/BlazorEcommerce)
 - blazorisedStorage
 - bunit blazor testing library
 	- [blazor unit test](https://github.com/patrickgod/BlazorUnitTestingTutorial)
-- consider add would like to haves to do with loading behaviour [repo link](https://github.com/patrickgod/BlazorLoadingAnimation)
-- Try changing injection services to import assemblies for blazorcomponents but still use them for services
-	> app.MapRazorComponents<App>()
-    .AddInteractiveServerRenderMode()
-    .AddInteractiveWebAssemblyRenderMode()
-    **.AddAdditionalAssemblies(typeof(BlazorApp5.Client._Imports).Assembly);**
-- Loader [repo link (there a youtube vid with it i think)](https://github.com/patrickgod/BlazorLoadingAnimation) 
+- Loading behaviour [repo link](https://github.com/patrickgod/BlazorLoadingAnimation)
+	- Loader [repo link (there a youtube vid with it i think)](https://github.com/patrickgod/BlazorLoadingAnimation) 
 - Components render in views are islands. They can't talk to each other. Unless
 	- Mediatr package maybe
 	- Subscribe each others events maybe
 	- May need a dispose function so state not lost but instead saved on destruction
 	- Or Blazorised storage may be the actual best solution
-- revisit IAccessible so it can share it summary all the way up the component chain
+
 
 
 ## Desired For Different Prototype Or Branch
@@ -293,48 +301,40 @@ This project is not currently a reference for how to but an example of what can 
 - **important** -> prototyping tools
 
 ## Car park desired features
-- Combining two elements currently handled by separate controllers, so submit-able separately or together
-	- Behaviour will be refreshing the blazor components
-	- So if one submitted, the second one will refresh on page refresh
-		- if we didnt want this we would want blazor storage or Mediator to hold temporary state ... or just the controller to return it without saving it?
-	- We need to be careful of forms in forms for MVC
+
+
+## Approaches Discarded For Now
 - Improve validator component [try this blazor uni in future](https://blazor-university.com/forms/writing-custom-validation/)
 	- Uses fluent validation, which requires JS, so maybe not, attributes are better
 	- Refactoring the approach used here to combine viewstate and blazor validation may be better
-
+- use layoutcomponentbase for render pages. This has been explored and because Layout is stripped for MVC 
+components. And at least for component based rather than global rendermode settings it seems to need to be static. 
+It does not seem to be useful to our needs on first look. 
+	- read [Didnt work but worth more investigation for interactive layouts](https://stackoverflow.com/a/78574209/22951851)
+	- maybe layouts need to be passed by a view if consuming pages as components??? 
+	- this could be important as its nice to change the layout based on admin privilege for example (if we were doing pure blazor page approach)
 
 # Recommendations from project
 In no particular order.
-- I think from discussing webassembly prerender will be the choice. Without blazor pages. but this project as reference if we want to introduce them.
-
-- current we do not have interactive layoutcomponents this is done via the header and route render mode being set in the app
+- I think from discussing webassembly prerender will be the choice. Without blazor pages. And keep this project as reference if we want to introduce them.
+- currently we do not have interactive layoutcomponents this is done via the header and route render mode being set in the app
 	- if we do blazor pages we should avoid all but the MainLayout as layout and rendermode are stripped when MVC renders MVC pages as components
-- currently we have blazor components rendered by mvc but not blazor pages.
-	- there is design choices to be made with these components so mvc can pass models back and forth with them
-		- it may just be always exposing the parameters
-- if all buttons are to work NoJS and for ease of not splitting to two implementations of html. Use editform with submit buttons for all buttons. and onsubmit will be overriden by blazor.
-This will require buttons to not be used within editforms at all (excluding a forms submit). This way it can be NoJS compatible
-- If we want to redirect from blazor pages for nojs use nojs script tag and meta tag to redirect. This is because we 
-run the code as we prerender, using 
-navigationmanager in prerendering stages will happen 
-before render. even if async. which means we cant show 
-html like "you have no js your being directed" on our 
-blazor pages. Though we can still use the navigation manager to redirect it just can't happen after prerender.
-It would be possible to tell them they we're redirected on the page they we're redirected to if this was preferable.
+- if all buttons are to work NoJS and for ease of not splitting to two implementations of html. Use *EditForm* with submit buttons for all buttons. and onsubmit will be overriden by blazor.
+This will require buttons to not be used within EditForms at all (excluding a forms submit). This way it can be NoJS compatible
 - Elements need to work without JS without the NoJs flag so Prerender and static work too. 
 	- Or we need the NoJS flag to also be triggered by prerendering and static.
 	- Or we disable static and prerendering it NoJS flag is false so they are truly static
 		- NoJs false disable submit buttons and enable on hydration
-- Splitting implementation for NoJS should be a last resort
-	- can we wrap buttons in editforms
-	- can we overide functionality in hydration
+- Splitting implementation for NoJS should be a last resort. First try:
+	1. can we wrap in EditForms
+	1. can we override functionality in hydration
+	1. can we disable in prerender and static
+	1. last resort different html rendered for NoJS
 - Controllers should use same service as blazor components so posts using same logic
-- Reminder Blazor SSR, Server, WASM all but prerender and static use JS in one form or another so there is work required to make 
-prerender work without blazor interactivity	
 - Remake all default blazor components in our own way
 - Blazor does not know what ViewState is so we need pass it. In the project we have an interface for models and a 
 custom validation component to handle modelstate validation and Blazors validator component.
-- ~~Separate VC model requirements into set of interfaces~~
+- ~~Separate VC model requirements into set of interfaces~~ (Instead when making models ensure work for the equivalent component too and keep them as flat as possible)
 	- This could work but we would need to put the interfaces on viewmodels, form models, but not just models as we are mixing UI in
 	- It requires alot of change
 	- This project has moved to passing events without the interface this does mean compatibility is not forced, and we could provide helpers but currently
@@ -353,17 +353,26 @@ custom validation component to handle modelstate validation and Blazors validato
 	- Then make versions of viewcomponents on them and refactor to make it fit their needs 
 - Better base components easier everything else. Also if they require to be changed in the future it may require a lot of testing as all the components that use them may need testing.
 	- However we may have unit tests
-- Interactive Auto Prerendered Blazor pages and WebAssembly Prerender is probably they way we want to go. As the browser does more work.
 - Have a browser set to NoJs for testing components
-- Decide whether a global rendermode should be used
-	- like interactive auto prerender but components cant do it so will it just be serverside so would webassembly prerender be better
+- Decide together on a global rendermode current thinking is webassembly prerender
+- Get input from team with lots experience of LH and get input on opportunities and problems may face with Blazor specific to LH etc
+- Take advantage of C# features and consider compliance interfaces
+
+## Recommendations if want Blazor pages
+- If we want to redirect from blazor pages for nojs use nojs script tag and meta tag to redirect. This is because we 
+run the code as we prerender, using 
+navigationmanager in prerendering stages will happen 
+before render. even if async. which means we cant show 
+html like "you have no js your being directed" on our 
+blazor pages. Though we can still use the navigation manager to redirect it just can't happen after prerender.
+It would be possible to tell them they we're redirected on the page they we're redirected to if this was preferable.
 
 # Setup **TODO**
 - NoJSBaseController ReturnRedirect uses the localhost address so needs changing
-- 
+
 
 # Trouble Shooting
-- if assembled files break try deleting them and then starting not rebuilding.
+- if assembled files break try deleting them and then starting
 - blazor not detecting any components! - restarted visual studio i was running two instances for comparison
 - deleting auto generated files when some issues due to references seems to work even after bin and obj deletion and clean for this kind of error 
 	- expect when using packages some of these issues will resolve

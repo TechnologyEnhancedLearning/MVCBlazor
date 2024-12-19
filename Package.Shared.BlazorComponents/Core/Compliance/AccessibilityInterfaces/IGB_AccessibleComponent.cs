@@ -8,7 +8,7 @@ namespace Package.Shared.BlazorComponents.Core.Compliance.AccessibilityInterface
 {
     public interface IGB_AccessibleComponent
     {
-        /// Inevitably we will fall in the habit of putting the same accessibly text for everything so hopefully being able to hover the param and get custom suggestions will help qqqq
+
         /// <summary>
         /// The accessible label for the button for screen readers.
         /// </summary>

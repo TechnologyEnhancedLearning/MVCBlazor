@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Package.Shared.BlazorComponents.Core
 {
-    public abstract class GB_PageBase :GB_ComponentBase //qqqq unecessary now using LHB_RenderModePage
+    public abstract class GB_PageBase :GB_ComponentBase //May not still be necessary now using LHB_RenderModePage
     {
         [Parameter]
         [EditorRequired]

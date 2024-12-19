@@ -48,6 +48,14 @@ generic top level components and less specific for MVC components.
 	- I cannot change name, it is set by AspFor in this component.
 - Should navlinks be shared between the MVC and Blazor layout
 	- We have to use href routes only no url helpers and no specifying controllers
+- Buttons
+	- should we 
+		- put all but submit buttons are wrapped in forms
+		- never put buttons except submit buttons in forms
+		- have all buttons NoJS working
+	- Or
+		- are there times we would would want an anchor link instead
+- search comment "// Logic here to handle model state for noJS should it be ???" unsure if logic should be elsewhere	
 
 - Feedback on readme
 		- Feedback how to tighten project and make good resource what can be removed

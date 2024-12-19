@@ -64,7 +64,7 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true; // Session cookie is essential for application
 });
 
-//qqqq wish it could be singleton
+
 builder.Services.AddScoped<IGS_JSEnabled>(provider =>
 {
     //In here we would get our appsettings etc and configure - but then we have an object to pass it 
