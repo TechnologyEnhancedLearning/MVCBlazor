@@ -1,9 +1,8 @@
 # TODO
 
-- Complete todos in readme 
+- feedback guidance - need fresh eyes fresh approach
 - redo home page with info or markdig?????
-- is this ILHS_AttendeesDbService in the wrong place in the project. API has a reference to LH for its db service but not shared
-- setup notes
+	- look on personal laptop old projects done it before
 - roadmap proposal
 
 # About
@@ -30,17 +29,17 @@ SSL certificate via the browser. In the end we didnt need to change appsettings
 	1. api
 		- revert changes back when first run overwrites
 	**Dont run the server project separately** (- if you do you will need to revert/update ssl port number)
-	~~1. server 
-		- revert changes back when first run overwrites~~
-	~~1. client
-		- revert changes back when first run overwrites~~
+		1. ~~server~~ 
+			- ~~revert changes back when first run overwrites~~
+	1. ~~client~~
+		- ~~revert changes back when first run overwrites~~
 1. then in visual studio 
 	- drop down on run button
 	- multiple startup projets
 		- multiple launch 
 			1. API (start)
 			1. Server (start)
-![Startup Image](startupimg.gif)
+		- ![Startup Image](startup.gif)
 1. Appsettings change baseUrl to your local host - BaseUrl stuff is just for ease in places
 	- we are launching IIS so in launch and apisettings those are the settings that are important http, https profile shouldnt matter
 1. Clean build
@@ -233,13 +232,13 @@ lifecycle stage or static render mode )
 
 
 ## Further Information
-The project did have all the view components in and css in previously. It has been refactored out for convenience mostly but did work.
-- **TODO** Confluence notes on VC components (in other md currently)
-- **TODO** Confluence How to add a component to this project (in other md currently)
-- **TODO** Confluence html view options lose in using blazor and how resolved (in other md currently)
+The project did have all the view components in and css in previously. 
+It has been refactored out for convenience mostly but did work. See [Some commit may need reverting but can be found in older git repo in previous commits](https://github.com/TechnologyEnhancedLearning/MVCWebApp)
+- [View Components and Blazor](https://hee-tis.atlassian.net/wiki/spaces/TP/pages/4489314319/View+Component+Compatibility)
 - [Confluence on tree shaking (as solved in project less useful now)](https://hee-tis.atlassian.net/wiki/spaces/TP/pages/4489347088/Tree+Shaking)
 - [Confluence NoJS requirement (Also covered in this doc as the main potential factor that could have resulted in not using blazor) ](https://hee-tis.atlassian.net/wiki/spaces/TP/pages/4488888331/NoJS+Requirement)
 - [confluence reference for this project](https://hee-tis.atlassian.net/wiki/spaces/TP/pages/edit-v2/4302503949)
+
 
 
 
@@ -273,7 +272,12 @@ without having to do anything except add the component you want to use in the pl
 
 #### Structure
 
-**TODO** **Out of scope** - Dependency Diagram, Table explaining why and what each project in solution is for
+**Out of scope** - Dependency Diagram, Table explaining why and what each project in solution is for
+
+
+
+*Note: .Server here is the equivalent of WebUI in LH. Its serving the View Page, Blazor Pages and WASM (view the client which is just the wasm that goes onto the users browser)*
+
 LH.Server and LH.Client have references to all the packages with Server also having a reference to Client.
 Shared Services has a reference to Shared Entities and Shared BlazorComponents has a reference to the other two Shared packages
 
@@ -304,7 +308,8 @@ so characters simulates a generic component/service of some kind. (Attendees is 
 	- LHS_ learning hub service
 
 ## Files what to look at
-**TODO** Run script to generate table and what to look at in each
+**Tip if on git view the readme as raw a code file and open with markdown plugin and set to wide**
+[Bottom file tree diagram of solution](#folder-structures-and-comments)
 
 # Project Limitations and Potential Future Additions
 
