@@ -4,6 +4,7 @@
 @{
     string Title = "Home Page";
     ViewData["Title"] = Title;
+
 }
 <h1 class="mvcHosted">@Title</h1>
 <h3>
@@ -22,3 +23,7 @@
            param-TextToPrintToConsole="@("Hello from MVC!")" 
            param-ButtonType="@(GB_ButtonType.Success)" />
 
+
+<div class="markdown-content">
+    @ViewBag.HtmlContent
+</div>

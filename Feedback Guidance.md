@@ -5,13 +5,17 @@ opportunities for better approaches.
 
 Please contribute: Add, Edit, Delete its a shared working document.
 
-## Questions from the POC development process
+If this turns out useful we may use it in some form as a proforma for future proof of concept projects.
+*Though currently I am not sure what to ask*
 
+## Questions from the POC development process
+- is readme missing anything
+- what can be removed from readme tldr
 
 ### Questions Unanswered
-
+- is this ILHS_AttendeesDbService in the wrong place in the project. API has a reference to LH for its db service but not shared
 - NoJS do you agree
-	- We should try and have no seperate NoJS components and have design process to enable components, and the 
+	- We should try and have no separate NoJS components and have design process to enable components, and the 
 components and pages they belong to, to function without JS.
 - Where does state best belong
 	- Components
@@ -26,10 +30,13 @@ components and pages they belong to, to function without JS.
 			- we can use the list from the view to speed the process
 				- then should it update the service created for the component
 				- or should the stateservice update the components list and be stateless
+		- components in Views are their own circuit. Their state will not be shared with other state service
+			- It may be the case two components within a component that is in a view will share that state service
+			- So we could have 2 components in a view, and 1 component in a view wrapping two components and different state behaviour
+		- Blazorised Storage is commonly used in these scenarios which wont be supported NoJS
+		- Mediatr pattern with an api handling all state across the application
 				
-	- Services
-	- A Mediator Pattern API of somekind
-	- Blazorised Storage (can't work in NoJS)
+
 	- DB (lots of calls and not leveraging blazor interactivity)
 - Does it seem that the requirements for Blazor and NoJS will result in too much requirements for
 	- forms
@@ -61,9 +68,7 @@ generic top level components and less specific for MVC components.
 		- Feedback how to tighten project and make good resource what can be removed
 		- What to remove and put in confluence instead
 		- What was useful and what wasnt?
-- review controller base routing it is just for seperation in the project but would like to talk about it.
-	- How will parameters and different routing options affect the Blazor Host do we expect a conflict
-- are for discussion is how do we seperate out components here i have separate pages, components, text, buttons
+
 
 ### Minor questions
 - ReassignListGroupPeopleIds<GE_CharacterModel>(Cartoons.Cast<GE_GroupBase<GE_CharacterModel>>().ToList()); wanted not to use a cast here
@@ -72,8 +77,9 @@ builder.Services.LHS_AddConfiguration(builder.Configuration, "APIs:LH_DB_API"); 
 -   public CharactersViewModel(List<GE_CharacterModel> characters, GE_FavouriteCharacterFormModel CurrentFormData = null) 
 here we do logic in the view. this setup is needed because state is not in the service for incomplete forms from nojs, which is why we are putting in modelstate value
 
-### Discussion points
-- Looking in the buttons folder
-	- How should they be seperated
-	- How can we have them post 
+
+	
+# Reflections
+
+
 	
