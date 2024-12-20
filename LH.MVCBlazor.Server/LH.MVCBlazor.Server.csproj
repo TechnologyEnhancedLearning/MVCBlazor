@@ -26,6 +26,7 @@
   </ItemGroup>-->
 
   <ItemGroup>
+    <PackageReference Include="Markdig" Version="0.39.1" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.8" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.1" />
     <PackageReference Include="NHSUKViewComponents.Web" Version="1.0.24" />
@@ -43,6 +44,10 @@
 
   <ItemGroup>
     <Folder Include="Properties\" />
+    <Folder Include="wwwroot\StaticFiles\" />
   </ItemGroup>
-
+	<!--just to allow us to see readme in home page-->
+	<Target Name="CopyReadmeToContent" AfterTargets="Build">
+		<Copy SourceFiles="..\ReadMe.md" DestinationFolder="$(ProjectDir)\wwwroot\StaticFiles\" />
+	</Target>
 </Project>

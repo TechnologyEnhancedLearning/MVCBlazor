@@ -1,12 +1,15 @@
-# Read Me .Md for MVCBlazor project
-*This readme can be found at project top level. Here is project link it git [git repo](https://github.com/TechnologyEnhancedLearning/MVCBlazor)*
+# TODO
 
+- feedback guidance - need fresh eyes fresh approach
+- redo home page with info or markdig?????
+	- look on personal laptop old projects done it before
+- roadmap proposal
 
-## About
+# About
 .Net 8 MVC Blazor project, with View Components.
 Has Blazor pages and MVC Blazor components.
 
-### Setup 
+## Setup 
 *This has worked, but left in the extra steps and crossed out steps, the next person to use this setup please edit this file if they are not needed*
 
 **Be aware AppSettings is in client too which is exposed, and we need user secrets of developer appsettings adding 
@@ -53,7 +56,7 @@ SSL certificate via the browser. In the end we didnt need to change appsettings
 
 	
 
-### Good to know
+## Good to know
 The project has lists as a database and an API for it.
 They are in a list of lists to represent some database complexity.
 Currently First() is used throughout just for simplicity and only the first list in lists is used.
@@ -85,7 +88,7 @@ This is less necessary in the case of Blazor components now that we get assembli
 The project has two main components. *Characters* *Attendees* this is to illustrate generic components for which *characters* is the example, and LH specific which is *Attendees* following how they differ and when a generic component is used in a LH one 
 should illustrated how the separation could be handled. 
 
-#### Good to know about Blazor
+### Good to know about Blazor
 - Blazor require JS for its lifecycle stages after the initial render. The JS is to set up the WASM for Client side or SignalR for serverside.
 - Blazor can be made to interact with prexisting JS and be triggered by other components or manipulate other components. This project does not cover this.
 - Blazor components, base components, are not out of the box designed to work without JS. This means validation from models, and forms and other elements need to be created
@@ -93,7 +96,7 @@ to be built upon.
 - Components do not know how they are being rendered.
 
 
-### Purpose
+## Purpose
 - Attempt unified hosted .net 8 webapp application **this was not possible**
 	- The project uses MVC Server that serves blazor pages, mvc pages, and mvc pages with blazor components
 	- The project uses a client project this enables all the components and pages to be Server or Client side
@@ -139,7 +142,7 @@ on what to create (like a factory, I don't recommend this for now, though there 
 	- We do have a component that is an example of LH specific (Attendees) and one that is Generic (Characters) so 
 we can see how both are consumed. Related and at what point the generic gets wrapped into an LH component.
 
-### Quick context on NoJS requirement
+## Quick context on NoJS requirement
 
 Blazor is not designed for NoJS but can be made compatible with it by creating our own versions of basecomponents that work in prerender.
 Then future components should only need to provide a few additional parameters such as post routes.
@@ -170,7 +173,7 @@ There is also added complexity from services existing both in WASM and Server if
 
 Further reading DLS NoJS requirement: [confluence nojs dls](https://hee-tis.atlassian.net/wiki/spaces/TP/pages/3546611779/Search+sort+filter+and+paginate)
 
-### Explanation of Rendering
+## Explanation of Rendering
 Blazor can render Server side via a SignalR connection it makes to update the UI and be interactive.
 This work is done on the server. To set up the connection JS is required.
 
@@ -228,7 +231,7 @@ lifecycle stage or static render mode )
 - Anything *Async* that updates after initial render will not happen in NoJS because lifecycles top after rendering.
 
 
-### Further Information
+## Further Information
 The project did have all the view components in and css in previously. 
 It has been refactored out for convenience mostly but did work. See [Some commit may need reverting but can be found in older git repo in previous commits](https://github.com/TechnologyEnhancedLearning/MVCWebApp)
 - [View Components and Blazor](https://hee-tis.atlassian.net/wiki/spaces/TP/pages/4489314319/View+Component+Compatibility)
@@ -239,17 +242,17 @@ It has been refactored out for convenience mostly but did work. See [Some commit
 
 
 
-## Exploration of Project
+# Exploration of Project
 
-### Orientation
+## Orientation
 
-### Design
-#### Architecture
+## Design
+### Architecture
 [Bottom file tree diagram of solution](#folder-structures-and-comments)
 It is common to have a shared project that both WASM and Server rely on. For us we could bring in all our packages by it a injection collection potentially.
 But for now it is only a nicety that could make the project seem more complex. So is not included.
 
-##### Objective of Architecture
+#### Objective of Architecture
 - Minimal change to implement components
 - Reusability
 - Evidence can support all Blazor options
@@ -267,7 +270,7 @@ But for now it is only a nicety that could make the project seem more complex. S
 without having to do anything except add the component you want to use in the place you want it.
 
 
-##### Structure
+#### Structure
 
 **Out of scope** - Dependency Diagram, Table explaining why and what each project in solution is for
 
@@ -283,7 +286,7 @@ This is the same with the LH packages. Which in addition have a reference to the
 The API does depend on some service interfaces they may be in the wrong place.
 
 
-##### Naming
+#### Naming
 In order to easily identify where components come from so we can see how general components are used within LH 
 components for example a lot of files have a suffix.
 So LH_CharactersDBService : IGS_CharactersDBService
@@ -304,13 +307,13 @@ so characters simulates a generic component/service of some kind. (Attendees is 
 	- GS_ generic services
 	- LHS_ learning hub service
 
-### Files what to look at
+## Files what to look at
 **Tip if on git view the readme as raw a code file and open with markdown plugin and set to wide**
 [Bottom file tree diagram of solution](#folder-structures-and-comments)
 
-## Project Limitations and Potential Future Additions
+# Project Limitations and Potential Future Additions
 
-### What does it not show
+## What does it not show
 - It is not an example of best practice it is an exploration of what may be worth discussing and evaluating as an approach.
 This project is not currently a reference for how to but an example of what can work and may have potential.
 - shared layout between Blazor and MVC pages. Blazor has to have its own duplicate of it.
@@ -318,7 +321,7 @@ This project is not currently a reference for how to but an example of what can 
 - NoJS controller and reroutes is probably not how we would do it, but is illustrative of what blazor does and doesnt need and what is just for nojs
 
 
-### Desired Future Additions
+## Desired Future Additions
 - Extract the add person to a generic component - We would also need the JS supported inline validator so do as an addition
 - StateService 
 	- should have an Event Action Subscription and handling it all in the service ensure no list of data in the components
@@ -339,7 +342,7 @@ This project is not currently a reference for how to but an example of what can 
 
 
 
-### Desired For Different Prototype Or Branch
+## Desired For Different Prototype Or Branch
 - packaging (may find package building package options removes need for service collections)
 	- scoped css in packages
 	- js wrappers being introduced for js triggerable blazor
@@ -351,10 +354,10 @@ This project is not currently a reference for how to but an example of what can 
 	- revisit mediatr package
 - **important** -> prototyping tools
 
-### Car park desired features
+## Car park desired features
 
 
-### Approaches Discarded For Now
+## Approaches Discarded For Now
 - Improve validator component [try this blazor uni in future](https://blazor-university.com/forms/writing-custom-validation/)
 	- Uses fluent validation, which requires JS, so maybe not, attributes are better
 	- Refactoring the approach used here to combine viewstate and blazor validation may be better
@@ -365,7 +368,7 @@ It does not seem to be useful to our needs on first look.
 	- maybe layouts need to be passed by a view if consuming pages as components??? 
 	- this could be important as its nice to change the layout based on admin privilege for example (if we were doing pure blazor page approach)
 
-## Recommendations from project
+# Recommendations from project
 In no particular order.
 - I think from discussing webassembly prerender will be the choice. Without blazor pages. And keep this project as reference if we want to introduce them.
 - currently we do not have interactive layoutcomponents this is done via the header and route render mode being set in the app
@@ -409,7 +412,7 @@ custom validation component to handle modelstate validation and Blazors validato
 - Get input from team with lots experience of LH and get input on opportunities and problems may face with Blazor specific to LH etc
 - Take advantage of C# features and consider compliance interfaces
 
-### Recommendations if want Blazor pages
+## Recommendations if want Blazor pages
 - If we want to redirect from blazor pages for nojs use nojs script tag and meta tag to redirect. This is because we 
 run the code as we prerender, using 
 navigationmanager in prerendering stages will happen 
@@ -420,7 +423,7 @@ It would be possible to tell them they we're redirected on the page they we're r
 
 
 
-## Trouble Shooting
+# Trouble Shooting
 - if assembled files break try deleting them and then starting
 - blazor not detecting any components! - restarted visual studio i was running two instances for comparison
 - deleting auto generated files when some issues due to references seems to work even after bin and obj deletion and clean for this kind of error 
@@ -429,11 +432,11 @@ It would be possible to tell them they we're redirected on the page they we're r
 	- This project does do this, though it is necessary to chain the parameters down through the components, which means the summaries are lost.
 	There is probably a better way of doing this. It may be with cascading. It maybe with inheritance rather than interfaces.
 
-## Things to try in the project to gain familiarity
+# Things to try in the project to gain familiarity
 - replace the li links with a blazor component that takes class the href or two one for mvc and blazor
 
-## Folder Structures and Comments
-### Project Structure
+# Folder Structures and Comments
+## Project Structure
 
 <style>
 tr th:nth-child(2), 
