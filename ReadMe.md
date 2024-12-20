@@ -1,14 +1,61 @@
 # TODO
 
-- Complete todos in readme like architecture diagram
-- top to bottom refactor
-- redo home page with info
-
+- Complete todos in readme 
+- redo home page with info or markdig?????
+- is this ILHS_AttendeesDbService in the wrong place in the project. API has a reference to LH for its db service but not shared
+- setup notes
+- roadmap proposal
 
 # About
 .Net 8 MVC Blazor project, with View Components.
 Has Blazor pages and MVC Blazor components.
 
+## Setup 
+*This has worked, but left in the extra steps and crossed out steps, the next person to use this setup please edit this file if they are not needed*
+
+**Be aware AppSettings is in client too which is exposed, and we need user secrets of developer appsettings adding 
+to your project to override appsettings. Use existing appsetting as a reference**
+> We managed to make it work without changing the c:\Windows\System32\Drivers\etc\hosts and without generating an 
+SSL certificate via the browser. In the end we didnt need to change appsettings
+
+
+1. You need .net 8
+**DONT run https**
+1. Before doing anything look at launch setting and appsetting and the hardcoded number
+	- pin them watch for changes these changes may need applying across the project
+	- watch iisetting in server.properites (changes made we will want to propigate with find replace)
+	- watch git changes (some things may be ignored)
+	- watch browser console error
+1. run each iis express. ~~one at time~~. look in git compare to see changes to launch files.
+	1. api
+		- revert changes back when first run overwrites
+	**Dont run the server project separately** (- if you do you will need to revert/update ssl port number)
+	~~1. server 
+		- revert changes back when first run overwrites~~
+	~~1. client
+		- revert changes back when first run overwrites~~
+1. then in visual studio 
+	- drop down on run button
+	- multiple startup projets
+		- multiple launch 
+			1. API (start)
+			1. Server (start)
+![Startup Image](startupimg.gif)
+1. Appsettings change baseUrl to your local host - BaseUrl stuff is just for ease in places
+	- we are launching IIS so in launch and apisettings those are the settings that are important http, https profile shouldnt matter
+1. Clean build
+	- take note of routes in launch?
+	- - NoJSBaseController ReturnRedirect uses the localhost address so needs changing
+1. Should run but break
+	- look at the console errors in browser
+	- take note of launch setting route
+1. Are you feeling lucky - hit run
+	- If it doesnt work look in console in browser for what address it tried to hit then do a find on that to see if anything needs updating
+	- in your browser bar change the address for where its trying to hit the api to what you think it should be to test it
+1. Cert_Authority invalid
+	- if you have this error you are hitting the endpoint :) but maybe ssl port is wrong in launch
+
+	
 
 ## Good to know
 The project has lists as a database and an API for it.
@@ -190,10 +237,10 @@ The project did have all the view components in and css in previously. It has be
 - **TODO** Confluence notes on VC components (in other md currently)
 - **TODO** Confluence How to add a component to this project (in other md currently)
 - **TODO** Confluence html view options lose in using blazor and how resolved (in other md currently)
-- **TODO** Tree shaking (in other md currently)
-- **TODO** Error Handling in NoJs and Validation across blazor and vc (in other md currently)
-- **TODO** References (in other md currently)
-- **TODO** Blazor Pages in NoJS (in other md currently)
+- [Confluence on tree shaking (as solved in project less useful now)](https://hee-tis.atlassian.net/wiki/spaces/TP/pages/4489347088/Tree+Shaking)
+- [Confluence NoJS requirement (Also covered in this doc as the main potential factor that could have resulted in not using blazor) ](https://hee-tis.atlassian.net/wiki/spaces/TP/pages/4488888331/NoJS+Requirement)
+- [confluence reference for this project](https://hee-tis.atlassian.net/wiki/spaces/TP/pages/edit-v2/4302503949)
+
 
 
 # Exploration of Project
@@ -202,7 +249,7 @@ The project did have all the view components in and css in previously. It has be
 
 ## Design
 ### Architecture
-[Bottom file tree diagram of solution](#Folder%20Structures%20and%20Comments)
+[Bottom file tree diagram of solution](#folder-structures-and-comments)
 It is common to have a shared project that both WASM and Server rely on. For us we could bring in all our packages by it a injection collection potentially.
 But for now it is only a nicety that could make the project seem more complex. So is not included.
 
@@ -226,12 +273,18 @@ without having to do anything except add the component you want to use in the pl
 
 #### Structure
 
-**TODO** - Dependency Diagram, Table explaining why and what each project in solution is for
-- Naming should help
+**TODO** **Out of scope** - Dependency Diagram, Table explaining why and what each project in solution is for
+LH.Server and LH.Client have references to all the packages with Server also having a reference to Client.
+Shared Services has a reference to Shared Entities and Shared BlazorComponents has a reference to the other two Shared packages
+
+This is the same with the LH packages. Which in addition have a reference to the shared packages. 
+
+The API does depend on some service interfaces they may be in the wrong place.
+
 
 #### Naming
 In order to easily identify where components come from so we can see how general components are used within LH 
-components for example alot of files have a suffix.
+components for example a lot of files have a suffix.
 So LH_CharactersDBService : IGS_CharactersDBService
 Means the implementation is specific for learning hub the but this service is from the general/generic package
 so characters simulates a generic component/service of some kind. (Attendees is very similar but represents a purely LH one).
@@ -363,8 +416,6 @@ html like "you have no js your being directed" on our
 blazor pages. Though we can still use the navigation manager to redirect it just can't happen after prerender.
 It would be possible to tell them they we're redirected on the page they we're redirected to if this was preferable.
 
-# Setup **TODO**
-- NoJSBaseController ReturnRedirect uses the localhost address so needs changing
 
 
 # Trouble Shooting
@@ -378,7 +429,6 @@ It would be possible to tell them they we're redirected on the page they we're r
 
 # Things to try in the project to gain familiarity
 - replace the li links with a blazor component that takes class the href or two one for mvc and blazor
-
 
 # Folder Structures and Comments
 ## Project Structure
