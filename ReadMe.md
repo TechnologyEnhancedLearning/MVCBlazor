@@ -1,5 +1,5 @@
 # Read Me .Md for MVCBlazor project
-*This readme can be found at project top level. Here is project link it git [git repo](https://github.com/TechnologyEnhancedLearning/MVCBlazor)*
+*This readme can be found at project top level. Here is project link [git repo](https://github.com/TechnologyEnhancedLearning/MVCBlazor)*
 
 
 ## About
