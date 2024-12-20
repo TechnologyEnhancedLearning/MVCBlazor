@@ -17,7 +17,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowLHMVCBlazorServer",
       builder => builder
-          .WithOrigins(allowedOrigins) //Server SSL
+          .WithOrigins(allowedOrigins) //Server SSL //"https://localhost:44343"
           .AllowAnyHeader()
       .AllowAnyMethod()
       .AllowCredentials());
