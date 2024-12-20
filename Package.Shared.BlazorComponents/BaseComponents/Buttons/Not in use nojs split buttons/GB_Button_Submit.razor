@@ -4,7 +4,7 @@
 @inherits Package.Shared.BlazorComponents.Core.GB_ComponentBase
 @implements IGB_AccessibleComponent
 <GB_Button_I AriaLabel="@AriaLabel"
-             Title="@Title"
+             ToolTipTitle="@ToolTipTitle"
              AssistiveText="@AssistiveText"
              TabIndex="@TabIndex"
              ShowIcon="@ShowIcon"
@@ -42,7 +42,7 @@
 
     [EditorRequired]
     [Parameter]
-    public string Title { get; set; } = DefaultTitle;  //Or ButtonText???
+    public string ToolTipTitle { get; set; } = DefaultTitle;  //Or ButtonText???
 
     [EditorRequired]
     [Parameter]

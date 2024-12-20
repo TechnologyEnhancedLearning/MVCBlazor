@@ -25,7 +25,7 @@ components and pages they belong to, to function without JS.
 		- in our state service we store a list but we also pass one from the view from the same service
 			- we can use the list from the view to speed the process
 				- then should it update the service created for the component
-				- or should the stateservice update the components list
+				- or should the stateservice update the components list and be stateless
 				
 	- Services
 	- A Mediator Pattern API of somekind
@@ -48,6 +48,14 @@ generic top level components and less specific for MVC components.
 	- I cannot change name, it is set by AspFor in this component.
 - Should navlinks be shared between the MVC and Blazor layout
 	- We have to use href routes only no url helpers and no specifying controllers
+- Buttons
+	- should we 
+		- put all but submit buttons are wrapped in forms
+		- never put buttons except submit buttons in forms
+		- have all buttons NoJS working
+	- Or
+		- are there times we would would want an anchor link instead
+- search comment "// Logic here to handle model state for noJS should it be ???" unsure if logic should be elsewhere	
 
 - Feedback on readme
 		- Feedback how to tighten project and make good resource what can be removed
@@ -55,6 +63,7 @@ generic top level components and less specific for MVC components.
 		- What was useful and what wasnt?
 - review controller base routing it is just for seperation in the project but would like to talk about it.
 	- How will parameters and different routing options affect the Blazor Host do we expect a conflict
+- are for discussion is how do we seperate out components here i have separate pages, components, text, buttons
 
 ### Minor questions
 - ReassignListGroupPeopleIds<GE_CharacterModel>(Cartoons.Cast<GE_GroupBase<GE_CharacterModel>>().ToList()); wanted not to use a cast here
@@ -62,3 +71,9 @@ generic top level components and less specific for MVC components.
 builder.Services.LHS_AddConfiguration(builder.Configuration, "APIs:LH_DB_API"); Tried various approaches with IOptions
 -   public CharactersViewModel(List<GE_CharacterModel> characters, GE_FavouriteCharacterFormModel CurrentFormData = null) 
 here we do logic in the view. this setup is needed because state is not in the service for incomplete forms from nojs, which is why we are putting in modelstate value
+
+### Discussion points
+- Looking in the buttons folder
+	- How should they be seperated
+	- How can we have them post 
+	

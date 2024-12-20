@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Components;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,8 +7,10 @@ using System.Threading.Tasks;
 
 namespace Package.Shared.BlazorComponents.Core
 {
-    public abstract class GB_PageBase :GB_ComponentBase
+    public abstract class GB_PageBase :GB_ComponentBase //May not still be necessary now using LHB_RenderModePage
     {
+        [Parameter]
+        [EditorRequired]
         public abstract string PageTitle { get; set; }
 
         protected override void OnInitialized()

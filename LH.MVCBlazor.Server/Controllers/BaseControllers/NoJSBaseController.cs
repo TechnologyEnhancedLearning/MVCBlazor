@@ -61,12 +61,7 @@ namespace LH.MVCBlazor.Server.Controllers.BaseControllers
 
             return String.IsNullOrEmpty(returnUrl) ? DefaultRedirectAction() : ReturnRedirect(returnUrl);
         }
-        protected IActionResult ReturnViewWithModel(object viewModel, string returnUrl = null)
-        {
-            returnUrl = returnUrl ?? Request.Headers["Referer"].ToString();
-            return View(DefaultViewRouteController, viewModel);
-           
-        }
+
         private bool IsValidMVCPageRoute(string url)
         {
             //!!! Not for production
@@ -90,6 +85,12 @@ namespace LH.MVCBlazor.Server.Controllers.BaseControllers
                            kvp => kvp.Key,
                            kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).ToList()
                        );
+        }
+
+        protected bool IsBlazorPage()
+        {
+            string refererString = Request.Headers["Referer"].ToString();
+            return refererString.EndsWith("BlazorPage");
         }
     }
 

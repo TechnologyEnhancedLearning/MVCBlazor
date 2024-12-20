@@ -3,14 +3,14 @@
 
 <div class="list-container">
     <h2 class="text-center">@ListTitle</h2>
-    <ul>
+    <ul class="nhsuk-ul">
         @foreach (var item in Items)
         {
             <li class="nhsuk-list-item">
                 <!-- Use a consistent class name -->
                 <div class="nhsuk-inline-content">
+                    <span style="display: flex;margin:10px;">@GetItemText(item)</span>
                     @ListButton(item)
-                    <span>@GetItemText(item)</span>
                 </div>
             </li>
         }
@@ -21,6 +21,7 @@
     [EditorRequired]
     [Parameter]
     public string ListTitle { get; set; }
+
     [EditorRequired]
     [Parameter]
     public List<TItem> Items { get; set; } // Generic list of items

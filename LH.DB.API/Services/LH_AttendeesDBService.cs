@@ -30,7 +30,7 @@ namespace LH.DB.API.Services
         }
 
         // Replace the entire list of attendees in the simulated database
-        public async Task<GE_ServiceResponse<List<LH_AttendeeModel>>> ReplaceDBWithList(List<LH_AttendeeModel> attendees) //qqqq warning!!! for now just first group
+        public async Task<GE_ServiceResponse<List<LH_AttendeeModel>>> ReplaceDBWithList(List<LH_AttendeeModel> attendees) // warning!!! for now just first group
         {
 
             // Replace the current list with the new list

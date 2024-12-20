@@ -62,11 +62,6 @@ builder.Services.GS_AddStateServices();
 
 builder.Services.LHB_RegisterAllBlazorPageRoutes();
 
-//QQQQ Remove DI later when sure
-//builder.Services.LHB_RegisterAllBlazorComponents();
-//builder.Services.GB_RegisterAllGenericBlazorComponents();
-
-
 // Add Configuration from appsettings.json
 builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 

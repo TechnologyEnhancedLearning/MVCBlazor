@@ -16,21 +16,17 @@
     string Title = $"Characters Page MVC RenderMode: {ViewBag.RenderMode}";
     ViewData["Title"] = Title;
 }
-<h1>@Title</h1>
+<h1 class="mvcHosted">@Title</h1>
 
 
-<div class="attendees-wrapper">
-    <div class="attendees-form-container">
-        <h3 style="margin:10px;text-align:center">"Model.CartoonName"</h3>
         <component type="typeof(LHB_FavouriteCharacterForm)"
                    param-Action=@("Characters/NoJS/SetFavouriteCharacterByForm")
                    param-Characters=@Model.Characters
                    param-LHB_FavouriteCharacterFormModel=@Model.LHB_FavouriteCharacterFormModel
                    param-Label=@("EditFormLabel Here")
-                   param-RadioListHint=@("Edit form hint here ")
+                   param-RadioListHint=@("Click radios to select then save")
                    param-IsPageHeading=true
                    render-mode="@renderMode" />
-    </div>
-</div>
+
 
 

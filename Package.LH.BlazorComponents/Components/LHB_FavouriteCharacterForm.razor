@@ -1,59 +1,61 @@
 ﻿@inherits GB_ComponentBase
 @inject IGS_CharactersStateService GS_CharactersStateService
+<GB_ComponentWrapper WrapperTitle="Characters">
+    <GB_EditForm 
+        Title=@FormTitle 
+        FormModel="@LHB_FavouriteCharacterFormModel" 
+        OnValidSubmit="@OnValidSubmit" 
+        OnInvalidSubmit="@OnInvalidSubmit" 
+        Action="@Action" 
+        SubmitButtonAriaLabel="Save favourite character"
+        SubmitButtonAssistiveText="This button saves favourite character"
+        SubmitButtonText="Save Favourite Character"
+        SubmitButtonTitle="Save Favourite Character"
+    >
+        <EditFormContents>
+            <div class="form-group" style="margin:10px;padding:10px;">
+                @{
+                    string placeholderTxt = "We just want to see ModelStateErrors in nojs so let me be empty so i can error";
+                }
+                <label for="TestModelStateWithRequired">@placeholderTxt</label>
+                <InputText id="TestModelStateWithRequired"
+                class="form-control"
+                DisplayName="@(placeholderTxt)"
+                @bind-Value="LHB_FavouriteCharacterFormModel.TestModelStateWithRequired" />
+                <ValidationMessage For="@(() => LHB_FavouriteCharacterFormModel.TestModelStateWithRequired)" />
+            </div>
+            @if (CharactersAreLoading)
+            {
+                <h3>...Characters Are Loading</h3>
+            }else{
+                <div style="margin:10px;padding:10px;">
+                    <GB_VCB_Radios
+                        TItem="GE_CharacterModel"
+                        TValue="int"
+                        ValueToSetPostName="@($"{nameof(LHB_FavouriteCharacterFormModel)}.{nameof(LHB_FavouriteCharacterFormModel.FavouriteCharacterId)}")"
+                        @bind-RadioListValueToSet="@LHB_FavouriteCharacterFormModel.FavouriteCharacterId"
+                        RadioGroupId=@($"characterRadioGroup-{"Cartoon.Id"}")
+                        RadioItems="@Characters" 
+                        Label="@Label" 
+                        HintText="@RadioListHint" 
+                        Class=""
+                        GetHint="@(character => "Click to select")"
+                        GetLabel="@(character => $"{character.ToString()}")"
+                        GetValue="@(character => character.Id)"
+                        IsPageHeading="@IsPageHeading"
+                       />
 
-<GB_EditForm 
-    Title=@FormTitle 
-    FormModel="@LHB_FavouriteCharacterFormModel" 
-    OnValidSubmit="@OnValidSubmit" 
-    OnInvalidSubmit="@OnInvalidSubmit" 
-    Action="@Action" 
-    SubmitButtonAriaLabel="Save favourite character"
-    SubmitButtonAssistiveText="This button saves favourite character"
-    SubmitButtonText="Save Favourite Character"
-    SubmitButtonTitle="Save Favourite Character"
->
-    <EditFormContents>
-        <div class="form-group">
-            @{
-                string placeholderTxt = "We just want to see ModelStateErrors in nojs so let me be empty so i can error;";
+               </div>
             }
-            <label for="TestModelStateWithRequired">placeholderTxt</label>
-            <InputText id="TestModelStateWithRequired"
-            class="form-control"
-            DisplayName="@placeholderTxt"
-            @bind-Value="LHB_FavouriteCharacterFormModel.TestModelStateWithRequired" />
-            <ValidationMessage For="@(() => LHB_FavouriteCharacterFormModel.TestModelStateWithRequired)" />
-        </div>
-        @if (CharactersAreLoading)
-        {
-            <h3>...Characters Are Loading</h3>
-        }else{
-        <GB_VCB_Radios
-            TItem="GE_CharacterModel"
-            TValue="int"
-            ValueToSetPostName="@($"{nameof(LHB_FavouriteCharacterFormModel)}.{nameof(LHB_FavouriteCharacterFormModel.FavouriteCharacterId)}")"
-            @bind-RadioListValueToSet="@LHB_FavouriteCharacterFormModel.FavouriteCharacterId"
-            RadioGroupId=@($"characterRadioGroup-{"Cartoon.Id"}")
-            RadioItems="@Characters" 
-            Label="@Label" 
-            HintText="@RadioListHint" 
-            Class=""
-            GetHint="@(character => "Click to select")"
-            GetLabel="@(character => $"{character.ToString()}")"
-            GetValue="@(character => character.Id)"
-            IsPageHeading="@IsPageHeading"
-
-           />
-        }
 
    
-    </EditFormContents>
+        </EditFormContents>
 
-</GB_EditForm>
-<div style="margin:30px; padding:30px">
-    <p>If when the radios are clicked this Id number doesn't' change. Then the component is static not interactive. For example if render mode is static, prerendering is occuring or your browser has JS disabled : @LHB_FavouriteCharacterFormModel.FavouriteCharacterId</p>
-</div>
-
+    </GB_EditForm>
+    <div style="margin:30px; padding:30px">
+        <p>If when the radios are clicked this Id number doesn't change. Then the component is static not interactive. For example if render mode is static, prerendering is occuring or your browser has JS disabled : @LHB_FavouriteCharacterFormModel.FavouriteCharacterId</p>
+    </div>
+</GB_ComponentWrapper>
 @code {
 
     [Parameter, EditorRequired]
@@ -73,11 +75,14 @@
     [Parameter]
     public bool IsPageHeading { get; set; } = true;
 
-    //qqqq should this actually be from the service
+    // should this actually be from the service - for simplicity yes otherwise may alter list in component not in the service. 
+    // nojs will get it from service first run anyway
+    // changes can be kept in forms for nojs validation
+    // state should only last life of service unless saved anyway??? forms can hold previously selected data
     [Parameter]
     public List<GE_CharacterModel> Characters { get; set; } = null; //For model seeding for speed
 
-    private string FormTitle = "Favourite Character Form";
+    private string FormTitle = "Required text field for submitting test input";
     private bool CharactersAreLoading { get; set; } = true;
 
 

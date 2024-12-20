@@ -4,7 +4,7 @@
 
 <div class="nhsuk-button-container">
 
-    @*qqqq yes! extract the form to HiddenSubmitForm_NoJS in a utility folder ... but if button is generic should I what else would i put in it. and would i reference it rather than containing it so its not visibly different*@
+
     <form action="@ActionUrl"
           style="display:inline;"
           role="form"
@@ -15,7 +15,7 @@
                 aria-label="@AriaLabel"
                 aria-role="@AriaRole"
                 aria-describedby="@AriaDescribedBy"
-                title="@Title"
+                title="@ToolTipTitle"
                 tabindex="@TabIndex">
 
             @if (ShowIcon)
@@ -56,7 +56,7 @@
 
     [EditorRequired]
     [Parameter]
-    public string Title { get; set; } = DefaultTitle; // Or ButtonText???
+    public string ToolTipTitle { get; set; } = DefaultTitle; // Or ButtonText???
 
     [EditorRequired]
     [Parameter]

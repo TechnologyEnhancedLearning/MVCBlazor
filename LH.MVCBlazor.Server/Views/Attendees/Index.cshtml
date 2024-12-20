@@ -16,25 +16,19 @@
     string Title = $"Attendees Page MVC RenderMode: {ViewBag.RenderMode}";
     ViewData["Title"] = Title;
 }
-<h1>@Title</h1>
+<h1 class="mvcHosted">@Title</h1>
 
+<component type="typeof(LHB_Attendees_AddRemoveListForm)"
+            param-newAttendee="@Model.LH_AttendeeFormModel"
+            render-mode="@renderMode"/>
+            @* param-ListAttendeesProvidedByView="@Model.Attendees" 
 
-
-<div class="attendees-wrapper">
-    <div class="attendees-form-container">
-        <h3 style="margin:10px;text-align:center">"Model.MeetingName"</h3>
-        <component type="typeof(LHB_Attendees_AddRemoveListForm)"
-                   param-newAttendee="@Model.LH_AttendeeFormModel"
-                   render-mode="@renderMode" />
-                    @* param-ListAttendeesProvidedByView="@Model.Attendees" 
-
-                    For speed could use this whist load. 
-                    Or it could be for passing back and forth part finished data like when validating 
-                    But if the service is providing state not the component then this doesnt work.
+            For speed could use this whist load. 
+            Or it could be for passing back and forth part finished data like when validating 
+            But if the service is providing state not the component then this doesnt work.
                     
-                    *@
-    </div>
-</div>
+            *@
+
 
 
 

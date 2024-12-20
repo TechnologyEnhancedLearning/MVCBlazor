@@ -16,7 +16,7 @@ namespace Package.LH.BlazorComponents.Models
         //[FromForm(Name = "LHB_FavouriteCharacterFormModel.FavouriteCharacterId")]
         public int FavouriteCharacterId { get; set; }
 
-        [Required(ErrorMessage = "Required attribue error for TestModelStateWithRequired")]
+        [Required(ErrorMessage = "Required attribue error for text box")]
         public string TestModelStateWithRequired { get; set; } = null;
         public Dictionary<string, List<string>> ModelStateErrors { get; set; } = new();
 
