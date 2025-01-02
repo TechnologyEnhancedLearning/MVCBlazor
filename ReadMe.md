@@ -328,7 +328,63 @@ This project is not currently a reference for how to but an example of what can 
 - Auth headers and auth tokens in blazor see [This patrick god ecommerce repo does have and there is a confluence project for how to set it up](https://github.com/patrickgod/BlazorEcommerce)
 - blazorisedStorage
 - bunit blazor testing library
+	- [bunit dev docs - these are useful](https://www.youtube.com/watch?v=1Cx6JMO_Wkk)
+		- [all bunit packages](https://bunit.dev/#nuget-downloads)
+			 - *come back to this there are test areas?, template stuff and some QoL stuff by the the looks of it*
+	- [bunit getting started and docs](https://bunit.dev/docs/getting-started/index.html)
+		- i think we want to use the template for adding our proj it will configure target framework and few other little bits
+		- test files actually usually written as .razor
+			- easier markup comparison
+			- less VS niceties like intellisense
+			- requires sdk.razor for the proj
+			- can use _imports file
+			- need a using statement from our testing framework think we can use what we like so we'd use xunit
+			- avoid string quotations for razor @<{HTML tag}>...</{HTML tag}>
+			- as with other things need an outer wrap on the html, blazor now adds this in for us but to make thing more testable maybe should be built into components
+		- [This test is for a generic list so may be a nice example to implement](https://bunit.dev/docs/providing-input/passing-parameters-to-components.html?tabs=razor#templates-parameters)
+		- [Tips look like a good starting point](https://bunit.dev/docs/misc-test-tips.html)
+			- [list of links and video thats look good as well, though alot look very uneditted and long](https://bunit.dev/docs/external-resources.html)
+	- handles renderfragments, generics, uncaptured values cascading its looks pretty good
 	- [blazor unit test](https://github.com/patrickgod/BlazorUnitTestingTutorial)
+		- quick notes
+			- *CUT* component under testing
+			- xunit project
+			- bunit nuget
+				- *looks like there are tohers*
+			- i think we could really like this
+			- steps
+				1. test needs :TestConext from bunit`
+				1. var ourComponent = RenderComponent<OurComponent>(params => params.Add(p=>p.Value,2));
+				1. ourComponent.Find("button").Click() //presume css selector
+				1. cut.Find("p").MarkupMatches("<p etc etc></p>")
+		- really would be nice to see something more complex in a work proj		
+		- how do we check test coverage
+		- I think this is just the tests: When using @bind in conjunction with razor test-files the razor component should not inherit from 
+			ComponentBase (which is the default). The simplest solution would be to inherit from TestContext (as seen in 
+			the example above) which also brings the benefits as described on top of this page.
+		- can mock components so that testing can be issolated to the component being tested
+		- can set rendermode therefore by using static we will can unit test no js behaviour
+			-   var cut = RenderComponent<MovieComponent>(ps => ps.SetAssignedRenderMode(RenderMode.InteractiveServer));
+		- Details
+			- wait for state
+			- well documented
+			- However, if a mocked component has a constructor, field or property initializers, or implements 
+				Dispose/DisposeAsync, these will usually not be overridable by the mocking framework and will run when 
+				the component is instantiated and disposed.
+			- library can autoreplace components with stub
+			- Most popular mocking libraries are able to create substitute/mock components easily, based on the original component, that follow the requirement specified above.
+			- add to rendertree for setup of things all component will need like auth
+			- // Stub all components in the Third.Party.Lib namespace
+				- ComponentFactories.AddStub(type => type.Namespace == "Third.Party.Lib");
+			- as would expect will use interfaced services for mocks
+				- can set it up to use normal service provider and if fails then uses moq [fallback service provider](https://bunit.dev/docs/providing-input/inject-services-into-components.html#fallback-service-provider)
+			- **Worth setting up if in prototype if faster and if can use service collection, custom, fallback, and then dynamic service creation??? ** Moq, NSubstitute, or Telerik JustMock) with tools like AutoFixture to dynamically generate mock services during tests.
+			- Just always use parameter attributes too for ease? : In .NET 8 however, the [Parameter] attribute is no longer required, which means a value cannot be 
+passed to the component during testing using the normal methods, e.g. the 
+ComponentParameterCollectionBuilder<TComponent>'s Add method, if a component parameter is only annotated 
+with the [SupplyParameterFromQuery] attribute. Instead, pass a query string parameters by setting it 
+using the FakeNavigationManager.
+		- 
 - Loading behaviour [repo link](https://github.com/patrickgod/BlazorLoadingAnimation)
 	- Loader [repo link (there a youtube vid with it i think)](https://github.com/patrickgod/BlazorLoadingAnimation) 
 - Components render in views are islands. They can't talk to each other. Unless
@@ -352,7 +408,9 @@ This project is not currently a reference for how to but an example of what can 
 - **important** -> prototyping tools
 
 ### Car park desired features
-
+- .net 9 has RendererInfo (would need to look into it further) which include isInteractive and rendererName
+	- Our service says the name of the platform so we have this already
+	- does have an isineractive flag which could be useful to indicate JsEnabled potentially
 
 ### Approaches Discarded For Now
 - Improve validator component [try this blazor uni in future](https://blazor-university.com/forms/writing-custom-validation/)
@@ -367,7 +425,7 @@ It does not seem to be useful to our needs on first look.
 
 ## Recommendations from project
 In no particular order.
-- I think from discussing webassembly prerender will be the choice. Without blazor pages. And keep this project as reference if we want to introduce them.
+- I think from discussions webassembly prerender will be the choice. Without blazor pages. And keep this project as reference if we want to introduce them.
 - currently we do not have interactive layoutcomponents this is done via the header and route render mode being set in the app
 	- if we do blazor pages we should avoid all but the MainLayout as layout and rendermode are stripped when MVC renders MVC pages as components
 - if all buttons are to work NoJS and for ease of not splitting to two implementations of html. Use *EditForm* with submit buttons for all buttons. and onsubmit will be overriden by blazor.
