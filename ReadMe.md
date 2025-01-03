@@ -357,7 +357,7 @@ comparer can be found on the Customizing the semantic HTML comparison page.
 	- seems some good diff checking **Try for testing deletion after render triggered by event** [IDiff check](https://bunit.dev/docs/verification/verify-markup.html#finding-expected-differences)
 	- [not .net 8 but bunit repo](https://github.com/egil/blazor-workshop.git)
 	- http mocking [nuget http mocking](https://www.nuget.org/packages/RichardSzalay.MockHttp/)
-	- html  <h1 diff:ignoreAttributes> can put rules into the comparisons and semantic detections
+	- html  `<h1 diff:ignoreAttributes> can put rules into the comparisons and semantic detections`
 	- [bunit getting started and docs](https://bunit.dev/docs/getting-started/index.html)
 		- i think we want to use the template for adding our proj it will configure target framework and few other little bits
 		- test files actually usually written as .razor
