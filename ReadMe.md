@@ -327,8 +327,17 @@ This project is not currently a reference for how to but an example of what can 
 		- all handling occuring in state service
 - Auth headers and auth tokens in blazor see [This patrick god ecommerce repo does have and there is a confluence project for how to set it up](https://github.com/patrickgod/BlazorEcommerce)
 - blazorisedStorage
-- bunit blazor testing library
-	- With a reusable component library, the markup produced may be considered part of the externally observable 
+- bunit blazor testing library - notes in progress in bunit section
+- Loading behaviour [repo link](https://github.com/patrickgod/BlazorLoadingAnimation)
+	- Loader [repo link (there a youtube vid with it i think)](https://github.com/patrickgod/BlazorLoadingAnimation) 
+- Components render in views are islands. They can't talk to each other. Unless
+	- Mediatr package maybe
+	- Subscribe each others events maybe
+	- May need a dispose function so state not lost but instead saved on destruction
+	- Or Blazorised storage may be the actual best solution
+
+#### BUNIT Notes in progress
+- With a reusable component library, the markup produced may be considered part of the externally observable 
 		behavior of the component, and that should thus be verified, since users of the component may depend on the 
 		markup having a specific structure. Consider using MarkupMatches and semantic comparison described below to get 
 		the best protection against regressions and good maintainability.
@@ -336,8 +345,7 @@ This project is not currently a reference for how to but an example of what can 
 	- [bunit dev docs - these are useful](https://www.youtube.com/watch?v=1Cx6JMO_Wkk)
 		- [all bunit packages](https://bunit.dev/#nuget-downloads)
 			 - *come back to this there are test areas?, template stuff and some QoL stuff by the the looks of it*
-	- > An element found with the Find(string cssSelector) method will be updated if the component it came from is re-rendered.
-
+	- An element found with the Find(string cssSelector) method will be updated if the component it came from is re-rendered.
 However, that does not apply to elements that are found by traversing the DOM tree via the Nodes property on 
 IRenderedFragment, for example, as those nodes do not know when their root component is re-rendered. Consequently, 
 they don’t know when they should be updated.
@@ -349,7 +357,7 @@ comparer can be found on the Customizing the semantic HTML comparison page.
 	- seems some good diff checking **Try for testing deletion after render triggered by event** [IDiff check](https://bunit.dev/docs/verification/verify-markup.html#finding-expected-differences)
 	- [not .net 8 but bunit repo](https://github.com/egil/blazor-workshop.git)
 	- http mocking [nuget http mocking](https://www.nuget.org/packages/RichardSzalay.MockHttp/)
-	- html  <h1 diff:ignoreAttributes> can put rules into the comparisons and semantic detections
+	- html  `<h1 diff:ignoreAttributes> can put rules into the comparisons and semantic detections`
 	- [bunit getting started and docs](https://bunit.dev/docs/getting-started/index.html)
 		- i think we want to use the template for adding our proj it will configure target framework and few other little bits
 		- test files actually usually written as .razor
@@ -403,16 +411,6 @@ passed to the component during testing using the normal methods, e.g. the
 ComponentParameterCollectionBuilder<TComponent>'s Add method, if a component parameter is only annotated 
 with the [SupplyParameterFromQuery] attribute. Instead, pass a query string parameters by setting it 
 using the FakeNavigationManager.
-		- 
-- Loading behaviour [repo link](https://github.com/patrickgod/BlazorLoadingAnimation)
-	- Loader [repo link (there a youtube vid with it i think)](https://github.com/patrickgod/BlazorLoadingAnimation) 
-- Components render in views are islands. They can't talk to each other. Unless
-	- Mediatr package maybe
-	- Subscribe each others events maybe
-	- May need a dispose function so state not lost but instead saved on destruction
-	- Or Blazorised storage may be the actual best solution
-
-
 
 ### Desired For Different Prototype Or Branch
 - packaging (may find package building package options removes need for service collections)
