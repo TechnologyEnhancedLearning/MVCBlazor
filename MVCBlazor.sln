@@ -26,6 +26,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CentralisedPackages", "Cent
 		P_CentarilisedPackages.txt = P_CentarilisedPackages.txt
 	EndProjectSection
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Package.Shared.BlazorComponents.UnitTests", "Package.Shared.BlazorComponents.UnitTests\Package.Shared.BlazorComponents.UnitTests.csproj", "{C2814A69-97D2-4F59-A5EA-F35E34A8BCE8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -68,6 +70,10 @@ Global
 		{D4B6374F-4C30-4E2A-B052-AA513A8B3557}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D4B6374F-4C30-4E2A-B052-AA513A8B3557}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D4B6374F-4C30-4E2A-B052-AA513A8B3557}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C2814A69-97D2-4F59-A5EA-F35E34A8BCE8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C2814A69-97D2-4F59-A5EA-F35E34A8BCE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C2814A69-97D2-4F59-A5EA-F35E34A8BCE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C2814A69-97D2-4F59-A5EA-F35E34A8BCE8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

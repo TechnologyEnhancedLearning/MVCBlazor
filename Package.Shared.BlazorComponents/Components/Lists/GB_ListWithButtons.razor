@@ -1,6 +1,6 @@
 ﻿@inherits GB_ComponentBase
 @typeparam TItem
-
+@*Not actually restricted to buttons anymore*@
 <div class="list-container">
     <h2 class="text-center">@ListTitle</h2>
     <ul class="nhsuk-ul">
@@ -10,7 +10,10 @@
                 <!-- Use a consistent class name -->
                 <div class="nhsuk-inline-content">
                     <span style="display: flex;margin:10px;">@GetItemText(item)</span>
-                    @ListButton(item)
+                    @if (ListButton != null)
+                    {
+                        @ListButton(item)
+                    }
                 </div>
             </li>
         }
