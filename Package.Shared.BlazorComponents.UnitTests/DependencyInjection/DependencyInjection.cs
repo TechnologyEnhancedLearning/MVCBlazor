@@ -1,5 +1,11 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using AutoFixture;
+using Microsoft.Extensions.DependencyInjection;
+using Moq;
+using Package.Shared.BlazorComponents.UnitTests.TestDoubles;
+using Package.Shared.Entities.Communication;
+using Package.Shared.Entities.Models;
 using Package.Shared.Services.ComponentServices;
+using Package.Shared.Services.StateServices.CharacterStateServices;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,42 +22,16 @@ namespace Package.Shared.BlazorComponents.UnitTests.DependencyInjection
     /// </summary>
     public static class DependencyInjection
     {
-        public static IServiceCollection OverrideJsEnabledToTrue(this IServiceCollection services)
+        public static IServiceCollection AddTestDouble_GS_StateServices(this IServiceCollection services)
         {
-            //Qqqq
-            services.AddScoped<IGS_JSEnabled>(s => new GS_JSEnabled{ JSIsEnabled = true});
+            /*Mocks, Stubs, Fakes here*/
+
+            FakeGS_CharactersStateService FakeGS_CharactersStateService = new FakeGS_CharactersStateService();
+            services.AddScoped<IGS_CharactersStateService, FakeGS_CharactersStateService>(serviceProvider => FakeGS_CharactersStateService);
+
             return services;
         }
-    }
 
-
-
-    
+    }  
 }
-
-
-//using Microsoft.Extensions.Configuration;
-//using Microsoft.Extensions.DependencyInjection;
-//using Package.LH.Services.StateServices;
-//using Package.LH.Services.Configurations.AttendeesConfiguration;
-//using Package.LH.Services.Configurations;
-
-//namespace Package.LH.Services.DependencyInjection
-//{
-//    public static class DependencyInjection
-//    {
-
-//        public static IServiceCollection LHS_AddStateServices(this IServiceCollection services)
-//        {
-
-//        }
-//        public static IServiceCollection LHS_AddConfiguration(this IServiceCollection services, IConfiguration configuration, string apiSection)
-//        {
-
-
-//            return services;
-//        }
-//    }
-//}
-
 

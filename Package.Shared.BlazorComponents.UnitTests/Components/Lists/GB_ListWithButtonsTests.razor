@@ -1,167 +1,90 @@
-﻿@using Package.Shared.BlazorComponents.Components.Lists
+﻿@using Moq
+@using Package.Shared.BlazorComponents.Components.Lists
 @inherits TestContext
+@using Package.Shared.BlazorComponents.Core
+@using Package.Shared.BlazorComponents.UnitTests.DependencyInjection
+@using Package.Shared.BlazorComponents.UnitTests.TestComponent_Del
 @using Package.Shared.Services.ComponentServices
+@using Package.Shared.Services.StateServices.CharacterStateServices
 
 
 @code {
 
     private readonly Fixture _fixture;
 
-    // using var ctx = new TestContext();
-
-    // ctx.Services.AddFallbackServiceProvider(new MockServiceProvider());//or the actuall service collection
-    // ctx.Services.AddJsEnabled_True; //overide jsenabled
-
     public GB_ListWithButtonsTests()
     {
-        _fixture = new Fixture();
-        Services.AddSingleton<IGS_JSEnabled>(new GS_JSEnabled());//qqqq but i want to collect injections together
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    [Fact]
-    public void GB_ListWithButtons_WithValidParameters_RendersCorrectly()
+    private TestContext GetTestContext(bool JSIsEnabled)//Require it so remember to test it
+    {
+        //Arrange
+
+        var ctx = new TestContext();
+        ctx.Services.AddFallbackServiceProvider(new FallbackServiceProvider());
+
+        // Create a mock of IGS_JSEnabled
+        var mockJSEnabled = new Mock<IGS_JSEnabled>();
+        mockJSEnabled.Setup(js => js.JSIsEnabled).Returns(JSIsEnabled); // Mock behavior for JSIsEnabled
+        mockJSEnabled.Setup(js => js.TestingWhoAmI).Returns("MockedHost"); // Mock behavior for WhoAmI
+
+        ctx.Services.AddScoped(_ => mockJSEnabled.Object);
+
+        return ctx;
+    }
+
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public void GB_ListWithButtons_WithValidParameters_RendersCorrectly(bool JSIsEnabled)
     {
         // Arrange
+        TestContext ctxJSEnabled = GetTestContext(JSIsEnabled);
         var items = _fixture.CreateMany<string>(3).ToList();
+        var listTitle = _fixture.Create<string>();
+
+        // Act
+        var cut = ctxJSEnabled.RenderComponent<GB_ListWithButtons<string>>(parameters => parameters
+            .Add(p => p.Items, items)
+            .Add(p => p.ListTitle, listTitle)
+            .Add(p => p.GetItemText, item => item));
+
+        // Assert
+        var spanElements = cut.FindAll(".nhsuk-inline-content span")
+                             .Select(e => e.TextContent)
+                             .ToList();
+
+        Assert.Equal(items, spanElements);
+        Assert.Equal(listTitle, cut.Find("h2").TextContent);
+        Assert.Equal(items.Count, cut.FindAll("li").Count());
+    }
+
+
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public void GB_ListWithButtons_WithCustomButton_RendersButtonCorrectly(bool JSIsEnabled)
+    {
+        // Arrange
+        TestContext ctxJSEnabled = GetTestContext(JSIsEnabled);
+        var items = _fixture.CreateMany<string>(1).ToList();
         var listTitle = _fixture.Create<string>();
 
         // Act
         var cut = RenderComponent<GB_ListWithButtons<string>>(parameters => parameters
             .Add(p => p.Items, items)
             .Add(p => p.ListTitle, listTitle)
-            .Add(p => p.GetItemText, item => item));
+            .Add(p => p.GetItemText, item => item)
+            .Add(p => p.ListButton, item => builder =>
+            {
+                builder.OpenElement(0, "button");
+                builder.AddContent(1, "Click me");
+                builder.CloseElement();
+            }));
 
         // Assert
-        cut.Find("h2").TextContent.Should().Be(listTitle);
-        cut.FindAll("li").Count.Should().Be(items.Count);
-        cut.FindAll(".nhsuk-inline-content span")
-            .Select(e => e.TextContent)
-            .Should()
-            .BeEquivalentTo(items);
+        Assert.Equal("Click me", cut.Find("button").TextContent);
+
     }
-
-
-
-    // [Parameter]
-    // public RenderFragment<TItem> ListButton { get; set; } // RenderFragment for button content
-
-
-
-
-
-        // [Fact]
-        // public void GB_ListWithButtons_WithCustomItemTextFormatter_FormatsCorrectly()
-        // {
-        //     // Arrange
-        //     var items = _fixture.CreateMany<int>(3).ToList();
-        //     var listTitle = _fixture.Create<string>();
-        //     string Format(int item) => $"Item {item}";
-
-        //     // Act
-        //     var cut = RenderComponent<GB_ListWithButtons<int>>(parameters => parameters
-        //         .Add(p => p.Items, items)
-        //         .Add(p => p.ListTitle, listTitle)
-        //         .Add(p => p.GetItemText, Format));
-
-        //     // Assert
-        //     cut.FindAll(".nhsuk-inline-content span")
-        //        .Select(e => e.TextContent)
-        //        .Should()
-        //        .BeEquivalentTo(items.Select(Format));
-        // }
-
-        // [Fact]
-        // public void GB_ListWithButtons_WithCustomButton_RendersButtonCorrectly()
-        // {
-        //     // Arrange
-        //     var items = _fixture.CreateMany<string>(1).ToList();
-        //     var listTitle = _fixture.Create<string>();
-
-        //     // Act
-        //     var cut = RenderComponent<GB_ListWithButtons<string>>(parameters => parameters
-        //         .Add(p => p.Items, items)
-        //         .Add(p => p.ListTitle, listTitle)
-        //         .Add(p => p.GetItemText, item => item)
-        //         .Add(p => p.ListButton, item => builder =>
-        //         {
-        //             builder.OpenElement(0, "button");
-        //             builder.AddContent(1, "Click me");
-        //             builder.CloseElement();
-        //         }));
-
-        //     // Assert
-        //     cut.Find("button").TextContent.Should().Be("Click me");
-        // }
-
-        // [Theory]
-        // [InlineData(null)]
-        // [InlineData("")]
-        // [InlineData(" ")]
-        // public void GB_ListWithButtons_WithInvalidListTitle_ThrowsException(string invalidTitle)
-        // {
-        //     // Arrange
-        //     var items = _fixture.CreateMany<string>(1).ToList();
-
-        //     // Act & Assert
-        //     var exception = Assert.Throws<InvalidOperationException>(() =>
-        //         RenderComponent<GB_ListWithButtons<string>>(parameters => parameters
-        //             .Add(p => p.Items, items)
-        //             .Add(p => p.ListTitle, invalidTitle)
-        //             .Add(p => p.GetItemText, item => item)));
-
-        //     exception.Message.Should().Contain("ListTitle");
-        // }
-
-        // [Fact]
-        // public void GB_ListWithButtons_WithNullItems_ThrowsException()
-        // {
-        //     // Arrange & Act & Assert
-        //     var exception = Assert.Throws<InvalidOperationException>(() =>
-        //         RenderComponent<GB_ListWithButtons<string>>(parameters => parameters
-        //             .Add(p => p.Items, null)
-        //             .Add(p => p.ListTitle, "Title")
-        //             .Add(p => p.GetItemText, item => item)));
-
-        //     exception.Message.Should().Contain("Items");
-        // }
-
-        // [Fact]
-        // public void GB_ListWithButtons_WithNullGetItemText_ThrowsException()
-        // {
-        //     // Arrange
-        //     var items = _fixture.CreateMany<string>(1).ToList();
-
-        //     // Act & Assert
-        //     var exception = Assert.Throws<InvalidOperationException>(() =>
-        //         RenderComponent<GB_ListWithButtons<string>>(parameters => parameters
-        //             .Add(p => p.Items, items)
-        //             .Add(p => p.ListTitle, "Title")
-        //             .Add(p => p.GetItemText, null)));
-
-        //     exception.Message.Should().Contain("GetItemText");
-        // }
-
-        // [Fact]
-        // public void GB_ListWithButtons_WithEmptyItems_RendersEmptyList()
-        // {
-        //     // Arrange
-        //     var items = new List<string>();
-        //     var listTitle = _fixture.Create<string>();
-
-        //     // Act
-        //     var cut = RenderComponent<GB_ListWithButtons<string>>(parameters => parameters
-        //         .Add(p => p.Items, items)
-        //         .Add(p => p.ListTitle, listTitle)
-        //         .Add(p => p.GetItemText, item => item));
-
-        //     // Assert
-        //     cut.FindAll("li").Count.Should().Be(0);
-        //     cut.Find("h2").TextContent.Should().Be(listTitle);
-        // }
-    }
-
 
 }

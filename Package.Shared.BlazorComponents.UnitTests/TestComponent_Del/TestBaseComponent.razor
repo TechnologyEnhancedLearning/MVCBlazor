@@ -1,0 +1,29 @@
+﻿@using Package.Shared.BlazorComponents.Core
+@using Package.Shared.Services.StateServices.CharacterStateServices
+@inherits GB_ComponentBase
+@inject ITestComponentService TestComponentService
+@inject IGS_CharactersStateService CharactersStateService
+
+
+<p>@TestComponentService.TestString</p>
+
+
+<h1>@TestTitleText</h1>
+<p class="TestJSIsEnabledClass">@(TestJSIsEnabled.ToString())</p>
+<p class="TestWhoAmIClass">@(WhoAmI.ToString())</p>
+@if (UseTestServiceValue)
+{
+    <p class="TestServiceTestBoolClass">@(TestComponentService.TestBool.ToString())</p>
+    <p class="TestServiceTestStringClass">@(TestComponentService.TestString)</p>
+}
+
+<h3 class="CharactersStateServiceClass">@CharactersStateService.Characters[0].FirstName</h3>
+
+@code{
+
+    public bool TestJSIsEnabled => JSIsEnabled;
+    public string TestWhoAmI => WhoAmI;
+    public string TestTitleText { get; set; } = "DefaultTestTitleText";
+    public bool UseTestServiceValue { get; set; } = false; //This is to check mocking works when injection not used and fails when injection is used because params are not utilised
+
+}
