@@ -3,7 +3,7 @@
 @inherits TestContext
 @using Package.Shared.BlazorComponents.Core
 @using Package.Shared.BlazorComponents.UnitTests.DependencyInjection
-@using Package.Shared.BlazorComponents.UnitTests.TestComponent_Del
+@using Package.Shared.BlazorComponents.UnitTests.TestComponent_Example
 @using Package.Shared.Services.ComponentServices
 @using Package.Shared.Services.StateServices.CharacterStateServices
 
@@ -14,6 +14,8 @@
 
     public GB_ListWithButtonsTests()
     {
+        // Initialize AutoFixture
+        _fixture = new Fixture();
     }
 
     private TestContext GetTestContext(bool JSIsEnabled)//Require it so remember to test it
@@ -71,7 +73,7 @@
         var listTitle = _fixture.Create<string>();
 
         // Act
-        var cut = RenderComponent<GB_ListWithButtons<string>>(parameters => parameters
+        var cut = ctxJSEnabled.RenderComponent<GB_ListWithButtons<string>>(parameters => parameters
             .Add(p => p.Items, items)
             .Add(p => p.ListTitle, listTitle)
             .Add(p => p.GetItemText, item => item)

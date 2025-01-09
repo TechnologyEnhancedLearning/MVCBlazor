@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Package.Shared.BlazorComponents.UnitTests.TestComponent_Del
+namespace Package.Shared.BlazorComponents.UnitTests.TestComponent_Example
 {
     public interface ITestComponentService
     {

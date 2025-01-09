@@ -264,3 +264,6 @@ button.accept-policy {
     transition: background-color 0.3s, transform 0.2s ease;
 }
 
+.unit-test-blazor-nav-link {
+    border: 2px solid #b200ff; /* Purple border */
+}

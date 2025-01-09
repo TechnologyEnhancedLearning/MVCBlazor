@@ -3,7 +3,7 @@
 @inherits TestContext
 @using Package.Shared.BlazorComponents.Core
 @using Package.Shared.BlazorComponents.UnitTests.DependencyInjection
-@using Package.Shared.BlazorComponents.UnitTests.TestComponent_Del
+@using Package.Shared.BlazorComponents.UnitTests.TestComponent_Example
 @using Package.Shared.Entities.Models
 @using Package.Shared.Services.ComponentServices
 @using Package.Shared.Services.StateServices.CharacterStateServices
@@ -45,9 +45,8 @@
         Assert.False(cut.Instance.TestJSIsEnabled);//AutoFixture bool defaults False
         Assert.Equal("DefaultTestTitleText", cut.Instance.TestTitleText);
 
-
-
     }
+
     [Fact]
     public void Service_Setup_Test_Mock()
     {
@@ -88,6 +87,7 @@
         Assert.Equal("False", cut.Find(".TestJSIsEnabledClass").TextContent); // Verify updated mock behavior
         Assert.False(cut.Instance.TestJSIsEnabled);
     }
+
     [Fact]
     public void Service_Setup_Test_Fake()
     {
