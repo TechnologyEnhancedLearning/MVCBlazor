@@ -1,42 +1,41 @@
-﻿@using Package.Shared.BlazorComponents.Core
-@using Package.Shared.BlazorComponents.UnitTests.TestComponent_Example
-@using Package.Shared.Services.StateServices.CharacterStateServices
-@inherits GB_ComponentBase
-@inject ITestComponentService TestComponentService
-@inject IGS_CharactersStateService CharactersStateService
-
-
-<p>@TestComponentService.TestString</p>
-
-
-<h1>@TestTitleText</h1>
-<p class="TestJSIsEnabledClass">@(TestJSIsEnabled.ToString())</p>
-<p class="TestWhoAmIClass">@(WhoAmI.ToString())</p>
-@if (UseTestServiceValue)
-{
-    <p class="TestServiceTestBoolClass">@(TestComponentService.TestBool.ToString())</p>
-    <p class="TestServiceTestStringClass">@(TestComponentService.TestString)</p>
-}
-
-<h3 class="CharactersStateServiceClass">@CharactersStateService.Characters[0].FirstName</h3>
+﻿@page "/Test"
+@rendermode InteractiveWebAssembly
 
 <h3>@hydrationStatus</h3>
 <h3>Life Cycle Stages So Far</h3>
 <ol class="life-cycle-stage-list">
     @for (int i = 0; i < LifecycleStages.Count(); i++)
     {
-        <li class="life-cycle-stage-item">LifecycleStages[i]</li>
-    
+        <li class="life-cycle-stage-item">@LifecycleStages[i]</li>
+
     }
 </ol>
 
-@code{
+<h2>Test buttons individually they will reset each other potentially</h2>
 
-    public bool TestJSIsEnabled => JSIsEnabled;
-    public string TestWhoAmI => WhoAmI;
-    public string TestTitleText { get; set; } = "DefaultTestTitleText";
-    public bool UseTestServiceValue { get; set; } = false; //This is to check mocking works when injection not used and fails when injection is used because params are not utilised
+<button id="OnInteractivityTestButton" @onclick="OnInteractivityTestButtonClick">InteractivityTestButton</button>
+<h3 id="OnInteractivityTestButtonClickMessage">@OnInteractivityTestButtonClickMessage</h3>
 
+<button id="TriggerRerenderButton" @onclick="TriggerRerender">Trigger Rerender</button>
+<h3 id="OnInteractivityTestButtonClickMessage">@TriggerRerenderButtonClickCount.ToString()</h3>
+
+@code {
+    public string OnInteractivityTestButtonClickMessage = "";
+    public int TriggerRerenderButtonClickCount = 0;
+    // This will be called when the InteractivityTestButton is clicked.
+    private void OnInteractivityTestButtonClick()
+    {
+        // Update the message to indicate the button was clicked.
+        OnInteractivityTestButtonClickMessage = "InteractivityTestButton has been clicked, and this text was set.";
+
+        // Optionally force a rerender (not usually needed as state changes trigger rerender).
+        StateHasChanged();  // If you want to ensure the state changes trigger a rerender.
+    }
+    private void TriggerRerender()
+    {
+        TriggerRerenderButtonClickCount++;
+
+    }
 
     public bool isHydrated = false; // Flag to track hydration state
     public string hydrationStatus = "I'm prerendered"; // Default hydrationStatus for prerendering
@@ -47,7 +46,6 @@
 
     public override Task SetParametersAsync(ParameterView parameters)
     {
-       
         LifecycleStages.Add("SetParametersAsync");
         return base.SetParametersAsync(parameters);
     }
@@ -60,7 +58,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        await Task.Delay(1000);
+        await Task.Delay(2000);
         LifecycleStages.Add("OnInitializedAsync");
         await base.OnInitializedAsync();
     }
@@ -73,14 +71,13 @@
 
     protected override async Task OnParametersSetAsync()
     {
-        await Task.Delay(1000);
+        await Task.Delay(2000);
         LifecycleStages.Add("OnParametersSetAsync");
         await base.OnParametersSetAsync();
     }
 
     protected override void OnAfterRender(bool firstRender)
     {
-
         LifecycleStages.Add($"OnAfterRender(firstRender: {firstRender})");
         base.OnAfterRender(firstRender);
     }
@@ -97,10 +94,12 @@
             hydrationStatus = "I'm hydrated";
 
             // Request a re-render of the component to display the updated hydrationStatus
-            StateHasChanged(); //because this is async
+            //StateHasChanged(); // We will rerender here but the rest of the function does not have a statehaschanged so will end up one behind
+            //However our otherlife cycle stages are causing a rerender
         }
+        await Task.Delay(1000);
         LifecycleStages.Add($"OnAfterRenderAsync(firstRender: {firstRender})");
         await base.OnAfterRenderAsync(firstRender);
-        //StateHasChanged();
+
     }
 }

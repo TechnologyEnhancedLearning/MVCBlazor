@@ -45,7 +45,7 @@ remove list both having a listner. but for the purpose of the test its useful
             ButtonType=GB_ButtonType.Danger
             NoJSActionUrl="NoJSActionUrl"
             FormData=@(new Dictionary<string, string>(){ {"clientTemporaryId", attendee.ClientTemporaryId.ToString()} })
-            CustomCssClass=""
+            CustomCssClass="danger-list-item-btn"
             OnClick="@(() => OnClick.InvokeAsync(attendee))" />;
 
 

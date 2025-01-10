@@ -12,20 +12,79 @@
 @code {
 
     //Will use shared set up for the real component test these test are just to show the different set up parts
-    /*
 
-    public TestBaseComponentTests()
+
+
+    private readonly Fixture _fixture;
+
+    public TestSetup_Tests()
     {
+        // Initialize AutoFixture
+        _fixture = new Fixture();
     }
 
-    private TestContext GetTestContext()
+    private TestContext GetTestContext(bool JSIsEnabled)//Require it so remember to test it
     {
+        //Arrange
+
         var ctx = new TestContext();
         ctx.Services.AddFallbackServiceProvider(new FallbackServiceProvider());
+
+        // Create a mock of IGS_JSEnabled
+        var mockJSEnabled = new Mock<IGS_JSEnabled>();
+        mockJSEnabled.Setup(js => js.JSIsEnabled).Returns(JSIsEnabled); // Mock behavior for JSIsEnabled
+        mockJSEnabled.Setup(js => js.TestingWhoAmI).Returns("MockedHost"); // Mock behavior for WhoAmI
+
+        ctx.Services.AddScoped(_ => mockJSEnabled.Object);
+
         return ctx;
     }
 
-    */
+
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public void TestSetup_GetTestContext_IGS_JS_Enabled_IsSet(bool JSIsEnabled)
+    {
+        // Arrange
+        TestContext ctxJSEnabled = GetTestContext(JSIsEnabled);
+
+        // Act
+        var cut = ctxJSEnabled.RenderComponent<TestBaseComponent>();
+
+
+        // Assert: Verify the component's behavior based on the mock
+        //Using the elements
+        Assert.Equal(JSIsEnabled.ToString(), cut.Find(".TestJSIsEnabledClass").TextContent); // Check JSIsEnabled mock the mock doesnt seem to be overwriting the fallback
+        Assert.Equal("MockedHost", cut.Find(".TestWhoAmIClass").TextContent); // Check WhoAmI mock
+        Assert.Equal(JSIsEnabled, cut.Instance.TestJSIsEnabled);
+        Assert.NotNull(cut.Instance.TestWhoAmI);
+        Assert.Equal("MockedHost", cut.Instance.TestWhoAmI);
+
+        //Assert Component rendered
+        Assert.Equal("DefaultTestTitleText", cut.Find("h1").TextContent); // Check title
+        Assert.Equal("DefaultTestTitleText", cut.Instance.TestTitleText);
+    
+    }
+
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public void TestSetup_GetTestContext_IGS_JS_Enabled_NoJSEnvironmentIsSimulated(bool JSIsEnabled)
+    {
+        // Arrange
+        TestContext ctxJSEnabled = GetTestContext(JSIsEnabled);
+
+        // Act
+        var cut = ctxJSEnabled.RenderComponent<TestBaseComponent>();
+
+        // Trigger another re-render by updating parameter
+        cut.SetParametersAndRender(parameters => parameters
+            .Add(p => p.TestTitleText, "Trigger Param Change Rerender"));
+
+
+    }
+
 
     [Fact]
     public void Service_Setup_Test_Fallback()

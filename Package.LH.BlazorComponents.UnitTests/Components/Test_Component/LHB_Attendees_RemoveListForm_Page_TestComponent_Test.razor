@@ -14,9 +14,7 @@
 @using Microsoft.AspNetCore.Components @*only added to enable @<mycomponent /> syntax if not worked remove*@
 @inherits TestContext
 
-
-
-@code {
+@code{
 
     private readonly Fixture _fixture;
 
@@ -43,175 +41,32 @@
 
     }
 
-
-    [Theory(DisplayName="Remove Attendees List renders provided attendees")]
-    [InlineData(true)]
-    [InlineData(false)]
-    public void LHB_Attendees_RemoveListForm_TestComponent_WithValidParameters_RendersCorrectly(bool JSIsEnabled)
-    {
-        // Arrange
-        TestContext ctxJSEnabled = GetTestContext(JSIsEnabled);
-        ctxJSEnabled.Services.AddTestDouble_LHS_AttendeesStateServices();
-        var noJSActionUrl = _fixture.Create<string>();
-
-
-
-        // Act
-        // var cut = ctxJSEnabled.Render(@<Package.LH.BlazorComponents.Components.Test_Components.LHB_Attendees_RemoveListForm_TestComponent 
-        // Attendees="LHS_AttendeesStateService.Attendees"
-        // NoJSActionUrl="Attendees/NoJS/RemoveAttendeeByTemporaryId"
-        // OnClick="@(attendee => RemoveAttendee(attendee))"
-        // HandleSubmit="() => HandleSubmit()" />);
-
-
-        var cut = ctxJSEnabled.RenderComponent<LHB_Attendees_RemoveListForm_TestComponent>(parameters => parameters
-        .Add(p => p.Attendees, ctxJSEnabled.Services.GetService<ILHS_AttendeesStateService>().Attendees)
-        .Add(p => p.NoJSActionUrl, noJSActionUrl)
-        .Add(p => p.OnClick, EventCallback.Factory.Create<LH_AttendeeModel>(this, attendee => { /* handler */ }))
-        .Add(p => p.HandleSubmit, EventCallback.Factory.Create(this, () => { /* handler */ })));
-
-        //Include this render option
-
-        // var cut = ctxJSEnabled.Render(@<LHB_Attendees_RemoveListForm_TestComponent
-        // Attendees="LHS_AttendeesStateService.Attendees"
-        // NoJSActionUrl="Attendees/NoJS/RemoveAttendeeByTemporaryId"
-        // OnClick="@(attendee => RemoveAttendee(attendee))"
-        // HandleSubmit="() => HandleSubmit()" />);
-
-        //       private async Task RemoveAttendee(LH_AttendeeModel attendee)
-        // {
-        //     await LHS_AttendeesStateService.RemoveAttendeeByTemporaryIdAsync(attendee.ClientTemporaryId);
-        //     Console.WriteLine("Blazor Component : RemoveAttendee");
-        //     StateHasChanged();//because we change the list in the service rather than changing a blazor parameter, blazor doesnt know its changed so we need to tell it the state has change
-        // }
-
-        // private async Task HandleSubmit()
-        // {
-        //     Console.WriteLine("Blazor Component : HandleSubmit");
-        //     await LHS_AttendeesStateService.ReplaceDBWithListAsync();
-        //     Console.WriteLine("Blazor Component : Submit finished");
-
-        // }
-
-        // Assert
-        //As many elements as in list
-
-        Assert.NotNull(ctxJSEnabled.Services.GetService<ILHS_AttendeesStateService>().Attendees);
-        Assert.NotEmpty(ctxJSEnabled.Services.GetService<ILHS_AttendeesStateService>().Attendees);
-
-        Assert.Equal(ctxJSEnabled.Services.GetService<ILHS_AttendeesStateService>().Attendees.Count(), cut.FindAll(".nhsuk-list-item").Count());
-        Assert.Equal(ctxJSEnabled.Services.GetService<ILHS_AttendeesStateService>().Attendees.Count(), cut.FindAll(".nhsuk-list-item").Count());
-    }
-
-
-
     [Theory]
     [InlineData(true)]
-    public void LHB_Attendees_RemoveListForm_TestComponent_JSEnabled_True_RendersSubmitButton(bool JSIsEnabled)
+    [InlineData(false)]
+    public void LHB_Attendees_RemoveListForm_Page_TestComponent_UpdatesUIAfterAttendeeRemoved(bool JSIsEnabled)
     {
+
+        /*!!! QQQQ this test should fail unless a statehaschanged is passed until we put in a listener
+            * The component does not try and do this currently we would be testing the logic we provide
+            * No its built in to the page now as statehas change qqqq but will be useful
+            * 
+            */
+
+        // Arrange
         TestContext ctxJSEnabled = GetTestContext(JSIsEnabled);
         ctxJSEnabled.Services.AddTestDouble_LHS_AttendeesStateServices();
         var noJSActionUrl = _fixture.Create<string>();
 
         var cut = ctxJSEnabled.RenderComponent<LHB_Attendees_RemoveListForm_TestComponent>(parameters => parameters
-        .Add(p => p.Attendees, ctxJSEnabled.Services.GetService<ILHS_AttendeesStateService>().Attendees)
-        .Add(p => p.NoJSActionUrl, noJSActionUrl)
-        .Add(p => p.OnClick, EventCallback.Factory.Create<LH_AttendeeModel>(this, attendee => { /* handler */ }))
-        .Add(p => p.HandleSubmit, EventCallback.Factory.Create(this, () => { /* handler */ })));
-
-
-        // Act
-        var submitButton = cut.Find(".my-nojs-submit-btn");
-
-        /* Assert */
-
-        Assert.NotNull(submitButton);
-
-    }
-    [Theory]
-    [InlineData(false)]
-    public void LHB_Attendees_RemoveListForm_TestComponent_JSEnabled_False_DoesNot_RenderSubmitButton(bool JSIsEnabled)
-    {
-        TestContext ctxJSEnabled = GetTestContext(JSIsEnabled);
-        ctxJSEnabled.Services.AddTestDouble_LHS_AttendeesStateServices();
-        var noJSActionUrl = _fixture.Create<string>();
-
-        var cut = ctxJSEnabled.RenderComponent<LHB_Attendees_RemoveListForm_TestComponent>(parameters => parameters
-        .Add(p => p.Attendees, ctxJSEnabled.Services.GetService<ILHS_AttendeesStateService>().Attendees)
-        .Add(p => p.NoJSActionUrl, noJSActionUrl)
-        .Add(p => p.OnClick, EventCallback.Factory.Create<LH_AttendeeModel>(this, attendee => { /* handler */ }))
-        .Add(p => p.HandleSubmit, EventCallback.Factory.Create(this, () => { /* handler */ })));
-
-
-        // Act
-        var submitButton = cut.FindAll(".my-nojs-submit-btn").FirstOrDefault();
-
-        /* Assert */
-
-        Assert.Null(submitButton);
-
-    }
-
-
-
-    [Theory]
-    [InlineData(true)]
-    [InlineData(false)]
-    public void LHB_Attendees_RemoveListForm_TestComponent_UpdatesUIAfterAttendeeRemoved(bool JSIsEnabled)
-    {
-        // Arrange
-        TestContext ctxJSEnabled = GetTestContext(JSIsEnabled);
-        ctxJSEnabled.Services.AddTestDouble_LHS_AttendeesStateServices();
-        var noJSActionUrl = _fixture.Create<string>();
-
-
-
-
-        throw new NotImplementedException();
-
-        
-
-      
-    }
-
-    [Theory]
-    [InlineData(true)]
-    [InlineData(false)]
-    public void LHB_Attendees_RemoveListForm_TestComponent_RemovesAttendeeFromList(bool JSIsEnabled)
-    {
-        // Arrange
-        TestContext ctxJSEnabled = GetTestContext(JSIsEnabled);
-        ctxJSEnabled.Services.AddTestDouble_LHS_AttendeesStateServices();
-        var noJSActionUrl = _fixture.Create<string>();
-
-
+            .Add(p => p.Attendees, ctxJSEnabled.Services.GetService<ILHS_AttendeesStateService>().Attendees)
+            .Add(p => p.NoJSActionUrl, noJSActionUrl)
+            .Add(p => p.OnClick, EventCallback.Factory.Create<LH_AttendeeModel>(this, attendee => { /* handler */ }))
+            .Add(p => p.HandleSubmit, EventCallback.Factory.Create(this, () => { /* handler */ })));
 
 
         throw new NotImplementedException();
 
 
-
-
     }
-
-    [Theory]
-    [InlineData(true)]
-    [InlineData(false)]
-    public void LHB_Attendees_RemoveListForm_TestComponent_SaveButtonCallsHandleSubmit(bool JSIsEnabled)
-    {
-        // Arrange
-        TestContext ctxJSEnabled = GetTestContext(JSIsEnabled);
-        ctxJSEnabled.Services.AddTestDouble_LHS_AttendeesStateServices();
-        var noJSActionUrl = _fixture.Create<string>();
-
-
-
-
-        throw new NotImplementedException();
-
-
-
-
-    }
-
 }
