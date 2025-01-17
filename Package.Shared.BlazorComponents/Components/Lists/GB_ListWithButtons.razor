@@ -1,4 +1,5 @@
-﻿@inherits GB_ComponentBase
+﻿@using Package.Shared.Entities.Interfaces
+@inherits GB_ComponentBase
 @typeparam TItem
 
 @*Not actually restricted to buttons anymore*@
@@ -8,7 +9,9 @@
     <ul class="nhsuk-ul">
         @foreach (var item in Items)
         {
-            <li class="nhsuk-list-item">
+            //qqqq should i interface with itemized? or something to say it has .id
+            //Currently this is very naughty
+            <li class="nhsuk-list-item" @key="((IGE_Person)item).ClientTemporaryId">
                 <!-- Use a consistent class name -->
                 <div class="nhsuk-inline-content">
                     <span style="display: flex;margin:10px;">@GetItemText(item)</span>

@@ -1,0 +1,15 @@
+﻿<h3>@Title</h3>
+<button @onclick="OnInteractivityTestButtonClick">Change Title Button</button >
+@code {
+    public string Title = "SuperSimpleComponentForTest";
+
+    private void OnInteractivityTestButtonClick()
+    {
+        // Update the message to indicate the button was clicked.
+        Title = "InteractivityTestButton has been clicked, and this text was set.";
+
+        // Optionally force a rerender (not usually needed as state changes trigger rerender).
+        StateHasChanged();  // If you want to ensure the state changes trigger a rerender.
+    }
+
+}

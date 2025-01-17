@@ -21,7 +21,8 @@ namespace Package.LH.BlazorComponents.UnitTests.TestDoubles
         {
             // Use AutoFixture to create test data
             var fixture = new Fixture();
-            this.attendees = fixture.CreateMany<LH_AttendeeModel>(100).ToList(); 
+            //this.attendees = fixture.CreateMany<LH_AttendeeModel>(100).ToList(); 
+            this.attendees = fixture.CreateMany<LH_AttendeeModel>(2).ToList();
         }
 
         public bool DataIsLoaded => true;

@@ -1,0 +1,123 @@
+﻿@using Bunit.Rendering
+@using Microsoft.AspNetCore.Components.Rendering
+@using Moq
+@using Package.Shared.BlazorComponents.Components.Lists
+@* @inherits TestContext *@ @* Try defining per example*@
+@using Package.Shared.BlazorComponents.Core
+
+@using Package.Shared.BlazorComponents.UnitTests.TestComponent_Example
+@using Package.Shared.Entities.Models
+@using Package.Shared.Services.ComponentServices
+@using Package.Shared.Services.StateServices.CharacterStateServices
+@using System.Diagnostics
+
+@using System.IO
+@using Test.BUnit.UnitTests.DependencyInjection
+@using Test.BUnit.UnitTests.HtmlComparisons
+@using Test.BUnit.UnitTests.TestDoubles
+@using Test.Components.Components
+@using static Test.Components.Components.T_AddDeleteElementList
+
+
+
+
+@code {
+
+    /// Summary
+    // These test are to check efficient rendering
+    ///
+
+
+    private readonly Fixture _fixture;
+
+    public T_AddDeleteElementListTests()
+    {
+        // Initialize AutoFixture
+        _fixture = new Fixture();
+    }
+
+    private TestContext GetTestContext()
+    {
+        //Arrange
+
+        var ctx = new TestContext();
+        ctx.Services.AddFallbackServiceProvider(new FallbackServiceProvider());
+
+        return ctx;
+    }
+
+
+    [Fact]
+    public void T_AddDeleteElementList_AddCausesSingleDiffOnly()
+    {
+        // Arrange
+        TestContext ctx = GetTestContext();
+        
+        // Act
+        var cut = ctx.RenderComponent<T_AddDeleteElementList>(parameters =>
+            parameters.Add(p => p.InitialItems,
+            Enumerable.Range(1, 2)
+                .Select(_ => new ListItem())
+                .ToList()));
+
+        List<string> markupStringLs  = new();
+        cut.OnMarkupUpdated += (sender, args) => markupStringLs.Add(cut.Markup);
+
+        var list = cut.Find("#ListOfItem");
+        var AddRandomItemButton = cut.Find("#AddRandomItem");
+
+
+        cut.SaveSnapshot();
+
+
+        AddRandomItemButton.Click();
+        var diff = cut.GetChangesSinceSnapshot();
+
+        //Assert
+       
+        diff.ShouldHaveSingleChange();
+        //qqqq // diff.First().Should().(change => 
+        //     change.Contains("<button") && 
+        //     change.Contains("<li") && 
+        //     change.Contains("key=")) ;
+
+        //Cant do this
+        //diff.ShouldHaveSingleChange().ShouldBeAddition(x => x.HasAttribute("key"));
+
+        // <li @key="item.ClientTemporaryId" class="list-item d-flex align-items-center">
+        //     <span style="flex-grow: 1; margin-right: 10px;">@item.Text</span>
+        //     <button @onclick="() => RemoveItem(item)" class="list-item-remove-button btn btn-danger btn-sm">Remove</button>
+        // </li>
+
+
+
+    }
+
+    [Fact]
+    public void T_AddDeleteElementList_RemoveCausesSingleDiffOnly()
+    {
+        // Arrange
+        TestContext ctx = GetTestContext();
+
+        // Act
+        var cut = ctx.RenderComponent<T_AddDeleteElementList>(parameters =>
+            parameters.Add(p => p.InitialItems,
+            Enumerable.Range(1, 2)
+                .Select(_ => new ListItem())
+                .ToList()));
+
+        List<string> markupStringLs = new();
+        cut.OnMarkupUpdated += (sender, args) => markupStringLs.Add(cut.Markup);
+
+        var listItemRemoveButtons = cut.FindAll(".list-item-remove-button");
+        var lastRemoveButton = listItemRemoveButtons.Last();
+
+        cut.SaveSnapshot();
+        lastRemoveButton.Click();
+        var diff = cut.GetChangesSinceSnapshot();
+
+        throw new NotImplementedException();
+
+
+    }
+}

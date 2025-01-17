@@ -1,7 +1,11 @@
-﻿@page "/Test"
-@rendermode InteractiveWebAssembly
+﻿@* @page "/Test"
+@rendermode InteractiveWebAssembly *@
+@*BUnit page testing limitation*@
+<h1>@ProvidedRenderModeText</h1>
+<h3>LastPrerenderLifeCycleStageExecuted : <span>@LastPrerenderLifeCycleStageExecuted.ToString()</span></h3>
+<h3>HydrationStatus : <span id="IsHydrated">@isHydrated.ToString()</span></h3>
+<p>@hydrationStatus</p>
 
-<h3>@hydrationStatus</h3>
 <h3>Life Cycle Stages So Far</h3>
 <ol class="life-cycle-stage-list">
     @for (int i = 0; i < LifecycleStages.Count(); i++)
@@ -12,23 +16,55 @@
 </ol>
 
 <h2>Test buttons individually they will reset each other potentially</h2>
-
-<button id="OnInteractivityTestButton" @onclick="OnInteractivityTestButtonClick">InteractivityTestButton</button>
-<h3 id="OnInteractivityTestButtonClickMessage">@OnInteractivityTestButtonClickMessage</h3>
-
+@if (ShowInteractivityTestButton)
+{
+    <button id="OnInteractivityTestButton" @onclick="OnInteractivityTestButtonClick">InteractivityTestButton</button>
+    <h3>OnInteractivityTestButtonClickMessage : <span id="OnInteractivityTestButtonClickMessage">@OnInteractivityTestButtonClickMessage</span></h3>
+}
 <button id="TriggerRerenderButton" @onclick="TriggerRerender">Trigger Rerender</button>
-<h3 id="OnInteractivityTestButtonClickMessage">@TriggerRerenderButtonClickCount.ToString()</h3>
+<h3>TriggerRerenderButtonClickCount : <span id="OnInteractivityTestButtonClickMessage">@TriggerRerenderButtonClickCount.ToString()</span></h3>
+
+<h3>LifeCycleRequiringJSExecuted : <span id="LifeCycleRequiringJSExecuted">@LifeCycleRequiringJSExecuted.ToString()</span></h3>
+
+
+<h2>List for seeing loading</h2>
+@if (isLoading)
+{
+    <h3>Loading...</h3>
+}
+else
+{
+    <h3>Loaded</h3>
+    <ul>
+        @foreach (var item in items)
+        {
+            <li>@item</li>
+        }
+    </ul>
+}
 
 @code {
+    public bool isLoading = true;
+    public List<string> items = new();
+
+    [Parameter] public string ProvidedRenderModeText { get; set; } = "Unset";
     public string OnInteractivityTestButtonClickMessage = "";
     public int TriggerRerenderButtonClickCount = 0;
+    public bool LifeCycleRequiringJSExecuted = false;
+    public bool LastPrerenderLifeCycleStageExecuted = false;    // This will be called when the InteractivityTestButton is clicked.
+    public bool ShowInteractivityTestButton => isHydrated; //This is so we can have test for async behaviour
+    public bool clickCompleted = false;
     // This will be called when the InteractivityTestButton is clicked.
-    private void OnInteractivityTestButtonClick()
+    private async void OnInteractivityTestButtonClick()
     {
+        await Task.Delay(2000);
+
         // Update the message to indicate the button was clicked.
         OnInteractivityTestButtonClickMessage = "InteractivityTestButton has been clicked, and this text was set.";
 
         // Optionally force a rerender (not usually needed as state changes trigger rerender).
+
+        clickCompleted = true;
         StateHasChanged();  // If you want to ensure the state changes trigger a rerender.
     }
     private void TriggerRerender()
@@ -56,10 +92,17 @@
 
     }
 
+
     protected override async Task OnInitializedAsync()
     {
         await Task.Delay(2000);
         LifecycleStages.Add("OnInitializedAsync");
+
+        // Simulate data loading
+        await Task.Delay(3000); // Simulate a 3-second delay for data fetching
+        items = Enumerable.Range(1, 10).Select(i => $"Item {i}").ToList();
+        isLoading = false;
+
         await base.OnInitializedAsync();
     }
 
@@ -79,6 +122,7 @@
     protected override void OnAfterRender(bool firstRender)
     {
         LifecycleStages.Add($"OnAfterRender(firstRender: {firstRender})");
+        LifeCycleRequiringJSExecuted = true;
         base.OnAfterRender(firstRender);
     }
 
@@ -99,6 +143,7 @@
         }
         await Task.Delay(1000);
         LifecycleStages.Add($"OnAfterRenderAsync(firstRender: {firstRender})");
+        LifeCycleRequiringJSExecuted = true;
         await base.OnAfterRenderAsync(firstRender);
 
     }

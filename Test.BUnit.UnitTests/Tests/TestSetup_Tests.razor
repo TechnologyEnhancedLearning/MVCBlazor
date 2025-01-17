@@ -1,12 +1,22 @@
-﻿@using Moq
+﻿@using Bunit.Rendering
+@using Microsoft.AspNetCore.Components.Rendering
+@using Moq
 @using Package.Shared.BlazorComponents.Components.Lists
-@inherits TestContext
+@* @inherits TestContext *@ @* Try defining per example*@
 @using Package.Shared.BlazorComponents.Core
-@using Package.Shared.BlazorComponents.UnitTests.DependencyInjection
+
 @using Package.Shared.BlazorComponents.UnitTests.TestComponent_Example
 @using Package.Shared.Entities.Models
 @using Package.Shared.Services.ComponentServices
 @using Package.Shared.Services.StateServices.CharacterStateServices
+@using System.Diagnostics
+
+@using System.IO
+@using Test.BUnit.UnitTests.DependencyInjection
+@using Test.BUnit.UnitTests.HtmlComparisons
+@using Test.BUnit.UnitTests.TestDoubles
+@using Test.Components.Components
+
 
 
 @code {
@@ -50,7 +60,7 @@
         TestContext ctxJSEnabled = GetTestContext(JSIsEnabled);
 
         // Act
-        var cut = ctxJSEnabled.RenderComponent<TestBaseComponent>();
+        var cut = ctxJSEnabled.RenderComponent<T_BaseComponent>();
 
 
         // Assert: Verify the component's behavior based on the mock
@@ -64,23 +74,150 @@
         //Assert Component rendered
         Assert.Equal("DefaultTestTitleText", cut.Find("h1").TextContent); // Check title
         Assert.Equal("DefaultTestTitleText", cut.Instance.TestTitleText);
-    
+
     }
 
     [Theory]
     [InlineData(true)]
     [InlineData(false)]
-    public void TestSetup_GetTestContext_IGS_JS_Enabled_NoJSEnvironmentIsSimulated(bool JSIsEnabled)
+    public async void TestSetup_T_JSSetup_HydrationIsSimulated(bool JSIsEnabled)
     {
         // Arrange
         TestContext ctxJSEnabled = GetTestContext(JSIsEnabled);
 
         // Act
-        var cut = ctxJSEnabled.RenderComponent<TestBaseComponent>();
+        var cut = ctxJSEnabled.RenderComponent<T_JSSetup>();
 
-        // Trigger another re-render by updating parameter
-        cut.SetParametersAndRender(parameters => parameters
-            .Add(p => p.TestTitleText, "Trigger Param Change Rerender"));
+        //Wait for button to be revealed
+        cut.WaitForAssertion(()=>
+                 Assert.True(
+                   JSIsEnabled == cut.Instance.isHydrated,
+                   JSIsEnabled ? null : "We are not yet modeling the correct lifecycle stage for nojs with our test context"
+                )
+            , TimeSpan.FromSeconds(5));
+
+
+
+        Assert.Equal(JSIsEnabled.ToString(), cut.Find("#IsHydrated").TextContent);
+
+
+
+    }
+    /// <summary>
+    /// This test is to show async Bunit testing features as well
+    /// </summary>
+    /// <param name="JSIsEnabled"></param>
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public async void TestSetup_T_JSSetup_InteractivityIsSimulated(bool JSIsEnabled)
+    {
+
+        // Arrange
+        TestContext ctxJSEnabled = GetTestContext(JSIsEnabled);
+
+        // Act
+        var cut = ctxJSEnabled.RenderComponent<T_JSSetup>();
+
+        //Wait for button to be revealed
+        cut.WaitForElement("#OnInteractivityTestButton", TimeSpan.FromSeconds(5));
+
+
+
+        //Grab the button
+        var interactiveButton = cut.Find("#OnInteractivityTestButton");
+
+        //Click it
+        interactiveButton.Click();
+
+        cut.WaitForState(() => cut.Instance.clickCompleted, TimeSpan.FromSeconds(10));
+        var interactiveButtonContent = cut.Find("#OnInteractivityTestButtonClickMessage").TextContent;
+
+        //Assert
+
+        Assert.True(
+            JSIsEnabled == cut.Instance.OnInteractivityTestButtonClickMessage.Length > 0,
+            JSIsEnabled?null:"We are not yet modeling the correct lifecycle stage for nojs with our test context"
+        );
+
+        cut.WaitForAssertion(() => 
+                Assert.True(JSIsEnabled == cut.Find("#OnInteractivityTestButtonClickMessage").TextContent.Length > 0,
+                JSIsEnabled ? null : "We are not yet modeling the correct lifecycle stage for nojs with our test context"
+            ), 
+                TimeSpan.FromSeconds(5)
+            );
+
+
+
+        //It shouldnt be interactive if Js is disabled
+        Assert.Equal(JSIsEnabled, cut.Instance.OnInteractivityTestButtonClickMessage.Length > 0);
+        Assert.Equal(JSIsEnabled, interactiveButtonContent.Length > 0);
+
+
+    }
+
+    /// <summary>
+    /// This test is to show some comparison options for html as well as that NoJS is not yet sufficiently simulated
+    /// </summary>
+    /// <param name="JSIsEnabled"></param>
+    /// <exception cref="NotImplementedException"></exception>
+    [Theory]
+    // [InlineData(true)]
+    [InlineData(false)]
+    public async void TestSetup_T_JSSetup_NoJSBrowserIsSimulated(bool JSIsEnabled)
+    {
+        using var ctxJSEnabled = new TestContext();
+        using var noContextNeeded = new TestContext();
+        using var contextForMock = new TestContext();
+        var StaticOrNoJSRenderListHtml = noContextNeeded.RenderComponent<StaticOrNoJSRenderList>();
+
+        var cut = ctxJSEnabled.RenderComponent<T_JSSetup>(parameters 
+            => parameters.Add(p => p.ProvidedRenderModeText, 
+                "We just want a parameter to see if it triggers missing param stage"));
+
+        await Task.Delay(10000);
+        //Assert
+
+        var test = cut.Find("ol");
+        @if (!JSIsEnabled)
+        {
+            cut.Find("ol").MarkupMatches(StaticOrNoJSRenderListHtml);
+        }
+
+        Assert.Equal(JSIsEnabled, cut.Instance.LifeCycleRequiringJSExecuted);
+        Assert.Equal(JSIsEnabled.ToString(), cut.Find("#LifeCycleRequiringJSExecuted").TextContent);
+        Assert.True(ctxJSEnabled.JSInterop.Invocations.Count == 0);
+     
+    }
+
+    
+
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public async void TestSetup_T_JSSetup_RenderStageList(bool JSIsEnabled)
+    {
+        // Arrange
+        TestContext ctxJSEnabled = GetTestContext(JSIsEnabled);
+
+        // Act
+        var cut = ctxJSEnabled.RenderComponent<T_JSSetup>();
+
+        //This test we will just await rather than checking for state
+        await Task.Delay(10000);
+
+        var listOfRendermodesComponentHTML = cut.Find(".life-cycle-stage-list").TextContent;
+
+
+
+        // Assert
+
+        Assert.True(JSIsEnabled  == cut.Instance.LifecycleStages.Any(stage => stage.Contains("OnAfterRenderAsync")));
+
+        @if (!JSIsEnabled)
+        {
+            Assert.DoesNotContain("OnAfterRenderAsync", listOfRendermodesComponentHTML);
+        }
 
 
     }
@@ -95,7 +232,7 @@
         ctx.Services.AddFallbackServiceProvider(new FallbackServiceProvider());
 
         // Act
-        var cut = ctx.RenderComponent<TestBaseComponent>();
+        var cut = ctx.RenderComponent<T_BaseComponent>();
 
         // Assert
         Assert.Equal("DefaultTestTitleText", cut.Find("h1").TextContent);
@@ -122,7 +259,7 @@
 
 
         // Act
-        var cut = ctx.RenderComponent<TestBaseComponent>();
+        var cut = ctx.RenderComponent<T_BaseComponent>();
 
 
         // Assert: Verify the component's behavior based on the mock
@@ -140,7 +277,7 @@
         mockJSEnabled.Setup(js => js.JSIsEnabled).Returns(false);
 
         //Act again
-        cut = ctx.RenderComponent<TestBaseComponent>(); // Re-render component after mock change
+        cut = ctx.RenderComponent<T_BaseComponent>(); // Re-render component after mock change
 
         //Assert
         Assert.Equal("False", cut.Find(".TestJSIsEnabledClass").TextContent); // Verify updated mock behavior
@@ -155,9 +292,9 @@
         ctx.Services.AddFallbackServiceProvider(new FallbackServiceProvider());
         ctx.Services.AddTestDouble_GS_StateServices();
 
-
+        
         // Act
-        var cut = ctx.RenderComponent<TestBaseComponent>();
+        var cut = ctx.RenderComponent<T_BaseComponent>();
 
         //Asserts
 
@@ -188,7 +325,7 @@
 
 
         // Act
-        var cut = ctx.RenderComponent<TestBaseComponent>();
+        var cut = ctx.RenderComponent<T_BaseComponent>();
 
         //Asserts
 

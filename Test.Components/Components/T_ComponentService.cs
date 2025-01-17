@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace Package.Shared.BlazorComponents.UnitTests.TestComponent_Example
 {
-    public interface ITestComponentService
+
+    public class T_ComponentService : IT_ComponentService
     {
-        public string TestString { get; set; }
-        public bool TestBool { get; set; }
+        public string TestString { get; set; } = "TestStringDefault";
+        public bool TestBool { get; set; } = false;
     }
 }
