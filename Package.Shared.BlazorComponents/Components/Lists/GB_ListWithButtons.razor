@@ -7,20 +7,27 @@
 <div class="list-container">
     <h2 class="text-center">@ListTitle</h2>
     <ul class="nhsuk-ul">
-        @foreach (var item in Items)
+        @if (Items == null)
         {
-            //qqqq should i interface with itemized? or something to say it has .id
-            //Currently this is very naughty
-            <li class="nhsuk-list-item" @key="((IGE_Person)item).ClientTemporaryId">
-                <!-- Use a consistent class name -->
-                <div class="nhsuk-inline-content">
-                    <span style="display: flex;margin:10px;">@GetItemText(item)</span>
-                    @if (ListButton != null)
-                    {
-                        @ListButton(item)
-                    }
-                </div>
-            </li>
+            <p>List is empty</p>    
+        
+        }else
+        {
+            @foreach (var item in Items)
+            {
+                //qqqq should i interface with itemized? or something to say it has .id
+                //Currently this is very naughty
+                <li class="nhsuk-list-item" @key="((IGE_Person)item).ClientTemporaryId">
+                    <!-- Use a consistent class name -->
+                    <div class="nhsuk-inline-content">
+                        <span style="display: flex;margin:10px;">@GetItemText(item)</span>
+                        @if (ListButton != null)
+                        {
+                            @ListButton(item)
+                        }
+                    </div>
+                </li>
+            }
         }
     </ul>
 </div>

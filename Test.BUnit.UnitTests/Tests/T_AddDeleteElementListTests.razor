@@ -52,7 +52,7 @@
     {
         // Arrange
         TestContext ctx = GetTestContext();
-        
+
         // Act
         var cut = ctx.RenderComponent<T_AddDeleteElementList>(parameters =>
             parameters.Add(p => p.InitialItems,
@@ -70,24 +70,14 @@
         cut.SaveSnapshot();
 
 
+
         AddRandomItemButton.Click();
-        var diff = cut.GetChangesSinceSnapshot();
+
 
         //Assert
-       
-        diff.ShouldHaveSingleChange();
-        //qqqq // diff.First().Should().(change => 
-        //     change.Contains("<button") && 
-        //     change.Contains("<li") && 
-        //     change.Contains("key=")) ;
 
-        //Cant do this
-        //diff.ShouldHaveSingleChange().ShouldBeAddition(x => x.HasAttribute("key"));
+        cut.GetChangesSinceSnapshot().ShouldHaveSingleChange();
 
-        // <li @key="item.ClientTemporaryId" class="list-item d-flex align-items-center">
-        //     <span style="flex-grow: 1; margin-right: 10px;">@item.Text</span>
-        //     <button @onclick="() => RemoveItem(item)" class="list-item-remove-button btn btn-danger btn-sm">Remove</button>
-        // </li>
 
 
 
@@ -114,10 +104,10 @@
 
         cut.SaveSnapshot();
         lastRemoveButton.Click();
-        var diff = cut.GetChangesSinceSnapshot();
-
-        throw new NotImplementedException();
 
 
+        //Assert
+
+        cut.GetChangesSinceSnapshot().ShouldHaveSingleChange();
     }
 }

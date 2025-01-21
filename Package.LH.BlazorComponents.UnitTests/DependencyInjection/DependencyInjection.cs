@@ -1,4 +1,5 @@
-﻿using Package.LH.BlazorComponents.UnitTests.TestDoubles;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Package.LH.BlazorComponents.UnitTests.TestDoubles;
 using Package.LH.Services.StateServices;
 using Package.Shared.Services.StateServices.CharacterStateServices;
 
@@ -17,8 +18,8 @@ namespace Package.LH.BlazorComponents.UnitTests.DependencyInjection
             /*Mocks, Stubs, Fakes here*/
 
             FAKE_LHS_AttendeesStateServices FAKE_LHS_AttendeesStateServices = new FAKE_LHS_AttendeesStateServices();
-            services.AddScoped<ILHS_AttendeesStateService, FAKE_LHS_AttendeesStateServices>(serviceProvider => FAKE_LHS_AttendeesStateServices);
-
+            services.AddScoped<IFAKE_LHS_AttendeesStateServices, FAKE_LHS_AttendeesStateServices>(serviceProvider => FAKE_LHS_AttendeesStateServices);
+            //qqqq not happy had to change this
             return services;
         }
 

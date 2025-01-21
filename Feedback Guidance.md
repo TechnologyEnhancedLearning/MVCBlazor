@@ -80,6 +80,3 @@ here we do logic in the view. this setup is needed because state is not in the s
 
 	
 # Reflections
-
-
-	

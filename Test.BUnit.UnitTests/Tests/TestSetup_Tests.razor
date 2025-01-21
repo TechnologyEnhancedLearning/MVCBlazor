@@ -80,7 +80,7 @@
     [Theory]
     [InlineData(true)]
     [InlineData(false)]
-    public async void TestSetup_T_JSSetup_HydrationIsSimulated(bool JSIsEnabled)
+    public void TestSetup_T_JSSetup_HydrationIsSimulated(bool JSIsEnabled)
     {
         // Arrange
         TestContext ctxJSEnabled = GetTestContext(JSIsEnabled);
@@ -96,33 +96,32 @@
                 )
             , TimeSpan.FromSeconds(5));
 
-
-
         Assert.Equal(JSIsEnabled.ToString(), cut.Find("#IsHydrated").TextContent);
 
-
-
     }
+
     /// <summary>
     /// This test is to show async Bunit testing features as well
+    /// It shows some wait functionality
     /// </summary>
     /// <param name="JSIsEnabled"></param>
     [Theory]
     [InlineData(true)]
     [InlineData(false)]
-    public async void TestSetup_T_JSSetup_InteractivityIsSimulated(bool JSIsEnabled)
+    public void TestSetup_T_JSSetup_WaitingExample_InteractivityIsSimulated(bool JSIsEnabled)
     {
 
         // Arrange
         TestContext ctxJSEnabled = GetTestContext(JSIsEnabled);
 
         // Act
-        var cut = ctxJSEnabled.RenderComponent<T_JSSetup>();
+        var cut = ctxJSEnabled.RenderComponent<T_JSSetup>(parameters
+            => parameters.Add(p => p.waitForHydrationToShowButton, JSIsEnabled)); 
+        //Note: This parameter is just so we have an example of the waiting BUnit functionality in the project.
+
 
         //Wait for button to be revealed
         cut.WaitForElement("#OnInteractivityTestButton", TimeSpan.FromSeconds(5));
-
-
 
         //Grab the button
         var interactiveButton = cut.Find("#OnInteractivityTestButton");
@@ -134,24 +133,17 @@
         var interactiveButtonContent = cut.Find("#OnInteractivityTestButtonClickMessage").TextContent;
 
         //Assert
-
+        //(It shouldnt be interactive if Js is disabled)
         Assert.True(
             JSIsEnabled == cut.Instance.OnInteractivityTestButtonClickMessage.Length > 0,
             JSIsEnabled?null:"We are not yet modeling the correct lifecycle stage for nojs with our test context"
         );
 
-        cut.WaitForAssertion(() => 
-                Assert.True(JSIsEnabled == cut.Find("#OnInteractivityTestButtonClickMessage").TextContent.Length > 0,
-                JSIsEnabled ? null : "We are not yet modeling the correct lifecycle stage for nojs with our test context"
-            ), 
-                TimeSpan.FromSeconds(5)
-            );
+        Assert.True(
+           JSIsEnabled == interactiveButtonContent.Length > 0,
+           JSIsEnabled ? null : "We are not yet modeling the correct lifecycle stage for nojs with our test context"
+       );
 
-
-
-        //It shouldnt be interactive if Js is disabled
-        Assert.Equal(JSIsEnabled, cut.Instance.OnInteractivityTestButtonClickMessage.Length > 0);
-        Assert.Equal(JSIsEnabled, interactiveButtonContent.Length > 0);
 
 
     }
@@ -159,16 +151,13 @@
     /// <summary>
     /// This test is to show some comparison options for html as well as that NoJS is not yet sufficiently simulated
     /// </summary>
-    /// <param name="JSIsEnabled"></param>
-    /// <exception cref="NotImplementedException"></exception>
-    [Theory]
-    // [InlineData(true)]
-    [InlineData(false)]
-    public async void TestSetup_T_JSSetup_NoJSBrowserIsSimulated(bool JSIsEnabled)
+    [Fact]
+    public async Task TestSetup_T_JSSetup_NoJSBrowserIsSimulated()
     {
+        bool JSIsEnabled = false;
         using var ctxJSEnabled = new TestContext();
         using var noContextNeeded = new TestContext();
-        using var contextForMock = new TestContext();
+
         var StaticOrNoJSRenderListHtml = noContextNeeded.RenderComponent<StaticOrNoJSRenderList>();
 
         var cut = ctxJSEnabled.RenderComponent<T_JSSetup>(parameters 
@@ -178,11 +167,8 @@
         await Task.Delay(10000);
         //Assert
 
-        var test = cut.Find("ol");
-        @if (!JSIsEnabled)
-        {
-            cut.Find("ol").MarkupMatches(StaticOrNoJSRenderListHtml);
-        }
+        cut.Find("ol").MarkupMatches(StaticOrNoJSRenderListHtml);
+
 
         Assert.Equal(JSIsEnabled, cut.Instance.LifeCycleRequiringJSExecuted);
         Assert.Equal(JSIsEnabled.ToString(), cut.Find("#LifeCycleRequiringJSExecuted").TextContent);
@@ -195,7 +181,7 @@
     [Theory]
     [InlineData(true)]
     [InlineData(false)]
-    public async void TestSetup_T_JSSetup_RenderStageList(bool JSIsEnabled)
+    public async Task TestSetup_T_JSSetup_RenderStageList(bool JSIsEnabled)
     {
         // Arrange
         TestContext ctxJSEnabled = GetTestContext(JSIsEnabled);

@@ -1,11 +1,14 @@
 ﻿@using AutoFixture
+@using FluentAssertions
 @using Moq
 @using Package.LH.BlazorComponents.UnitTests.DependencyInjection
 @using Package.LH.BlazorComponents.UnitTests.TestDoubles
 @using Package.LH.Entities.Models
 @using Package.LH.Services.StateServices
+@using Package.Shared.BlazorComponents.BaseComponents.Buttons
 @using Package.Shared.BlazorComponents.Components.Lists
 @using Package.Shared.BlazorComponents.Core
+@using Package.Shared.Entities.Communication
 @using Package.Shared.Entities.Models
 @using Package.Shared.Services.ComponentServices
 @using Package.Shared.Services.StateServices.CharacterStateServices
@@ -208,7 +211,7 @@
             Assert.False(eventTriggeredFlags[index], $"The OnClick event was incorrectly triggered for the attendee at index {index}.");
         }
 
-        //qqqq use this https://bunit.dev/docs/verification/verify-markup.html#finding-expected-differences
+
     }
 
 
@@ -217,15 +220,13 @@
     [InlineData(false)]
     public void LHB_Attendees_RemoveListForm_TestComponent_RemoveButtonTriggersOnlyOneNodeChange(bool JSIsEnabled)
     {
-        //QQQQ we are providing the logic here so its a bad test
-
+        
         @if (!JSIsEnabled) { throw new NotImplementedException("Test context does not simulate nojs environment yet"); }
 
         // Arrange
         TestContext ctxJSEnabled = GetTestContext(JSIsEnabled);
         ctxJSEnabled.Services.AddTestDouble_LHS_AttendeesStateServices();
         var noJSActionUrl = _fixture.Create<string>();
-
 
         List<LH_AttendeeModel> attendees = ctxJSEnabled.Services.GetService<ILHS_AttendeesStateService>().Attendees;
 
@@ -238,23 +239,32 @@
         .Add(p => p.OnClick, (attendee => {
             ctxJSEnabled.Services.GetService<ILHS_AttendeesStateService>().RemoveAttendeeByTemporaryIdAsync(attendee.ClientTemporaryId);
         })));
+
+        //Grab by component razor
+        var gbList = cut.FindComponent<Shared.BlazorComponents.Components.Lists.GB_ListWithButtons<LH_AttendeeModel>>();
+        var gbListButtons = gbList.FindComponents<GB_Button2>();
+        var gbListButtonsFirst = gbListButtons[0];
+        var htmlStringFirstButton = gbListButtonsFirst.Markup.ToString();
+
+        //Grab by semantic
         cut.SaveSnapshot();
         var firstRemoveButton = cut.Find(".danger-list-item-btn");
+
+
+
+
         firstRemoveButton.Click();
         var diff = cut.GetChangesSinceSnapshot();
         diff.ShouldHaveSingleChange();
         //Getting 596 this indicates I am inefficiently rerendering possibly because i should have used key?
         //This is an advantage over just comparing string
         //is it because we dont listen to the service instead we rerender the parent
-        var diff2 = cut.GetChangesSinceFirstRender();
+
+
 
         //Assert
-        diff.ShouldHaveSingleChange().ShouldBeRemoval(firstRemoveButton.ToString());
-        // Assert.True(diff.ShouldHaveSingleChange());
-        // Assert.True();
+        diff.ShouldHaveSingleChange().ShouldBeRemoval(htmlStringFirstButton);
 
-
-        //qqqq use this https://bunit.dev/docs/verification/verify-markup.html#finding-expected-differences
     }
 
 
@@ -263,6 +273,8 @@
     [InlineData(false)]
     public void LHB_Attendees_RemoveListForm_TestComponent_SaveButtonCallsHandleSubmit(bool JSIsEnabled)
     {
+
+
         // Arrange
         TestContext ctxJSEnabled = GetTestContext(JSIsEnabled);
         ctxJSEnabled.Services.AddTestDouble_LHS_AttendeesStateServices();
@@ -270,11 +282,53 @@
 
 
 
+        // Arrange
+        IFAKE_LHS_AttendeesStateServices attendeesStateService = ctxJSEnabled.Services.GetService<IFAKE_LHS_AttendeesStateServices>();
+       
+        List<LH_AttendeeModel> attendees = attendeesStateService.Attendees;
+        //Deep copy
+        GE_ServiceResponse<List<LH_AttendeeModel>> lastServiceResponseStartEmpty = 
+        new GE_ServiceResponse<List<LH_AttendeeModel>>
+            {
+                Success = attendeesStateService.T_LastServiceResponse.Success,
+                Message = attendeesStateService.T_LastServiceResponse.Message,
+                Data = attendeesStateService.T_LastServiceResponse.Data
+            };
 
-        throw new NotImplementedException();
+        var cut = ctxJSEnabled.RenderComponent<LHB_Attendees_RemoveListForm_TestComponent>(parameters => parameters
+        //.Add(p => p.Attendees, null)
+        .Add(p => p.NoJSActionUrl, noJSActionUrl)
+        .Add(p => p.OnClick, (attendee =>
+        {
+            /*Not used in test*/
+        }))
+        .Add(p => p.HandleSubmit, () => attendeesStateService.ReplaceDBWithListAsync()));//qqqqqqq butter test if was built in see if the page component has it in
 
 
+        @if (!JSIsEnabled)
+        {
+            //Assert
+            Assert.Empty(cut.FindAll(".update-db"));
 
+        } 
+        else
+        {
+            var updateDbButton = cut.Find(".update-db");
+            updateDbButton.Click();
+
+            // Should start empty
+            lastServiceResponseStartEmpty.Should().BeEquivalentTo(new GE_ServiceResponse<List<LH_AttendeeModel>>());
+            Assert.NotEmpty(attendees);
+            //qqqq due t reference expect will need to check vals seperatly
+            attendeesStateService.T_LastServiceResponse.Should().BeEquivalentTo(
+            new GE_ServiceResponse<List<LH_AttendeeModel>>()
+              {
+                  Success = true,
+                  Message = "",
+                  Data = attendees
+              });
+            Assert.Equal(attendeesStateService.T_LastServiceResponse.Data, attendeesStateService.Attendees);
+        }
 
     }
 

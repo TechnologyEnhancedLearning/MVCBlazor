@@ -11,12 +11,16 @@ using System.Threading.Tasks;
 
 namespace Package.LH.BlazorComponents.UnitTests.TestDoubles
 {
-    public class FAKE_LHS_AttendeesStateServices : ILHS_AttendeesStateService
+    public interface IFAKE_LHS_AttendeesStateServices : ILHS_AttendeesStateService
+    { 
+       public GE_ServiceResponse<List<LH_AttendeeModel>> T_LastServiceResponse { get; set; }    
+    }
+    public class FAKE_LHS_AttendeesStateServices : IFAKE_LHS_AttendeesStateServices, ILHS_AttendeesStateService
     {
 
         private readonly List<LH_AttendeeModel> attendees;
         private readonly TaskCompletionSource<LH_AttendeeModel> attendeeAdded = new();
-
+        public GE_ServiceResponse<List<LH_AttendeeModel>> T_LastServiceResponse { get; set; } = new();//qqqq dont know if this is bad practice
         public FAKE_LHS_AttendeesStateServices()
         {
             // Use AutoFixture to create test data
@@ -28,6 +32,8 @@ namespace Package.LH.BlazorComponents.UnitTests.TestDoubles
         public bool DataIsLoaded => true;
 
         public List<LH_AttendeeModel> Attendees => attendees;
+
+
 
         public Task<GE_ServiceResponse<bool>> AddAttendeeAsync(LH_AttendeeModel attendee)
         {
@@ -65,11 +71,8 @@ namespace Package.LH.BlazorComponents.UnitTests.TestDoubles
 
         public Task<GE_ServiceResponse<List<LH_AttendeeModel>>> ReplaceDBWithListAsync()
         {
-            return Task.FromResult(new GE_ServiceResponse<List<LH_AttendeeModel>>()
-            {
-                Data = attendees,
-                Success = true
-            });
+            T_LastServiceResponse = new GE_ServiceResponse<List<LH_AttendeeModel>>(){ Data = attendees, Success = true };
+            return Task.FromResult(T_LastServiceResponse);
         }
     }
 }

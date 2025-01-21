@@ -441,6 +441,8 @@ This project is not currently a reference for how to but an example of what can 
 
 
 ### Desired Future Additions
+- Explore ids, will guids result in more testability or will it cause less matching and so more rendering? what is best id practice.
+	- These handles will be vital for testing
 - Add ErrorBoundary example in somewhere
 - Extract the add person to a generic component - We would also need the JS supported inline validator so do as an addition
 - StateService 
@@ -448,6 +450,11 @@ This project is not currently a reference for how to but an example of what can 
 		- Different components via MVC view means losing the circuit and the state but only needed for component life 
 	- Revisit stateservices to include  public event Action AttendeesChanged; subscribe statehaschanged to this
 		- all handling occuring in state service
+		- added some failing unit tests
+		- also need to check enough use of @key
+		- also need to check no rebuilding the list
+		- also it may not be possible and what currently seems an inefficiency maybe okay
+			- yet if the out of the box list component can do it, we want ours to be just as efficient
 - Auth headers and auth tokens in blazor see [This patrick god ecommerce repo does have and there is a confluence project for how to set it up](https://github.com/patrickgod/BlazorEcommerce)
 - blazorisedStorage
 	- nojs api calls from controller
@@ -477,6 +484,14 @@ This project is not currently a reference for how to but an example of what can 
 - **important** -> prototyping tools
 
 ### Car park desired features
+- storage consideration of unencrypted on the browser
+- persistence for
+	- user prefs
+	- auth tokens
+	- incomplete forms
+- we use reddis already explore this with blazor as they do get mentioned together
+- offline capabity - WASM gives us a certain amount of offline capability. Can we weight that up as more important than nojs capability.
+- fluxor and redux state management mentioned in a course to look at for complex requirements
 - i doubt its possible however if a user had nojs and we provided a button to download the wasm and instructions how 
 to put it on their browser would that be requirement met? It would most likely be very complex.
 - .net 9 has RendererInfo (would need to look into it further) which include isInteractive and rendererName

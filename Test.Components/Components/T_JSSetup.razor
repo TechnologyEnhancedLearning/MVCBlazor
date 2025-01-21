@@ -44,6 +44,8 @@ else
 }
 
 @code {
+    [Parameter]
+    public bool waitForHydrationToShowButton { get; set; } = true;
     public bool isLoading = true;
     public List<string> items = new();
 
@@ -52,7 +54,7 @@ else
     public int TriggerRerenderButtonClickCount = 0;
     public bool LifeCycleRequiringJSExecuted = false;
     public bool LastPrerenderLifeCycleStageExecuted = false;    // This will be called when the InteractivityTestButton is clicked.
-    public bool ShowInteractivityTestButton => isHydrated; //This is so we can have test for async behaviour
+    public bool ShowInteractivityTestButton => !waitForHydrationToShowButton || isHydrated; //This is so we can have test for async behaviour
     public bool clickCompleted = false;
     // This will be called when the InteractivityTestButton is clicked.
     private async void OnInteractivityTestButtonClick()
