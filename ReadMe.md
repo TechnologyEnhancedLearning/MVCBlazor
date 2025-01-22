@@ -31,11 +31,11 @@ SSL certificate via the browser. In the end we didnt need to change appsettings
 	1. ~~client~~
 		- ~~revert changes back when first run overwrites~~
 1. then in visual studio 
-	- Run drop dwon -> Configure Startup Projects -> Multiple Startup Projects:
-		1. API (start)
-		1. Server (start)
+	- Run drop dwon -> Configure Startup Projects -> Multiple Startup Projects. Set the following start order and targets:
+		1. API | Start | IIS Express
+		1. Server | Start | IIS Express
 		- ![Startup Image](startup.gif)
-1. Appsettings change baseUrl to your local host - BaseUrl stuff is just for ease in places
+1. ~~Appsettings change baseUrl to your local host - BaseUrl stuff is just for ease in places~~
 	- we are launching IIS so in launch and apisettings those are the settings that are important http, https profile shouldnt matter
 1. Clean build
 	- take note of routes in launch?
