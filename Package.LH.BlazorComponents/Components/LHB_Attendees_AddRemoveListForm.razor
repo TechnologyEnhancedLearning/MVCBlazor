@@ -47,7 +47,8 @@ else
             Items="LHS_AttendeesStateService.Attendees" 
             ListTitle="Attendee List"
             GetItemText="@(attendee => attendee.ToString())"
-            ListButton="@(RenderDangerButton)" />
+            ListButton="@(RenderDangerButton)"
+            GetKey="@(attendee => attendee.GetKey)" />
 
     @if(JSIsEnabled)
     {

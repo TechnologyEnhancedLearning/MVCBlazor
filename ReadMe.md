@@ -443,6 +443,14 @@ This project is not currently a reference for how to but an example of what can 
 ### Desired Future Additions
 - Explore ids, will guids result in more testability or will it cause less matching and so more rendering? what is best id practice.
 	- These handles will be vital for testing
+	- also keys for lists
+	- functions passed on how to grab the key would be good 
+		- so value types can have one rule
+		- blazor objects could have a get key interface - currently have a clientid 
+		- objects from elsewhere can pass own func for providing a key which may just be their type + an id
+		- just some helper code may consider may not 
+			- `return $"{typeof(TItem).FullName}-{item.GetHashCode()}"; 
+			KeyProvider="(item) => item" `
 - Add ErrorBoundary example in somewhere
 - Extract the add person to a generic component - We would also need the JS supported inline validator so do as an addition
 - StateService 
@@ -576,6 +584,7 @@ It would be possible to tell them they we're redirected on the page they we're r
 	- This project does do this, though it is necessary to chain the parameters down through the components, which means the summaries are lost.
 	There is probably a better way of doing this. It may be with cascading. It maybe with inheritance rather than interfaces.
 - careful of moving razor files between projects
+- changing a component to server rendering can allow you to debug in vs a little easier
 
 ## Things to try in the project to gain familiarity
 - replace the li links with a blazor component that takes class the href or two one for mvc and blazor

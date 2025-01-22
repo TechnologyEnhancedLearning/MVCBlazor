@@ -9,7 +9,8 @@ remove list both having a listner. but for the purpose of the test its useful
 <GB_ListWithButtons Items="Attendees"
                     ListTitle="Attendee List"
                     GetItemText="@(attendee => attendee.ToString())"
-                    ListButton="@(RenderDangerButton)" />
+                    ListButton="@(RenderDangerButton)"
+                    GetKey="@(attendee => attendee.GetKey)" />
 
 @if (JSIsEnabled)
 {

@@ -17,7 +17,7 @@
             {
                 //qqqq should i interface with itemized? or something to say it has .id
                 //Currently this is very naughty
-                <li class="nhsuk-list-item" @key="((IGE_Person)item).ClientTemporaryId">
+                <li class="nhsuk-list-item" @key="@GetKey(item)">
                     <!-- Use a consistent class name -->
                     <div class="nhsuk-inline-content">
                         <span style="display: flex;margin:10px;">@GetItemText(item)</span>
@@ -35,15 +35,19 @@
 @code {
     [EditorRequired]
     [Parameter]
-    public string ListTitle { get; set; }
+    public required string ListTitle { get; set; }
 
     [EditorRequired]
     [Parameter]
-    public List<TItem> Items { get; set; } // Generic list of items
+    public required List<TItem> Items { get; set; } // Generic list of items
 
     [EditorRequired]
     [Parameter]
-    public Func<TItem, string> GetItemText { get; set; } // Delegate to format the item text
+    public required Func<TItem, string> GetItemText { get; set; } // Delegate to format the item text
+
+    [EditorRequired]
+    [Parameter]
+    public required Func<TItem, string>  GetKey { get; set; }
 
     [Parameter]
     public RenderFragment<TItem> ListButton { get; set; } // RenderFragment for button content

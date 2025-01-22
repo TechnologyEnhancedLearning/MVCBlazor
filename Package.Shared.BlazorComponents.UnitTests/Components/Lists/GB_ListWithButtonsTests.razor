@@ -48,7 +48,8 @@
         var cut = ctxJSEnabled.RenderComponent<GB_ListWithButtons<string>>(parameters => parameters
             .Add(p => p.Items, items)
             .Add(p => p.ListTitle, listTitle)
-            .Add(p => p.GetItemText, item => item));
+            .Add(p => p.GetItemText, item => item)
+            .Add(p => p.GetKey, item => item));
 
         // Assert
         var spanElements = cut.FindAll(".nhsuk-inline-content span")
@@ -64,6 +65,7 @@
     [Theory]
     [InlineData(true)]
     [InlineData(false)]
+    //qqqq fails because was forced to make less generic
     public void GB_ListWithButtons_WithCustomButton_RendersButtonCorrectly(bool JSIsEnabled)
     {
         // Arrange
@@ -76,6 +78,7 @@
             .Add(p => p.Items, items)
             .Add(p => p.ListTitle, listTitle)
             .Add(p => p.GetItemText, item => item)
+            .Add(p => p.GetKey, item => item)
             .Add(p => p.ListButton, item => builder =>
             {
                 builder.OpenElement(0, "button");

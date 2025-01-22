@@ -1,4 +1,5 @@
 ﻿using Package.Shared.Entities.Interfaces;
+using Package.Shared.Entities.Interfaces.ComponentInterfaces;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -36,8 +37,7 @@ namespace Package.Shared.Entities.BaseClasses
             ClientTemporaryId = Guid.NewGuid(); // Automatically generates a new Guid
         }
         public override string ToString() => $"{FirstName} {SecondName}";
+        public string GetKey => ClientTemporaryId.ToString();
 
-
-     
     }
 }
