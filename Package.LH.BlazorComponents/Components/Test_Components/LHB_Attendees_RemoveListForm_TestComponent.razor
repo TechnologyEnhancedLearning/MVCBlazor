@@ -26,8 +26,9 @@ remove list both having a listner. but for the purpose of the test its useful
                 ButtonType=GB_ButtonType.Success
                 NoJSActionUrl=""
                 CustomCssClass="update-db"
-                OnClick="HandleSubmit" />
-
+                OnClick="@(() => HandleSubmit.InvokeAsync())"
+                 />
+@*     OnClick = "HandleSubmit" *@
 }
 
 @code {

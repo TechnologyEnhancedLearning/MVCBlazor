@@ -18,8 +18,13 @@ namespace Package.LH.BlazorComponents.UnitTests.DependencyInjection
             /*Mocks, Stubs, Fakes here*/
 
             FAKE_LHS_AttendeesStateServices FAKE_LHS_AttendeesStateServices = new FAKE_LHS_AttendeesStateServices();
-            services.AddScoped<IFAKE_LHS_AttendeesStateServices, FAKE_LHS_AttendeesStateServices>(serviceProvider => FAKE_LHS_AttendeesStateServices);
-            //qqqq not happy had to change this
+
+            //services.AddScoped<IFAKE_LHS_AttendeesStateServices, FAKE_LHS_AttendeesStateServices>(serviceProvider => FAKE_LHS_AttendeesStateServices);
+            //services.AddScoped<ILHS_AttendeesStateService, FAKE_LHS_AttendeesStateServices>(serviceProvider => FAKE_LHS_AttendeesStateServices);
+            services.AddScoped<IFAKE_LHS_AttendeesStateServices>(serviceProvider => FAKE_LHS_AttendeesStateServices);
+            services.AddScoped<ILHS_AttendeesStateService>(serviceProvider => FAKE_LHS_AttendeesStateServices);
+
+
             return services;
         }
 

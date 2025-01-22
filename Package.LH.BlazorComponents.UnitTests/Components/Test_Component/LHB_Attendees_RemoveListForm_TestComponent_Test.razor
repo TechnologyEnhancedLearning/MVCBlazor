@@ -271,6 +271,7 @@
     [Theory]
     [InlineData(true)]
     [InlineData(false)]
+    //Better test if param not provided by test so also done as a page
     public void LHB_Attendees_RemoveListForm_TestComponent_SaveButtonCallsHandleSubmit(bool JSIsEnabled)
     {
 
@@ -302,7 +303,7 @@
         {
             /*Not used in test*/
         }))
-        .Add(p => p.HandleSubmit, () => attendeesStateService.ReplaceDBWithListAsync()));//qqqqqqq butter test if was built in see if the page component has it in
+        .Add(p => p.HandleSubmit, () => attendeesStateService.ReplaceDBWithListAsync()));
 
 
         @if (!JSIsEnabled)
@@ -319,7 +320,6 @@
             // Should start empty
             lastServiceResponseStartEmpty.Should().BeEquivalentTo(new GE_ServiceResponse<List<LH_AttendeeModel>>());
             Assert.NotEmpty(attendees);
-            //qqqq due t reference expect will need to check vals seperatly
             attendeesStateService.T_LastServiceResponse.Should().BeEquivalentTo(
             new GE_ServiceResponse<List<LH_AttendeeModel>>()
               {

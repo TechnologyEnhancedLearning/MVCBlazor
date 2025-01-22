@@ -1,5 +1,5 @@
 ﻿@page "/Attendees/AttendeesTestComponent-BlazorPage"
-@rendermode InteractiveWebAssembly
+@rendermode InteractiveServer
 @inherits GB_PageBase
 @inject ILHS_AttendeesStateService LHS_AttendeesStateService
 @layout LHB_RenderModePageLayout
@@ -11,7 +11,8 @@
         Attendees="LHS_AttendeesStateService.Attendees"
         NoJSActionUrl="Attendees/NoJS/RemoveAttendeeByTemporaryId"
         OnClick="@(attendee => RemoveAttendee(attendee))"
-        HandleSubmit="() => HandleSubmit()" />
+        HandleSubmit="()=>HandleSubmit()"/>
+       
 </LHB_RenderModePage>
 
 @code {
@@ -25,10 +26,10 @@
         StateHasChanged();//because we change the list in the service rather than changing a blazor parameter, blazor doesnt know its changed so we need to tell it the state has change
     }
 
-    private async Task HandleSubmit()
+    public async Task HandleSubmit()
     {
         Console.WriteLine("Blazor Component : HandleSubmit");
-        await LHS_AttendeesStateService.ReplaceDBWithListAsync();
+        await LHS_AttendeesStateService.ReplaceDBWithListAsync(); //qqqq but not going there
         Console.WriteLine("Blazor Component : Submit finished");
 
     }

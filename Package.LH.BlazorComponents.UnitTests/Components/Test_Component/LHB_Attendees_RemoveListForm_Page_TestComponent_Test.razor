@@ -8,6 +8,7 @@
 @using Package.Shared.BlazorComponents.BaseComponents.Buttons
 @using Package.Shared.BlazorComponents.Components.Lists
 @using Package.Shared.BlazorComponents.Core
+@using Package.Shared.Entities.Communication
 @using Package.Shared.Entities.Models
 @using Package.Shared.Services.ComponentServices
 @using Package.Shared.Services.StateServices.CharacterStateServices
@@ -26,11 +27,14 @@
         _fixture = new Fixture();
     }
 
-    private TestContext GetTestContext(bool JSIsEnabled)
+    private TestContext GetTestContext(bool JSIsEnabled, bool useFallBackService = true)
     {
         var ctx = new TestContext();
-        ctx.Services.AddFallbackServiceProvider(new FallbackServiceProvider());
 
+        if (useFallBackService)
+        {
+            ctx.Services.AddFallbackServiceProvider(new FallbackServiceProvider());
+        }
 
         // Create a mock of IGS_JSEnabled
         var mockJSEnabled = new Mock<IGS_JSEnabled>();
@@ -105,8 +109,6 @@
         firstRemoveButton.Click();
 
 
-        // var configuredPizza = cut.FindComponent<ConfiguredPizzaItem>();
-        // var pizzaToRemove = configuredPizza.Instance.Pizza;
 
 
         var diff = cut.GetChangesSinceSnapshot();
@@ -191,7 +193,7 @@
 
         var cut = ctxJSEnabled.RenderComponent<LHB_Attendees_RemoveListForm_Page_TestComponent>();
 
-        /* qqqq what can we grab - great! :) */
+
         var canWeGrabIt = cut.FindComponent<LHB_Attendees_RemoveListForm_TestComponent>();
         var canWeGrabIt1 = cut.FindComponent<Shared.BlazorComponents.Components.Lists.GB_ListWithButtons<LH_AttendeeModel>>();
         var canWeGrabIt2 = cut.FindComponent<GB_Button2>();
@@ -208,8 +210,6 @@
 
         // Assert
 
-
-
         //Our button is made with a render fragment and an event it has no exposed reference to the LH_Attendee
         Assert.True(canWeGrabItFromAnother1.IsDisposed);
         Assert.Equal(ItemsCount -1, canWeGrabItFromAnother.Instance.Items.Count());
@@ -224,5 +224,61 @@
         Assert.DoesNotContain(ClientTemporaryId, attendeesStateService?.Attendees.Select(x => x.ClientTemporaryId).Select(x =>x.ToString()).ToList());
 
         attendeesStateService?.Attendees.Should().NotContain(x => x.ClientTemporaryId.ToString() == ClientTemporaryId);
+    }
+
+
+
+
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public async Task LHB_Attendees_RemoveListForm_Page_TestComponent_SaveButtonCallsHandleSubmit(bool JSIsEnabled)
+    {
+
+        // Arrange
+        TestContext ctxJSEnabled = GetTestContext(JSIsEnabled);
+        ctxJSEnabled.Services.AddTestDouble_LHS_AttendeesStateServices();
+        var noJSActionUrl = _fixture.Create<string>();
+
+        // Arrange
+        IFAKE_LHS_AttendeesStateServices attendeesStateService = ctxJSEnabled.Services.GetService<IFAKE_LHS_AttendeesStateServices>();
+
+        List<LH_AttendeeModel> attendees = attendeesStateService.Attendees;
+        //Deep copy
+        GE_ServiceResponse<List<LH_AttendeeModel>> lastServiceResponseStartEmpty =
+        new GE_ServiceResponse<List<LH_AttendeeModel>>
+            {
+                Success = attendeesStateService.T_LastServiceResponse.Success,
+                Message = attendeesStateService.T_LastServiceResponse.Message,
+                Data = attendeesStateService.T_LastServiceResponse.Data
+            };
+
+        var cut = ctxJSEnabled.RenderComponent<LHB_Attendees_RemoveListForm_Page_TestComponent>();
+
+        @if (!JSIsEnabled)
+        {
+            //Assert
+            Assert.Empty(cut.FindAll(".update-db"));
+
+        }
+        else
+        {
+            var updateDbButton = cut.Find(".update-db");
+            updateDbButton.Click();
+            await Task.Delay(3000);
+            // Should start empty
+            lastServiceResponseStartEmpty.Should().BeEquivalentTo(new GE_ServiceResponse<List<LH_AttendeeModel>>());
+            Assert.NotEmpty(attendees);
+
+            attendeesStateService.T_LastServiceResponse.Should().BeEquivalentTo(
+            new GE_ServiceResponse<List<LH_AttendeeModel>>()
+                {
+                    Success = true,
+                    Message = "",
+                    Data = attendees
+                });
+            Assert.Equal(attendeesStateService.T_LastServiceResponse.Data, attendeesStateService.Attendees);
+        }
+
     }
 }
