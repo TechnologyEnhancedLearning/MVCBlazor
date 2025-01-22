@@ -1,0 +1,167 @@
+﻿
+
+
+
+@code {
+
+
+    private readonly Fixture _fixture;
+
+    public T_JSSetupTests()
+    {
+        // Initialize AutoFixture
+        _fixture = new Fixture();
+    }
+
+    private TestContext CreateTestContext(bool JSIsEnabled)//Require it so remember to test it
+    {
+        //Arrange
+
+        var ctx = new TestContext();
+        ctx.Services.AddFallbackServiceProvider(new FallbackServiceProvider());
+
+        // Create a mock of IGS_JSEnabled
+        var mockJSEnabled = new Mock<IGS_JSEnabled>();
+        mockJSEnabled.Setup(js => js.JSIsEnabled).Returns(JSIsEnabled); // Mock behavior for JSIsEnabled
+        mockJSEnabled.Setup(js => js.TestingWhoAmI).Returns("MockedHost"); // Mock behavior for WhoAmI
+
+        ctx.Services.AddScoped(_ => mockJSEnabled.Object);
+
+        return ctx;
+    }
+
+
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public void HydrationIsSimulated(bool JSIsEnabled)
+    {
+        // Arrange
+        TestContext ctxJSEnabled = CreateTestContext(JSIsEnabled);
+
+        // Act
+        var cut = ctxJSEnabled.RenderComponent<T_JSSetup>();
+
+        //Assert
+        //Wait for button to be revealed
+        cut.WaitForAssertion(()=>
+                 Assert.True(
+                   JSIsEnabled == cut.Instance.isHydrated,
+                   JSIsEnabled ? null : "We are not yet modeling the correct lifecycle stage for nojs with our test context"
+                )
+            , TimeSpan.FromSeconds(5));
+
+        Assert.Equal(JSIsEnabled.ToString(), cut.Find("#IsHydrated").TextContent);
+
+    }
+
+    /// <summary>
+    /// This test is to show async Bunit testing features as well
+    /// It shows some wait functionality
+    /// </summary>
+    /// <param name="JSIsEnabled"></param>
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public void WaitingExample_Interactivity_IsSimulatedCorrectly(bool JSIsEnabled)
+    {
+
+        // Arrange
+        TestContext ctxJSEnabled = CreateTestContext(JSIsEnabled);
+
+        // Act
+        var cut = ctxJSEnabled.RenderComponent<T_JSSetup>(parameters
+            => parameters.Add(p => p.waitForHydrationToShowButton, JSIsEnabled)); 
+        //Note: This parameter is just so we have an example of the waiting BUnit functionality in the project.
+
+
+        //Wait for button to be revealed
+        cut.WaitForElement("#OnInteractivityTestButton", TimeSpan.FromSeconds(5));
+
+        //Grab the button
+        var interactiveButton = cut.Find("#OnInteractivityTestButton");
+
+        //Click it
+        interactiveButton.Click();
+
+        cut.WaitForState(() => cut.Instance.clickCompleted, TimeSpan.FromSeconds(10));
+        var interactiveButtonContent = cut.Find("#OnInteractivityTestButtonClickMessage").TextContent;
+
+        //Assert
+        //(It shouldnt be interactive if Js is disabled)
+        Assert.True(
+            JSIsEnabled == cut.Instance.OnInteractivityTestButtonClickMessage.Length > 0,
+            JSIsEnabled?null:"We are not yet modeling the correct lifecycle stage for nojs with our test context"
+        );
+
+        Assert.True(
+           JSIsEnabled == interactiveButtonContent.Length > 0,
+           JSIsEnabled ? null : "We are not yet modeling the correct lifecycle stage for nojs with our test context"
+       );
+
+    }
+
+    /// <summary>
+    /// This test is to show some comparison options for html as well as that NoJS is not yet sufficiently simulated
+    /// </summary>
+    [Fact]
+    public async Task NoJSBrowserIsSimulated()
+    {
+        // Arrange
+        bool JSIsEnabled = false;
+        using var ctxJSEnabled = new TestContext();
+        using var noContextNeeded = new TestContext();
+
+        var StaticOrNoJSRenderListHtml = noContextNeeded.RenderComponent<StaticOrNoJSRenderList>();
+
+
+        //Act
+        var cut = ctxJSEnabled.RenderComponent<T_JSSetup>(parameters 
+            => parameters.Add(p => p.ProvidedRenderModeText, 
+                "We just want a parameter to see if it triggers missing param stage"));
+
+        await Task.Delay(10000);
+
+        //Assert
+        cut.Find("ol").MarkupMatches(StaticOrNoJSRenderListHtml);
+        Assert.Equal(JSIsEnabled, cut.Instance.LifeCycleRequiringJSExecuted);
+        Assert.Equal(JSIsEnabled.ToString(), cut.Find("#LifeCycleRequiringJSExecuted").TextContent);
+        Assert.True(ctxJSEnabled.JSInterop.Invocations.Count == 0);
+     
+    }
+
+    
+
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public async Task RenderStageList(bool JSIsEnabled)
+    {
+        // Arrange
+        TestContext ctxJSEnabled = CreateTestContext(JSIsEnabled);
+
+        // Act
+        var cut = ctxJSEnabled.RenderComponent<T_JSSetup>();
+
+        //This test we will just await rather than checking for state
+        await Task.Delay(10000);
+
+        var listOfRendermodesComponentHTML = cut.Find(".life-cycle-stage-list").TextContent;
+
+
+        // Assert
+
+        Assert.True(JSIsEnabled  == cut.Instance.LifecycleStages.Any(stage => stage.Contains("OnAfterRenderAsync")));
+
+        @if (!JSIsEnabled)
+        {
+            Assert.DoesNotContain("OnAfterRenderAsync", listOfRendermodesComponentHTML);
+        }
+
+    }
+
+
+  
+
+ 
+}

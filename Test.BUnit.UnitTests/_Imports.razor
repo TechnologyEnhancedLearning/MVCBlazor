@@ -6,3 +6,22 @@
 @using Xunit
 @using FluentAssertions
 @using AutoFixture
+
+@using Bunit.Rendering
+@using Microsoft.AspNetCore.Components.Rendering
+@using Moq
+@using Package.Shared.BlazorComponents.Components.Lists
+@* @inherits TestContext *@ @* We can do this but we are defining it seperatly here*@
+@using Package.Shared.BlazorComponents.Core
+
+@using Package.Shared.BlazorComponents.UnitTests.TestComponent_Example
+@using Package.Shared.Entities.Models
+@using Package.Shared.Services.ComponentServices
+@using Package.Shared.Services.StateServices.CharacterStateServices
+@using System.Diagnostics
+
+@using System.IO
+@using Test.BUnit.UnitTests.DependencyInjection
+@using Test.BUnit.UnitTests.HtmlComparisons
+@using Test.BUnit.UnitTests.TestDoubles
+@using Test.Components.Components

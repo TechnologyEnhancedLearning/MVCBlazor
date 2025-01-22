@@ -1,0 +1,130 @@
+﻿
+@code {
+
+    private readonly Fixture _fixture;
+
+    public T_BaseComponentTests()
+    {
+        // Initialize AutoFixture
+        _fixture = new Fixture();
+    }
+
+
+    private TestContext CreateTestContext(bool JSIsEnabled)//Require it so remember to test it
+    {
+        //Arrange
+
+        var ctx = new TestContext();
+        ctx.Services.AddFallbackServiceProvider(new FallbackServiceProvider());
+
+        // Create a mock of IGS_JSEnabled
+        var mockJSEnabled = new Mock<IGS_JSEnabled>();
+        mockJSEnabled.Setup(js => js.JSIsEnabled).Returns(JSIsEnabled); // Mock behavior for JSIsEnabled
+        mockJSEnabled.Setup(js => js.TestingWhoAmI).Returns("MockedHost"); // Mock behavior for WhoAmI
+
+        ctx.Services.AddScoped(_ => mockJSEnabled.Object);
+
+        return ctx;
+    }
+
+    [Trait("Category", "Unit Test")]
+    [Fact]
+    public void Mock_RendersCorrectly()
+    {
+        // Arrange
+        var ctx = new TestContext();
+        ctx.Services.AddFallbackServiceProvider(new FallbackServiceProvider());
+        ctx.Services.AddTestDouble_GS_StateServices();
+
+
+        // Create a mock of IGS_JSEnabled
+        var mockGS_CharactersStateService = new Mock<IGS_CharactersStateService>();
+        mockGS_CharactersStateService.Setup(css => css.Characters)
+            .Returns(
+                new List<GE_CharacterModel> {
+                    new GE_CharacterModel { FirstName = "MockedFirstNameTest" }
+                        });
+
+        ctx.Services.AddScoped(_ => mockGS_CharactersStateService.Object);
+
+
+        // Act
+        var cut = ctx.RenderComponent<T_BaseComponent>();
+
+        //Asserts
+
+        Assert.True(cut.Find(".CharactersStateServiceClass").TextContent.Length > 0);
+        Assert.NotNull(ctx.Services.GetService<IGS_CharactersStateService>().Characters);
+        Assert.NotEmpty(ctx.Services.GetService<IGS_CharactersStateService>().Characters);
+        Assert.Equal("MockedFirstNameTest", cut.Find(".CharactersStateServiceClass").TextContent);
+
+    }
+
+    [Fact]
+    public void Fallback_RendersCorrectly()
+    {
+
+        // Arrange
+        var ctx = new TestContext();
+        ctx.Services.AddFallbackServiceProvider(new FallbackServiceProvider());
+
+        // Act
+        var cut = ctx.RenderComponent<T_BaseComponent>();
+
+        // Assert
+        Assert.Equal("DefaultTestTitleText", cut.Find("h1").TextContent);
+        Assert.Equal("False", cut.Find(".TestJSIsEnabledClass").TextContent); // Check IJSEnabled autofixture defaults False
+        Assert.Contains("TestingWhoAmI", cut.Find(".TestWhoAmIClass").TextContent);//Autofixture will take the name and add a guid
+        Assert.False(cut.Instance.TestJSIsEnabled);//AutoFixture bool defaults False
+        Assert.Equal("DefaultTestTitleText", cut.Instance.TestTitleText);
+
+    }
+
+
+    // See IFake_LHS_AttendeesStateServices
+    [Fact]
+    public void Fake_RendersCorrectly()
+    {
+        // Arrange
+        var ctx = new TestContext();
+        ctx.Services.AddFallbackServiceProvider(new FallbackServiceProvider());
+        ctx.Services.AddTestDouble_GS_StateServices();
+
+
+        // Act
+        var cut = ctx.RenderComponent<T_BaseComponent>();
+
+        //Asserts
+
+        Assert.True(cut.Find(".CharactersStateServiceClass").TextContent.Length > 0);
+        Assert.NotNull(ctx.Services.GetService<IGS_CharactersStateService>().Characters);
+        Assert.NotEmpty(ctx.Services.GetService<IGS_CharactersStateService>().Characters);
+
+    }
+
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public void TestContext_Sets_IGS_JS_Enabled(bool JSIsEnabled)
+    {
+        // Arrange
+        TestContext ctxJSEnabled = CreateTestContext(JSIsEnabled);
+
+        // Act
+        var cut = ctxJSEnabled.RenderComponent<T_BaseComponent>();
+
+
+        // Assert: Verify the component's behavior based on the mock
+        //Using the elements
+        Assert.Equal(JSIsEnabled.ToString(), cut.Find(".TestJSIsEnabledClass").TextContent); 
+        Assert.Equal("MockedHost", cut.Find(".TestWhoAmIClass").TextContent); // Check WhoAmI mock
+        Assert.Equal(JSIsEnabled, cut.Instance.TestJSIsEnabled);
+        Assert.NotNull(cut.Instance.TestWhoAmI);
+        Assert.Equal("MockedHost", cut.Instance.TestWhoAmI);
+
+        //Assert Component rendered
+        Assert.Equal("DefaultTestTitleText", cut.Find("h1").TextContent); // Check title
+        Assert.Equal("DefaultTestTitleText", cut.Instance.TestTitleText);
+
+    }
+}

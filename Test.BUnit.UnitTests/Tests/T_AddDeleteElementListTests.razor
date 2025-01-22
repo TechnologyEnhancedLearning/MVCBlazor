@@ -1,32 +1,10 @@
-﻿@using Bunit.Rendering
-@using Microsoft.AspNetCore.Components.Rendering
-@using Moq
-@using Package.Shared.BlazorComponents.Components.Lists
-@* @inherits TestContext *@ @* Try defining per example*@
-@using Package.Shared.BlazorComponents.Core
-
-@using Package.Shared.BlazorComponents.UnitTests.TestComponent_Example
-@using Package.Shared.Entities.Models
-@using Package.Shared.Services.ComponentServices
-@using Package.Shared.Services.StateServices.CharacterStateServices
-@using System.Diagnostics
-
-@using System.IO
-@using Test.BUnit.UnitTests.DependencyInjection
-@using Test.BUnit.UnitTests.HtmlComparisons
-@using Test.BUnit.UnitTests.TestDoubles
-@using Test.Components.Components
-@using static Test.Components.Components.T_AddDeleteElementList
-
-
-
+﻿@using static Test.Components.Components.T_AddDeleteElementList
 
 @code {
 
     /// Summary
     // These test are to check efficient rendering
     ///
-
 
     private readonly Fixture _fixture;
 
@@ -36,22 +14,28 @@
         _fixture = new Fixture();
     }
 
-    private TestContext GetTestContext()
+    private TestContext CreateTestContext()
     {
         //Arrange
-
         var ctx = new TestContext();
+
+        //Register Fallback
         ctx.Services.AddFallbackServiceProvider(new FallbackServiceProvider());
 
         return ctx;
     }
 
-
+    /// <summary>
+    /// This test makes list of markup updates which is worth a look qqqq
+    ///
+    /// </summary>
+    [Trait("Category", "Rendering Efficiency")]
     [Fact]
-    public void T_AddDeleteElementList_AddCausesSingleDiffOnly()
+    public void AddCausesSingleDiffOnly()
     {
         // Arrange
-        TestContext ctx = GetTestContext();
+        TestContext ctx = CreateTestContext();
+        List<string> markupStringLs = new();//We dont actually use it but worth knowing about
 
         // Act
         var cut = ctx.RenderComponent<T_AddDeleteElementList>(parameters =>
@@ -60,25 +44,21 @@
                 .Select(_ => new ListItem())
                 .ToList()));
 
-        List<string> markupStringLs  = new();
+        //We dont actually use it but worth knowing about
         cut.OnMarkupUpdated += (sender, args) => markupStringLs.Add(cut.Markup);
 
         var list = cut.Find("#ListOfItem");
         var AddRandomItemButton = cut.Find("#AddRandomItem");
 
-
+        // Capture
         cut.SaveSnapshot();
 
 
-
+        //Trigger
         AddRandomItemButton.Click();
 
-
         //Assert
-
         cut.GetChangesSinceSnapshot().ShouldHaveSingleChange();
-
-
 
 
     }
@@ -86,11 +66,13 @@
     /// <summary>
     /// In other tests we see multiple changes where we expect one here we see a single change it may be due to the complexity of the other lists
     /// </summary>
+    [Trait("Category", "Rendering Efficiency")]
     [Fact]
-    public void T_AddDeleteElementList_RemoveCausesSingleDiffOnly()
+    public void RemoveCausesSingleDiffOnly()
     {
         // Arrange
-        TestContext ctx = GetTestContext();
+        TestContext ctx = CreateTestContext();
+        List<string> markupStringLs = new();
 
         // Act
         var cut = ctx.RenderComponent<T_AddDeleteElementList>(parameters =>
@@ -99,8 +81,6 @@
                 .Select(_ => new ListItem())
                 .ToList()));
 
-        List<string> markupStringLs = new();
-        cut.OnMarkupUpdated += (sender, args) => markupStringLs.Add(cut.Markup);
 
         var listItemRemoveButtons = cut.FindAll(".list-item-remove-button");
         var lastRemoveButton = listItemRemoveButtons.Last();
@@ -110,7 +90,6 @@
 
 
         //Assert
-
         cut.GetChangesSinceSnapshot().ShouldHaveSingleChange();
     }
 }

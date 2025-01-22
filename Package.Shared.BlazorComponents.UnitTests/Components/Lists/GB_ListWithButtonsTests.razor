@@ -17,7 +17,7 @@
         _fixture = new Fixture();
     }
 
-    private TestContext GetTestContext(bool JSIsEnabled)//Require it so remember to test it
+    private TestContext CreateTestContext(bool JSIsEnabled)//Require it so remember to test it
     {
         //Arrange
 
@@ -34,13 +34,14 @@
         return ctx;
     }
 
+    [Trait("Category", "Unit Test")]
     [Theory]
     [InlineData(true)]
     [InlineData(false)]
-    public void GB_ListWithButtons_WithValidParameters_RendersCorrectly(bool JSIsEnabled)
+    public void WithValidParameters_RendersCorrectly(bool JSIsEnabled)
     {
         // Arrange
-        TestContext ctxJSEnabled = GetTestContext(JSIsEnabled);
+        TestContext ctxJSEnabled = CreateTestContext(JSIsEnabled);
         var items = _fixture.CreateMany<string>(3).ToList();
         var listTitle = _fixture.Create<string>();
 
@@ -51,25 +52,24 @@
             .Add(p => p.GetItemText, item => item)
             .Add(p => p.GetKey, item => item));
 
-        // Assert
-        var spanElements = cut.FindAll(".nhsuk-inline-content span")
+  
+        var spanElementsTextContent = cut.FindAll(".nhsuk-inline-content span")
                              .Select(e => e.TextContent)
                              .ToList();
-
-        Assert.Equal(items, spanElements);
+        // Assert
+        Assert.Equal(items, spanElementsTextContent);
         Assert.Equal(listTitle, cut.Find("h2").TextContent);
         Assert.Equal(items.Count, cut.FindAll("li").Count());
     }
 
-
+    [Trait("Category", "Unit Test")]
     [Theory]
     [InlineData(true)]
     [InlineData(false)]
-    //qqqq fails because was forced to make less generic
-    public void GB_ListWithButtons_WithCustomButton_RendersButtonCorrectly(bool JSIsEnabled)
+    public void CustomButton_RendersCorrectly(bool JSIsEnabled)
     {
         // Arrange
-        TestContext ctxJSEnabled = GetTestContext(JSIsEnabled);
+        TestContext ctxJSEnabled = CreateTestContext(JSIsEnabled);
         var items = _fixture.CreateMany<string>(1).ToList();
         var listTitle = _fixture.Create<string>();
 

@@ -27,95 +27,121 @@
         _fixture = new Fixture();
     }
 
-    private TestContext GetTestContext(bool JSIsEnabled, bool useFallBackService = true)
+    /// <summary>
+    /// Creates and configures a TestContext for Razor tests.
+    /// </summary>
+    /// <param name="JSIsEnabled">Set to true if JavaScript is enabled in the test environment.</param>
+    /// <returns>A configured TestContext instance.</returns>
+    private TestContext CreateTestContext(bool JSIsEnabled)//Require it so remember to test it
     {
+        //Arrange
         var ctx = new TestContext();
 
-        if (useFallBackService)
-        {
-            ctx.Services.AddFallbackServiceProvider(new FallbackServiceProvider());
-        }
+        // Add fallback service provider
+        ctx.Services.AddFallbackServiceProvider(new FallbackServiceProvider());
 
         // Create a mock of IGS_JSEnabled
         var mockJSEnabled = new Mock<IGS_JSEnabled>();
         mockJSEnabled.Setup(js => js.JSIsEnabled).Returns(JSIsEnabled); // Mock behavior for JSIsEnabled
         mockJSEnabled.Setup(js => js.TestingWhoAmI).Returns("MockedHost"); // Mock behavior for WhoAmI
 
+        // Register the mock service in the service collection
         ctx.Services.AddScoped(_ => mockJSEnabled.Object);
 
         return ctx;
-
     }
 
+    [Trait("Category", "Unit Test")]
     [Theory]
     [InlineData(true)]
     [InlineData(false)]
-    public void LHB_Attendees_RemoveListForm_Page_TestComponent_UpdatesUIAfterAttendeeRemoved(bool JSIsEnabled)
+    public void RemoveListItem_UpdatesUI(bool JSIsEnabled)
     {
 
         @if (!JSIsEnabled) { throw new NotImplementedException("This should in fact fail if nojs TestContext behaved as statically rendered"); }
 
         // Arrange
-        TestContext ctxJSEnabled = GetTestContext(JSIsEnabled);
+        TestContext ctxJSEnabled = CreateTestContext(JSIsEnabled);
         ctxJSEnabled.Services.AddTestDouble_LHS_AttendeesStateServices();
         var noJSActionUrl = _fixture.Create<string>();
 
+  
+        //Render component
         var cut = ctxJSEnabled.RenderComponent<LHB_Attendees_RemoveListForm_Page_TestComponent>();
 
+        //Take snapshot of initial
         cut.SaveSnapshot();
         var initialMarkup = cut.Markup;
         int initialRemoveButtonCount = cut.FindAll(".danger-list-item-btn").Count();
-        //Click the first remove button
+        
+        //Act
         var firstRemoveButton = cut.Find(".danger-list-item-btn");
         firstRemoveButton.Click();
+
+        //Capture change
         var diff = cut.GetChangesSinceSnapshot();
         var currentMarkup = cut.Markup;
         int finalRemoveButtonCount = cut.FindAll(".danger-list-item-btn").Count();
+        
+        
         //Assert
+        //Verify Dom changes
         Assert.True(diff.Count() > 0);
+
+        //Veritfy Markup
         Assert.NotEqual(initialMarkup, currentMarkup);
+
+        //Verify button count
         Assert.Equal(initialRemoveButtonCount - 1, finalRemoveButtonCount);
 
-
-
     }
+
     /// <summary>
     /// Here we are testing efficiency of the rerender but also trying some BUnit features.
     /// QQQQ very much in progress
     /// </summary>
     /// <param name="JSIsEnabled"></param>
     /// <exception cref="NotImplementedException"></exception>
-
+    [Trait("Category", "Unit Test")]
     [Theory]
     [InlineData(true)]
     [InlineData(false)]
-    public void LHB_Attendees_RemoveListForm_Page_TestComponent_UpdatesUIAfterAttendeeRemovedResultsInSingleChange(bool JSIsEnabled)
+    public void RemoveListItem_RendersEfficientlyWithSingleChange(bool JSIsEnabled)
     {
 
         @if (!JSIsEnabled) { throw new NotImplementedException("This should in fact fail if nojs TestContext behaved as statically rendered"); }
 
         // Arrange
-        TestContext ctxJSEnabled = GetTestContext(JSIsEnabled);
+
+        TestContext ctxJSEnabled = CreateTestContext(JSIsEnabled);
+        //Fake state service
         ctxJSEnabled.Services.AddTestDouble_LHS_AttendeesStateServices();
         var noJSActionUrl = _fixture.Create<string>();
 
         var cut = ctxJSEnabled.RenderComponent<LHB_Attendees_RemoveListForm_Page_TestComponent>();
 
-
+        // Take an intial snapshot for Dom diff comparison
         cut.SaveSnapshot();
         var firstMarkup = cut.Markup;
-        //Click the first remove button
+
+       // Act: Simulate clicking the first "Remove" button
         var firstRemoveButton = cut.Find(".danger-list-item-btn");
         firstRemoveButton.Click();
 
+        // Act: Simulate clicking the first "Remove" button
         var diff = cut.GetChangesSinceSnapshot();
         var currentMarkup = cut.Markup;
-        //qqqq Getting 596 this indicates I am inefficiently rerendering though it may be unavoidable, come back to this after statehandling task?
+        //qqqq  TODO: Getting 596 this indicates I am inefficiently rerendering though it may be unavoidable, come back to this after statehandling task?
+
+
+        //Capture
+        var firstRemoveButtonMarkup = firstRemoveButton.ToMarkup();
 
         //Assert
-        var firstRemoveButtonMarkup = firstRemoveButton.ToMarkup();
+       
         
-        //Check the button matches expectation
+        //Validate Markup
+        //This is to check we have the button
         firstRemoveButton.MarkupMatches(@"<button diff:ignoreAttributes diff:ignoreChildren></button>");
         firstRemoveButton.MarkupMatches(@"<button type=""submit""
                     class=""nhsuk-generic-button nhsuk-danger-button nhsuk-inline-button danger-list-item-btn""
@@ -127,63 +153,32 @@
                     diff:ignoreChildren></button>");
         
 
-        /*
-                @<button type="" submit""
-                    class="nhsuk-generic-button nhsuk-danger-button nhsuk-inline-button danger-list-item-btn"
-                    aria-label="Remove attendee *"
-                    aria-role="Button"
-                    title="Remove the attendee from the list">
-                <i class="bi bi bi-trash nhsuk-icon" aria-hidden="true"></i>
-                Remove
-                <span class=""nhsuk-assistive-text"">*</span>
-            </button>
-
-         */
-        // bool isMarkup1ContainedInMarkup2 =
-        //    MarkupMatches(
-        //        markup2,
-        //        markup1,
-        //        ignoreAttributes: new[] { "aria-label", "aria-role", "aria-describedby" }
-        //    );
-
+        // QQQQ TODO: We want to have an example of using diff so come back to his how do we do does not contain markup well?
+        // Verify markup not present (can grab by element type and check dispoe)
         Assert.False(currentMarkup.ToString().Contains(firstRemoveButton.ToString()));
+        
+        // Verify Diff Dom Efficiently Changed
         diff.ShouldHaveChanges(
             diff => diff.ShouldBeRemoval(@"<li diff:ignoreAttributes diff:ignoreChildren></li>")//,
               //diff => diff.ShouldBeAddition("<li>Second item</li>")
                 );
         diff.ShouldHaveSingleChange();
-        diff.ShouldHaveSingleChange().ShouldBeRemoval(@"<li diff:ignoreAttributes diff:ignoreChildren></li>");//QQQQ supposedly bad practice but i cant provide the html as includes random data
-        Assert.False(currentMarkup.ToString().Contains(firstRemoveButton.ToString()));
-
-
-        /*
-         
-            <button type="submit" 
-            class="nhsuk-generic-button nhsuk-danger-button nhsuk-inline-button danger-list-item-btn" 
-            aria-label="Remove attendee af97c22c-c1d3-4a30-ab3d-980749de3c6a ec923862-2aff-47f6-b084-9125a47ad8ca" 
-            aria-role="Button" aria-describedby="assistive-text-51a3b6ea-28cc-47b8-978e-76432aff0b42" 
-            title="Remove the attendee from the list" tabindex="0">
-            <i class="bi bi bi-trash nhsuk-icon" 
-            aria-hidden="true" style="padding-right: 10px;"></i>
-            Remove
-            <span id="assistive-text-51a3b6ea-28cc-47b8-978e-76432aff0b42" class="nhsuk-assistive-text">Remove attendee af97c22c-c1d3-4a30-ab3d-980749de3c6a ec923862-2aff-47f6-b084-9125a47ad8ca via inline buttons preceeding list items</span>
-            </button>
-
-
-         */
+        diff.ShouldHaveSingleChange().ShouldBeRemoval(@"<li diff:ignoreAttributes diff:ignoreChildren></li>");
 
     }
 
+
+    [Trait("Category", "Unit Test")]
     [Theory]
     [InlineData(true)]
     [InlineData(false)]
-    public void LHB_Attendees_RemoveListForm_Page_TestComponent_UsingComponentInstances_RemoveButtonRemovesElementAndAttendee(bool JSIsEnabled)
+    public void UsingComponentInstances_RemoveButtonRemovesElementAndAttendee(bool JSIsEnabled)
     {
 
         @if (!JSIsEnabled) { throw new NotImplementedException("This should in fact fail if nojs TestContext behaved as statically rendered"); }
 
         // Arrange
-        TestContext ctxJSEnabled = GetTestContext(JSIsEnabled);
+        TestContext ctxJSEnabled = CreateTestContext(JSIsEnabled);
         ctxJSEnabled.Services.AddTestDouble_LHS_AttendeesStateServices();
         var attendeesStateService = ctxJSEnabled.Services.GetService<ILHS_AttendeesStateService>();
         int originalAttendeesStateServiceAttendeesCount = attendeesStateService?.Attendees.Count()??0;
@@ -226,24 +221,25 @@
 
 
 
-
+    [Trait("Category", "Unit Test")]
     [Theory]
     [InlineData(true)]
     [InlineData(false)]
-    public async Task LHB_Attendees_RemoveListForm_Page_TestComponent_SaveButtonCallsHandleSubmit(bool JSIsEnabled)
+    public async Task SaveButton_TriggersHandleSubmitAndUpdatesState(bool JSIsEnabled)
     {
 
         // Arrange
-        TestContext ctxJSEnabled = GetTestContext(JSIsEnabled);
+        TestContext ctxJSEnabled = CreateTestContext(JSIsEnabled);
         ctxJSEnabled.Services.AddTestDouble_LHS_AttendeesStateServices();
         var noJSActionUrl = _fixture.Create<string>();
 
-        // Arrange
+        // We have injected as the same service IFAKE_LHS_AttendeesStateServices and ILHS_AttendeesStateServices
+        // So we can track behaviour QQQQ TODO: Can we acheive this with logging instead?
         IFAKE_LHS_AttendeesStateServices attendeesStateService = ctxJSEnabled.Services.GetService<IFAKE_LHS_AttendeesStateServices>();
 
         List<LH_AttendeeModel> attendees = attendeesStateService.Attendees;
         //Freeze
-        GE_ServiceResponse<List<LH_AttendeeModel>> lastServiceResponseStartEmpty =
+        GE_ServiceResponse<List<LH_AttendeeModel>> initialServiceResponse =
         new GE_ServiceResponse<List<LH_AttendeeModel>>
             {
                 Success = attendeesStateService.T_LastServiceResponse.Success,
@@ -251,6 +247,7 @@
                 Data = attendeesStateService.T_LastServiceResponse.Data
             };
 
+        //Act
         var cut = ctxJSEnabled.RenderComponent<LHB_Attendees_RemoveListForm_Page_TestComponent>();
 
         @if (!JSIsEnabled)
@@ -261,13 +258,18 @@
         }
         else
         {
-            var updateDbButton = cut.Find(".update-db");
+            //Act
+            var updateDbButton = cut.Find(".update-db"); //NoJs does not have this button due to having to constantly save data
             updateDbButton.Click();
             await Task.Delay(3000);
-            // Should start empty
-            lastServiceResponseStartEmpty.Should().BeEquivalentTo(new GE_ServiceResponse<List<LH_AttendeeModel>>());
+           
+            // Verify service initiral response initialised empty
+            initialServiceResponse.Should().BeEquivalentTo(new GE_ServiceResponse<List<LH_AttendeeModel>>());
+            
+            // Verify service has data
             Assert.NotEmpty(attendees);
 
+            //Verify the response had the attendees
             attendeesStateService.T_LastServiceResponse.Should().BeEquivalentTo(
             new GE_ServiceResponse<List<LH_AttendeeModel>>()
                 {
@@ -275,6 +277,8 @@
                     Message = "",
                     Data = attendees
                 });
+
+            //Verify same objects not recreated
             Assert.Equal(attendeesStateService.T_LastServiceResponse.Data, attendeesStateService.Attendees);
         }
 
