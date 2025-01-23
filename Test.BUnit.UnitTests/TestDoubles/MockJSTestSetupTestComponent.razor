@@ -1,0 +1,19 @@
+﻿@using Microsoft.AspNetCore.Components.Rendering
+
+@using Test.Components.Components
+@inherits T_JSSetup
+@*Attempted to stop lifecycle stages to get NoJS Behaviour*@
+
+@* @RenderBaseComponent *@
+@*This will be the actual component and we cant inherit the razor so this wont do anything*@
+
+@code
+{
+    protected override void OnAfterRender(bool firstRender) { }
+    protected override Task OnAfterRenderAsync(bool firstRender) => Task.CompletedTask;
+    // private RenderFragment RenderBaseComponent => builder =>
+    // {
+    //     builder.OpenComponent<T_JSSetup>(0);
+    //     builder.CloseComponent();
+    // };
+}

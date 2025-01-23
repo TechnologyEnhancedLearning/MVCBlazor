@@ -49,7 +49,7 @@ namespace Package.Shared.Services.StateServices.CharacterStateServices
 
         private async Task LoadCharactersAsync()
         {
-            string route = $"{_http.BaseAddress}{_charactersAPIEndpoints.LoadCharacters}"; // Adjust this to your actual endpoint
+            string route = $"{_http.BaseAddress}{_charactersAPIEndpoints.LoadCharacters}"; 
             Characters = (await _http.GetFromJsonAsync<GE_ServiceResponse<List<GE_CharacterModel>>>(route)).Data ?? new List<GE_CharacterModel>();
             DataIsLoaded = true;
         }

@@ -1,0 +1,51 @@
+﻿@page "/Attendees/AttendeesTestComponent-BlazorPage"
+@rendermode InteractiveServer
+@inherits GB_PageBase
+@inject ILHS_AttendeesStateService LHS_AttendeesStateService
+@layout LHB_RenderModePageLayout
+
+<h3>LHB_Attendees_RemoveListForm_Page_TestComponent</h3>
+
+<LHB_RenderModePage PageTitle="@PageTitle">
+    <LHB_Attendees_RemoveListForm_TestComponent 
+        Attendees="LHS_AttendeesStateService.Attendees"
+        NoJSActionUrl="Attendees/NoJS/RemoveAttendeeByTemporaryId"
+        OnClick="@(attendee => RemoveAttendee(attendee))"
+        HandleSubmit="()=>HandleSubmit()"/>
+       
+</LHB_RenderModePage>
+
+@code {
+    //Dont really need it to cascade or be setable here but shows it working
+    [Parameter] public override string PageTitle { get; set; } = "Test AttendeesTestComponent Blazor Page"; // Set this for each page
+
+    private async Task RemoveAttendee(LH_AttendeeModel attendee)
+    {
+        await LHS_AttendeesStateService.RemoveAttendeeByTemporaryIdAsync(attendee.ClientTemporaryId);
+        Console.WriteLine("Blazor Component : RemoveAttendee");
+        StateHasChanged();//because we change the list in the service rather than changing a blazor parameter, blazor doesnt know its changed so we need to tell it the state has change
+    }
+
+    public async Task HandleSubmit()
+    {
+        Console.WriteLine("Blazor Component : HandleSubmit");
+        await LHS_AttendeesStateService.ReplaceDBWithListAsync(); //qqqq but not going there
+        Console.WriteLine("Blazor Component : Submit finished");
+
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LHS_AttendeesStateService.EnsureDataIsLoadedAsync(); //check the service is ready when it is do the next render stage as the data will now be available
+                                                               //Automatically reinitialises so dont need to tell it state has changed
+    }
+
+}
+
+
+     
+
+          
+
+
+ 

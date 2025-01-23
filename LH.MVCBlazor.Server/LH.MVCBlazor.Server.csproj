@@ -40,6 +40,7 @@
     <ProjectReference Include="..\Package.Shared.BlazorComponents\Package.Shared.BlazorComponents.csproj" />
     <ProjectReference Include="..\Package.Shared.Entities\Package.Shared.Entities.csproj" />
     <ProjectReference Include="..\Package.Shared.Services\Package.Shared.Services.csproj" />
+    <ProjectReference Include="..\Test.Components\Test.Components.csproj" />
   </ItemGroup>
 
   <ItemGroup>

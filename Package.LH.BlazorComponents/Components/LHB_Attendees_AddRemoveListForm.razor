@@ -47,9 +47,11 @@ else
             Items="LHS_AttendeesStateService.Attendees" 
             ListTitle="Attendee List"
             GetItemText="@(attendee => attendee.ToString())"
-            ListButton="@(RenderDangerButton)" />
+            ListButton="@(RenderDangerButton)"
+            GetKey="@(attendee => attendee.GetKey)" />
 
-    @if(JSIsEnabled){
+    @if(JSIsEnabled)
+    {
 
             <GB_Button2 
                 IsSubmitButtonForEditForm="false"

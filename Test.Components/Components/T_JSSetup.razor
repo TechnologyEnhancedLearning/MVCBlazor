@@ -1,0 +1,152 @@
+﻿@* @page "/Test"
+@rendermode InteractiveWebAssembly *@
+@*BUnit page testing limitation*@
+<h1>@ProvidedRenderModeText</h1>
+<h3>LastPrerenderLifeCycleStageExecuted : <span>@LastPrerenderLifeCycleStageExecuted.ToString()</span></h3>
+<h3>HydrationStatus : <span id="IsHydrated">@isHydrated.ToString()</span></h3>
+<p>@hydrationStatus</p>
+
+<h3>Life Cycle Stages So Far</h3>
+<ol class="life-cycle-stage-list">
+    @for (int i = 0; i < LifecycleStages.Count(); i++)
+    {
+        <li class="life-cycle-stage-item">@LifecycleStages[i]</li>
+
+    }
+</ol>
+
+<h2>Test buttons individually they will reset each other potentially</h2>
+@if (ShowInteractivityTestButton)
+{
+    <button id="OnInteractivityTestButton" @onclick="OnInteractivityTestButtonClick">InteractivityTestButton</button>
+    <h3>OnInteractivityTestButtonClickMessage : <span id="OnInteractivityTestButtonClickMessage">@OnInteractivityTestButtonClickMessage</span></h3>
+}
+<button id="TriggerRerenderButton" @onclick="TriggerRerender">Trigger Rerender</button>
+<h3>TriggerRerenderButtonClickCount : <span id="OnInteractivityTestButtonClickMessage">@TriggerRerenderButtonClickCount.ToString()</span></h3>
+
+<h3>LifeCycleRequiringJSExecuted : <span id="LifeCycleRequiringJSExecuted">@LifeCycleRequiringJSExecuted.ToString()</span></h3>
+
+
+<h2>List for seeing loading</h2>
+@if (isLoading)
+{
+    <h3>Loading...</h3>
+}
+else
+{
+    <h3>Loaded</h3>
+    <ul>
+        @foreach (var item in items)
+        {
+            <li>@item</li>
+        }
+    </ul>
+}
+
+@code {
+    [Parameter]
+    public bool waitForHydrationToShowButton { get; set; } = true;
+    public bool isLoading = true;
+    public List<string> items = new();
+
+    [Parameter] public string ProvidedRenderModeText { get; set; } = "Unset";
+    public string OnInteractivityTestButtonClickMessage = "";
+    public int TriggerRerenderButtonClickCount = 0;
+    public bool LifeCycleRequiringJSExecuted = false;
+    public bool LastPrerenderLifeCycleStageExecuted = false;    // This will be called when the InteractivityTestButton is clicked.
+    public bool ShowInteractivityTestButton => !waitForHydrationToShowButton || isHydrated; //This is so we can have test for async behaviour
+    public bool clickCompleted = false;
+    // This will be called when the InteractivityTestButton is clicked.
+    private async void OnInteractivityTestButtonClick()
+    {
+        await Task.Delay(2000);
+
+        // Update the message to indicate the button was clicked.
+        OnInteractivityTestButtonClickMessage = "InteractivityTestButton has been clicked, and this text was set.";
+
+        // Optionally force a rerender (not usually needed as state changes trigger rerender).
+
+        clickCompleted = true;
+        StateHasChanged();  // If you want to ensure the state changes trigger a rerender.
+    }
+    private void TriggerRerender()
+    {
+        TriggerRerenderButtonClickCount++;
+
+    }
+
+    public bool isHydrated = false; // Flag to track hydration state
+    public string hydrationStatus = "I'm prerendered"; // Default hydrationStatus for prerendering
+
+
+
+    public List<string> LifecycleStages { get; set; } = new();
+
+    public override Task SetParametersAsync(ParameterView parameters)
+    {
+        LifecycleStages.Add("SetParametersAsync");
+        return base.SetParametersAsync(parameters);
+    }
+
+    protected override void OnInitialized()
+    {
+        LifecycleStages.Add("OnInitialized");
+
+    }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Task.Delay(2000);
+        LifecycleStages.Add("OnInitializedAsync");
+
+        // Simulate data loading
+        await Task.Delay(3000); // Simulate a 3-second delay for data fetching
+        items = Enumerable.Range(1, 10).Select(i => $"Item {i}").ToList();
+        isLoading = false;
+
+        await base.OnInitializedAsync();
+    }
+
+    protected override void OnParametersSet()
+    {
+        LifecycleStages.Add("OnParametersSet");
+        base.OnParametersSet();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await Task.Delay(2000);
+        LifecycleStages.Add("OnParametersSetAsync");
+        await base.OnParametersSetAsync();
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        LifecycleStages.Add($"OnAfterRender(firstRender: {firstRender})");
+        LifeCycleRequiringJSExecuted = true;
+        base.OnAfterRender(firstRender);
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await Task.Delay(1000);
+        if (firstRender) // Executes only once after the component is rendered for the first time
+        {
+            // If the component is rendered for the first time on the client, mark as hydrated
+            isHydrated = true;
+
+            // Update the hydrationStatus to indicate that the component is hydrated
+            hydrationStatus = "I'm hydrated";
+
+            // Request a re-render of the component to display the updated hydrationStatus
+            //StateHasChanged(); // We will rerender here but the rest of the function does not have a statehaschanged so will end up one behind
+            //However our otherlife cycle stages are causing a rerender
+        }
+        await Task.Delay(1000);
+        LifecycleStages.Add($"OnAfterRenderAsync(firstRender: {firstRender})");
+        LifeCycleRequiringJSExecuted = true;
+        await base.OnAfterRenderAsync(firstRender);
+
+    }
+}

@@ -239,13 +239,15 @@ It has been refactored out for convenience mostly but did work. See [Some commit
 
 ## Exploration of Project
 
-### Orientation
 
 ### Design
 #### Architecture
 [Bottom file tree diagram of solution](#folder-structures-and-comments)
 It is common to have a shared project that both WASM and Server rely on. For us we could bring in all our packages by it a injection collection potentially.
 But for now it is only a nicety that could make the project seem more complex. So is not included.
+
+
+*There are also Test. projects these are purely for testing the BUnit and Blazor functionalities. And are not representative of what would be used in production.*
 
 ##### Objective of Architecture
 - Minimal change to implement components
@@ -263,6 +265,7 @@ But for now it is only a nicety that could make the project seem more complex. S
 	- Minimal boiler plating in MVC project to add new package component
 		- Via injection collections and version number hope to be able to implement new components being available 
 without having to do anything except add the component you want to use in the place you want it.
+
 
 
 ##### Structure
@@ -301,10 +304,257 @@ so characters simulates a generic component/service of some kind. (Attendees is 
 	- P_ .txt placeholder example what might go there but is out of scope
 	- GS_ generic services
 	- LHS_ learning hub service
+	- T_ used just for testing not as an example for instance checking BUnit feature
 
 ### Files what to look at
 **Tip if on git view the readme as raw a code file and open with markdown plugin and set to wide**
 [Bottom file tree diagram of solution](#folder-structures-and-comments)
+
+### Testing
+
+**Nb. There are failing tests throughout these show the limitations of our tests currently, and what we would like 
+them to achieve so do not worry if a fresh project has failing tests.**
+
+In this project we are not covering the unit testing that would happen already. 
+Therefore there is no testing of services or controllers etc.
+
+**TODO: One example because nojs is not simulated in unit tests for rendering but mocking controlls may make more 
+tests capable of both **
+
+Ideally we would be able to side by side be able to test our components in the NoJS environment and with JS Enabled, by html comparison or static rendering for example.
+
+To be able to test the actual render output of a NoJS browser we need tests that can render static, or render using a nojs browser.
+This is because the lifecycle stages are different and are ordered different to the normal process (asyncs for example are awaited as there will be only one render).
+
+The project uses the recommended XUnit, BUnit, FluentAssert, AutoFixture.
+
+However the creator of BUnit who recommends XUnit for E2E recommend Playwright and NUnit.
+
+In this project we unit test the blazor component packages, we also have some components created just to be unit tested.
+This is so we have some examples of the different BUnit methods.
+
+
+
+#### Unanswered Questions
+- How do we get test coverage
+- better way than string comparison for bunit surely
+
+
+
+#### Testing to do
+- document advice for creating tests to go with component advice
+- When sessionstorage there are specific tests
+- When js interoptobality there are specifics tests for it
+- controller
+- E2E
+
+#### Unit Test BUNIT
+
+BUnit uses testing packages we already use such as moq xunit autofixture.
+
+It complete a render cycle of a component.
+It handles async allowing us to tell test to wait until something occurs [bunit async](https://bunit.dev/docs/interaction/awaiting-async-state.html)
+It can compare nodes after events [IDiff check](https://bunit.dev/docs/verification/verify-markup.html#finding-expected-differences)
+
+BUnit seems like a good unit test library with good documentation.
+It does not allow lifecycle, rendermode controll of the component or its test context which is problamatic for testing our NoJS requirement.
+
+
+In the example project we are using a fallback provider [fallback service provider](https://bunit.dev/docs/providing-input/inject-services-into-components.html#fallback-service-provider)
+
+[node comparison, snapshot, click, compare](https://bunit.dev/docs/verification/verify-markup.html#finding-expected-differences)
+
+The Units Test file structure mirror what they are test.
+The RenderComponent is better than render.
+We can wait for tasks to complete cut.WaitForAssertion(() => cut.MarkupMatches("<output>3</output>"));
+
+
+
+
+#### BUnits Notes
+- bunit .net9 allows to alter renderinfo not rendermode so not behaviour ... .Net 10? to do our nojs requirement in BUnit?
+- Maybe instead dependency injection extension do TestContextExtensions like blazor-workshop egil git
+- We can also pick up inneffecient rendering such as
+`
+        diff.ShouldHaveSingleChange();
+        //Getting 596 this indicates I am inefficiently rerendering possibly because i should have used key?
+        //This is an advantage over just comparing string
+        var diff2 = cut.GetChangesSinceFirstRender();
+        diff.ShouldHaveSingleChange().ShouldBeRemoval(firstRemoveButton.ToString());
+`
+##### BUnit Reference
+Creator of BUnit testing project and step by step, I think there are some long video accompaniments [not .net 8 but bunit repo](https://github.com/egil/blazor-workshop.git) 
+[wait for state covered in medium article for bunit](https://dev.to/webinadvance/unleashing-the-power-of-unit-testing-supercharge-blazor-server-async-components-ui-behavior-with-net-core-and-bunit-4n9j)
+*Egil is the BUnit creator*
+- [list blazor githubs some have unit tests](https://github.com/AdrienTorris/awesome-blazor)
+- [egil conference tests](https://www.youtube.com/watch?v=aorfcDeHUpw)
+- [pizza egil git](https://github.com/egil/blazor-workshop/blob/master/src/BlazingPizza.Tests/ComponentLibrary/PizzaCardTests.razor)
+- [useful for understanding comparer options for markup in bunit](https://bunit.dev/docs/verification/semantic-html-comparison.html)
+
+##### Carpark Test Examples
+- cut.Nodes.QuerySelector("main > span");
+- `    cut.FindAll(".list-group > .list-group-item > p")
+            .Select(x => x.TextContent)
+            .Should()
+            .BeEquivalentTo(data);`
+- `
+
+        cut.Find(".list-group")
+            .ClassList
+            .Should()
+            .Contain(listGroupClass);
+`
+- `       pizza.Toppings
+            .Should()
+            .Contain(x => x.Topping == toppings[0]);
+        pizza.Toppings.Count
+            .Should()
+            .Be(1);`
+- `
+    [Theory, AutoData]
+    public void When_PizzaRemoveButton_Is_Clicked_And_Confirm_Dialog_Accepted_Then_Pizza_Is_Removed_From_Order(
+        Order order)
+    {
+        SetupRemovePizzaConfirmCall(order.Pizzas[0], acceptRemoval: true);
+        var cut = Render(@<OrderInformation Order=order />);
+        var configuredPizza = cut.FindComponent<ConfiguredPizzaItem>();
+        var pizzaToRemove = configuredPizza.Instance.Pizza;
+
+        configuredPizza.Find("a").Click();
+        
+        order.Pizzas
+            .Should()
+            .NotContain(pizzaToRemove);
+    }
+
+`
+- `    [Theory, AutoData]
+    public void PizzaCard_Raises_Clicked_Event_When_Clicked_By_User(PizzaSpecial inputPizza)
+    {
+        PizzaSpecial? clickedPizza = null;
+        var cut = Render(@<PizzaCard Special="inputPizza" OnClick="pizza => clickedPizza = pizza" />);     
+
+        cut.Find("li").Click();
+
+        clickedPizza.Should().Be(inputPizza);
+    }`
+- `
+   [Theory]
+    [InlineData(".sorted-by", true)]
+    [InlineData(".sorted-by-desc", false)]
+    public void DataTableHeader_Adds_Sort_Css_Class_To_Sorted_Column(string expectedCssClass, bool isAscendingSort)
+    {
+        // Render DataTableHeader with sortBy set to last column
+        var cut = Render(@<DataTableHeader TItem="WeatherForecast" 
+                                           SortBy=@(("Summary", isAscendingSort)) />); 
+        
+        // Verify the correct column has the expected css class added
+        cut.FindAll(expectedCssClass)
+            .Should()
+            .ContainSingle()
+            .Which
+            .TextContent
+            .Should()
+            .Be("Summary");
+    }
+- `
+Testing with regex rules
+  <div id:regex="[\d\w-]+" aria-labelledby:regex="[\d\w-]+" class="Accordion-panel" hidden="">
+`
+
+##### NoJS BUnit testing
+- There is an image in the project, and a test component showing the difference in rendering between prerender, static/nojs, and full render.
+Prerender is required to get any html NoJS but prerendering with JS Enabled returns less stages than if in NoJS environment where a few other are awaited.
+The rendering happens in a different order if there is JS. 
+This means we need to specifically test in a Static rendermode, or control which lifecycle stages occur
+
+
+
+##### Additional information of BUnit NoJS Lifecycle testing limitation
+
+
+
+###### BUnit nojs graveyard
+- builder.OpenComponent<JSTestSetupTestComponent>(0);
+- noContextNeeded.Render(@<JSTestSetupTestComponent />);
+- `   cut.SetParametersAndRender(parameters
+       => parameters.Add(p => p.ProvidedRenderModeText,
+           "Rerender new params"));
+   string NoJSMarkupStringAfterAwait = cut.Markup;`
+- cut.OnMarkupUpdated += (sender, args) => markupStringLs.Add(cut.Markup); We dont get the same execution order so 
+we cant just interupt the process of rendering or catch it at a certain point.
+-    var diffs = cut.GetChangesSinceFirstRender();
+
+
+###### Attempted to overcome nojs testing limitiation
+- RenderInfo is just info does not change how set up
+- Capturing all changes to html with lifecycle stages, but it is different order its not just a case of additional stages if JSEnabled
+- Different ways of rendering tried
+- JSInterlop this isnt the JS setup it is the JS interactivity of a component only
+- Various other
+- Attempting Mocking and overriding lifecycle stages 
+	- This was not succesful but it might be worth exploring seperating C# and razor to attempt to use a mock to render the razor
+		- I dont know how this would be done but if the same razor, different implementations of a class so can mock
+		- or instead of mocking the component just the class part
+`
+@using Microsoft.AspNetCore.Components.Rendering
+@using Package.Shared.BlazorComponents.UnitTests.TestComponent_Example
+@inherits JSTestSetupTestComponent
+@*Attempted to stop lifecycle stages to get NoJS Behaviour*@
+
+@RenderBaseComponent
+@*This will be the actual component and we cant inherit the razor so this wont do anything*@
+
+@code
+{
+    protected override void OnAfterRender(bool firstRender) { }
+    protected override Task OnAfterRenderAsync(bool firstRender) => Task.CompletedTask;
+}
+
+`
+###### For future consideration Testing NoJS possible solutions
+- BaseComponent NoJS flag to pass a bool to Lifecycle stages and return straight out of them
+	- We should not change components to support testing
+	- We may still require inheriting components to have changes I expect where they use these lifecycle stages
+- Use E2E only to test Static
+- Don't render with BUnit for these tests
+	- Explore making a static Blazor project and attempt turn it into a test project
+- Explore BUnit more under the bonet
+	- Can we make a custom IRenderer for a custom ITestContext and in somewhere can we chose rendermode (I expect not)
+- November 25 Investigate .Net 10 it maybe be our unit tests can be a higher version and .Net 9 introduced Render 
+info so it might be component have an explosed rendermode and BUnit may then implement it. 
+- Explore rendering components from component classes to see if more control
+- Look at other testing packages
+- Look into page rendering
+- Return to component tag rendering which does allow specifying rendermode
+- Return to exploring rendertree manual rendering options
+- If we make rendercycle methods public we can then trigger them, however though we can get prerender html we cant 
+get the actual component at the moment of that state so we will be calling addition lifecycle stages not restricting them
+	- Though maybe they can be mocked to return nothing
+
+
+
+
+#### E2E Testing: Playwright?
+- When we look at further testing we should revisit BUnit limitation and attempt to create a process for Unit 
+testing static or NoJS browser or specific lifecycle stages so that the NoJS requirement is easy to test side by side with JSEnabled.
+- Egil BUnit library creator suggests Playwright with NUnit rather than XUnit
+	- Also for us normally we would be 90% Unit 10% E2E as its packages however to enable testing NoJS along side tests for normal functioning it may need to be the other way around.
+
+#### Testing Naming/Glossary
+- T_ components purely for test
+- Mock: A "mock" is typically a test double used to verify interactions, i.e., whether a method was called with the 
+right parameters. You generally use Mock when you expect the test to assert that the behavior of the object meets 
+certain expectations (e.g., checking that a method was called a certain number of times).
+- Fake: A "fake" provides a working implementation but simplified for testing purposes. Fakes are typically used 
+when a more complex behaviour is needed, but you don't want to call the actual logic in production. They are useful 
+for things like in-memory databases or simplified versions of service methods.
+- Dummy: A "dummy" is a test double that is passed around but never actually used. For instance, you might create a 
+dummy to satisfy the constructor signature of a class when you don’t care about the object’s behavior.
+- Spy: Tracks interactions with the object while allowing the real method to execute.
+- Stub: Returns predefined responses, usually with no logic, to isolate the unit under test.
+
+#### TODO: Profiling
 
 ## Project Limitations and Potential Future Additions
 
@@ -317,15 +567,34 @@ This project is not currently a reference for how to but an example of what can 
 
 
 ### Desired Future Additions
+- Explore ids, will guids result in more testability or will it cause less matching and so more rendering? what is best id practice.
+	- These handles will be vital for testing
+	- also keys for lists
+	- functions passed on how to grab the key would be good 
+		- so value types can have one rule
+		- blazor objects could have a get key interface - currently have a clientid 
+		- objects from elsewhere can pass own func for providing a key which may just be their type + an id
+		- just some helper code may consider may not 
+			- `return $"{typeof(TItem).FullName}-{item.GetHashCode()}"; 
+			KeyProvider="(item) => item" `
+- Add ErrorBoundary example in somewhere
 - Extract the add person to a generic component - We would also need the JS supported inline validator so do as an addition
 - StateService 
 	- should have an Event Action Subscription and handling it all in the service ensure no list of data in the components
 		- Different components via MVC view means losing the circuit and the state but only needed for component life 
 	- Revisit stateservices to include  public event Action AttendeesChanged; subscribe statehaschanged to this
 		- all handling occuring in state service
+		- added some failing unit tests
+		- also need to check enough use of @key
+		- also need to check no rebuilding the list
+		- also it may not be possible and what currently seems an inefficiency maybe okay
+			- yet if the out of the box list component can do it, we want ours to be just as efficient
 - Auth headers and auth tokens in blazor see [This patrick god ecommerce repo does have and there is a confluence project for how to set it up](https://github.com/patrickgod/BlazorEcommerce)
 - blazorisedStorage
-- bunit blazor testing library - notes in progress in bunit section
+	- nojs api calls from controller
+	- so we dont need to check nojs before deciding if to use localstorage or hit api
+	- so we can use localstorage to reduce calls
+
 - Loading behaviour [repo link](https://github.com/patrickgod/BlazorLoadingAnimation)
 	- Loader [repo link (there a youtube vid with it i think)](https://github.com/patrickgod/BlazorLoadingAnimation) 
 - Components render in views are islands. They can't talk to each other. Unless
@@ -334,81 +603,7 @@ This project is not currently a reference for how to but an example of what can 
 	- May need a dispose function so state not lost but instead saved on destruction
 	- Or Blazorised storage may be the actual best solution
 
-#### BUNIT Notes in progress
-- With a reusable component library, the markup produced may be considered part of the externally observable 
-		behavior of the component, and that should thus be verified, since users of the component may depend on the 
-		markup having a specific structure. Consider using MarkupMatches and semantic comparison described below to get 
-		the best protection against regressions and good maintainability.
-	- already using moq xunit autofixture in a test library 
-	- [bunit dev docs - these are useful](https://www.youtube.com/watch?v=1Cx6JMO_Wkk)
-		- [all bunit packages](https://bunit.dev/#nuget-downloads)
-			 - *come back to this there are test areas?, template stuff and some QoL stuff by the the looks of it*
-	- An element found with the Find(string cssSelector) method will be updated if the component it came from is re-rendered.
-However, that does not apply to elements that are found by traversing the DOM tree via the Nodes property on 
-IRenderedFragment, for example, as those nodes do not know when their root component is re-rendered. Consequently, 
-they don’t know when they should be updated.
-	- bUnit's semantic HTML comparer safely ignores things like insignificant whitespace and the order of attributes 
-on elements, as well as many more things. This leads to much more stable tests, as - for example - a reformatted 
-component doesn't break its tests because of insignificant whitespace changes. More details of the semantic 
-comparer can be found on the Customizing the semantic HTML comparison page.
-	- handles async [bunit async](https://bunit.dev/docs/interaction/awaiting-async-state.html)
-	- seems some good diff checking **Try for testing deletion after render triggered by event** [IDiff check](https://bunit.dev/docs/verification/verify-markup.html#finding-expected-differences)
-	- [not .net 8 but bunit repo](https://github.com/egil/blazor-workshop.git)
-	- http mocking [nuget http mocking](https://www.nuget.org/packages/RichardSzalay.MockHttp/)
-	- html  `<h1 diff:ignoreAttributes> can put rules into the comparisons and semantic detections`
-	- [bunit getting started and docs](https://bunit.dev/docs/getting-started/index.html)
-		- i think we want to use the template for adding our proj it will configure target framework and few other little bits
-		- test files actually usually written as .razor
-			- easier markup comparison
-			- less VS niceties like intellisense
-			- requires sdk.razor for the proj
-			- can use _imports file
-			- need a using statement from our testing framework think we can use what we like so we'd use xunit
-			- avoid string quotations for razor @<{HTML tag}>...</{HTML tag}>
-			- as with other things need an outer wrap on the html, blazor now adds this in for us but to make thing more testable maybe should be built into components
-		- [This test is for a generic list so may be a nice example to implement](https://bunit.dev/docs/providing-input/passing-parameters-to-components.html?tabs=razor#templates-parameters)
-		- [Tips look like a good starting point](https://bunit.dev/docs/misc-test-tips.html)
-			- [list of links and video thats look good as well, though alot look very uneditted and long](https://bunit.dev/docs/external-resources.html)
-	- handles renderfragments, generics, uncaptured values cascading its looks pretty good
-	- [blazor unit test](https://github.com/patrickgod/BlazorUnitTestingTutorial)
-		- quick notes
-			- *CUT* component under testing
-			- xunit project
-			- bunit nuget
-				- *looks like there are tohers*
-			- i think we could really like this
-			- steps
-				1. test needs :TestConext from bunit`
-				1. var ourComponent = RenderComponent<OurComponent>(params => params.Add(p=>p.Value,2));
-				1. ourComponent.Find("button").Click() //presume css selector
-				1. cut.Find("p").MarkupMatches("<p etc etc></p>")
-		- really would be nice to see something more complex in a work proj		
-		- how do we check test coverage
-		- I think this is just the tests: When using @bind in conjunction with razor test-files the razor component should not inherit from 
-			ComponentBase (which is the default). The simplest solution would be to inherit from TestContext (as seen in 
-			the example above) which also brings the benefits as described on top of this page.
-		- can mock components so that testing can be issolated to the component being tested
-		- can set rendermode therefore by using static we will can unit test no js behaviour
-			-   var cut = RenderComponent<MovieComponent>(ps => ps.SetAssignedRenderMode(RenderMode.InteractiveServer));
-		- Details
-			- wait for state
-			- well documented
-			- However, if a mocked component has a constructor, field or property initializers, or implements 
-				Dispose/DisposeAsync, these will usually not be overridable by the mocking framework and will run when 
-				the component is instantiated and disposed.
-			- library can autoreplace components with stub
-			- Most popular mocking libraries are able to create substitute/mock components easily, based on the original component, that follow the requirement specified above.
-			- add to rendertree for setup of things all component will need like auth
-			- // Stub all components in the Third.Party.Lib namespace
-				- ComponentFactories.AddStub(type => type.Namespace == "Third.Party.Lib");
-			- as would expect will use interfaced services for mocks
-				- can set it up to use normal service provider and if fails then uses moq [fallback service provider](https://bunit.dev/docs/providing-input/inject-services-into-components.html#fallback-service-provider)
-			- **Worth setting up if in prototype if faster and if can use service collection, custom, fallback, and then dynamic service creation??? ** Moq, NSubstitute, or Telerik JustMock) with tools like AutoFixture to dynamically generate mock services during tests.
-			- Just always use parameter attributes too for ease? : In .NET 8 however, the [Parameter] attribute is no longer required, which means a value cannot be 
-passed to the component during testing using the normal methods, e.g. the 
-ComponentParameterCollectionBuilder<TComponent>'s Add method, if a component parameter is only annotated 
-with the [SupplyParameterFromQuery] attribute. Instead, pass a query string parameters by setting it 
-using the FakeNavigationManager.
+
 
 ### Desired For Different Prototype Or Branch
 - packaging (may find package building package options removes need for service collections)
@@ -423,10 +618,23 @@ using the FakeNavigationManager.
 - **important** -> prototyping tools
 
 ### Car park desired features
+- storage consideration of unencrypted on the browser
+- persistence for
+	- user prefs
+	- auth tokens
+	- incomplete forms
+- we use reddis already explore this with blazor as they do get mentioned together
+- offline capabity - WASM gives us a certain amount of offline capability. Can we weight that up as more important than nojs capability.
+- fluxor and redux state management mentioned in a course to look at for complex requirements
+- i doubt its possible however if a user had nojs and we provided a button to download the wasm and instructions how 
+to put it on their browser would that be requirement met? It would most likely be very complex.
 - .net 9 has RendererInfo (would need to look into it further) which include isInteractive and rendererName
 	- Our service says the name of the platform so we have this already
 	- does have an isineractive flag which could be useful to indicate JsEnabled potentially
-
+- ILogger (when do search component may be a good can test for example that we log when ppl look for things that arnt found) [ilogger](https://bunit.dev/docs/misc-test-tips.html#capturing-logs-from-ilogger-in-test-output)
+	- serilogLogger
+	- Similar to LH setup
+	- Included in tests
 ### Approaches Discarded For Now
 - Improve validator component [try this blazor uni in future](https://blazor-university.com/forms/writing-custom-validation/)
 	- Uses fluent validation, which requires JS, so maybe not, attributes are better
@@ -501,6 +709,8 @@ It would be possible to tell them they we're redirected on the page they we're r
 - We have an IAccessible interface for our components leveraging C# functionality is an advantage of using blazor so we should see where it can be implemented
 	- This project does do this, though it is necessary to chain the parameters down through the components, which means the summaries are lost.
 	There is probably a better way of doing this. It may be with cascading. It maybe with inheritance rather than interfaces.
+- careful of moving razor files between projects
+- changing a component to server rendering can allow you to debug in vs a little easier
 
 ## Things to try in the project to gain familiarity
 - replace the li links with a blazor component that takes class the href or two one for mvc and blazor

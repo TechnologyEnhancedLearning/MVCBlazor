@@ -1,0 +1,319 @@
+﻿@using AutoFixture
+@using FluentAssertions
+@using Moq
+@using Package.LH.BlazorComponents.UnitTests.DependencyInjection
+@using Package.LH.BlazorComponents.UnitTests.TestDoubles
+@using Package.LH.Entities.Models
+@using Package.LH.Services.StateServices
+@using Package.Shared.BlazorComponents.BaseComponents.Buttons
+@using Package.Shared.BlazorComponents.Components.Lists
+@using Package.Shared.BlazorComponents.Core
+@using Package.Shared.Entities.Communication
+@using Package.Shared.Entities.Models
+@using Package.Shared.Services.ComponentServices
+@using Package.Shared.Services.StateServices.CharacterStateServices
+@using Package.LH.BlazorComponents.Components.Test_Components
+@using Package.Shared.BlazorComponents.UnitTests.DependencyInjection
+@using Microsoft.AspNetCore.Components @*only added to enable @<mycomponent /> syntax if not worked remove*@
+@inherits TestContext
+
+
+
+@code {
+
+    private readonly Fixture _fixture;
+
+    public LHB_Attendees_RemoveListForm_TestComponent_Test()
+    {
+        // Initialize AutoFixture
+        _fixture = new Fixture();
+    }
+
+    private TestContext CreateTestContext(bool JSIsEnabled)
+    {
+        // Arrange: Create and configure the TestContext
+        var ctx = new TestContext();
+        ctx.Services.AddFallbackServiceProvider(new FallbackServiceProvider());
+
+
+        // Create a mock of IGS_JSEnabled
+        var mockJSEnabled = new Mock<IGS_JSEnabled>();
+        mockJSEnabled.Setup(js => js.JSIsEnabled).Returns(JSIsEnabled); // Mock behavior for JSIsEnabled
+        mockJSEnabled.Setup(js => js.TestingWhoAmI).Returns("MockedHost"); // Mock behavior for WhoAmI
+
+        // Register the mock service with the TestContext
+        ctx.Services.AddScoped(_ => mockJSEnabled.Object);
+
+        return ctx;
+
+    }
+
+    [Trait("Category", "Unit Test")]
+    [Theory(DisplayName="Remove Attendees List renders provided attendees")]
+    [InlineData(true)]
+    [InlineData(false)]
+    public void RendersListWithAttendees_WhenValidParametersAreProvided(bool JSIsEnabled)
+    {
+        // Arrange
+        TestContext ctxJSEnabled = CreateTestContext(JSIsEnabled);
+        ctxJSEnabled.Services.AddTestDouble_LHS_AttendeesStateServices();
+        var noJSActionUrl = _fixture.Create<string>();
+        ILHS_AttendeesStateService LHS_AttendeesStateService = ctxJSEnabled.Services.GetService<ILHS_AttendeesStateService>();
+
+        // Act
+        var cut = ctxJSEnabled.RenderComponent<LHB_Attendees_RemoveListForm_TestComponent>(parameters => parameters
+        .Add(p => p.Attendees, LHS_AttendeesStateService.Attendees)
+        .Add(p => p.NoJSActionUrl, noJSActionUrl)
+        .Add(p => p.OnClick, EventCallback.Factory.Create<LH_AttendeeModel>(this, attendee => { /* handler */ }))
+        .Add(p => p.HandleSubmit, EventCallback.Factory.Create(this, () => { /* handler */ })));
+
+
+
+        // Assert
+        // Ensure attendees list is not null or empty
+
+        Assert.NotNull(LHS_AttendeesStateService.Attendees);
+        Assert.NotEmpty(LHS_AttendeesStateService.Attendees);
+
+        // Verify the number of rendered list items matches the number of attendees
+        Assert.Equal(LHS_AttendeesStateService.Attendees.Count(), cut.FindAll(".nhsuk-list-item").Count());
+
+    }
+
+    [Trait("Category", "Unit Test")]
+    [Fact]
+    public void RendersSubmitButton_WhenJSEnabledIsTrue()
+    {
+        //Arrange
+        bool JSIsEnabled = true;
+        TestContext ctxJSEnabled = CreateTestContext(JSIsEnabled);
+        ctxJSEnabled.Services.AddTestDouble_LHS_AttendeesStateServices();
+        var noJSActionUrl = _fixture.Create<string>();
+
+        var cut = ctxJSEnabled.RenderComponent<LHB_Attendees_RemoveListForm_TestComponent>(parameters => parameters
+        .Add(p => p.Attendees, ctxJSEnabled.Services.GetService<ILHS_AttendeesStateService>().Attendees)
+        .Add(p => p.NoJSActionUrl, noJSActionUrl)
+        .Add(p => p.OnClick, EventCallback.Factory.Create<LH_AttendeeModel>(this, attendee => { /* handler */ }))
+        .Add(p => p.HandleSubmit, EventCallback.Factory.Create(this, () => { /* handler */ })));
+
+        // Act
+        var submitButton = cut.Find(".update-db");
+
+        //Assert
+        Assert.NotNull(submitButton);
+
+    }
+
+    [Trait("Category", "Unit Test")]
+    [Fact]
+    public void JSEnabled_False_DoesNot_RenderSubmitButton()
+    {
+        //Arrange
+        bool JSIsEnabled = false;
+        TestContext ctxJSEnabled = CreateTestContext(JSIsEnabled);
+        ctxJSEnabled.Services.AddTestDouble_LHS_AttendeesStateServices();
+        var noJSActionUrl = _fixture.Create<string>();
+
+        // Act
+        var cut = ctxJSEnabled.RenderComponent<LHB_Attendees_RemoveListForm_TestComponent>(parameters => parameters
+        .Add(p => p.Attendees, ctxJSEnabled.Services.GetService<ILHS_AttendeesStateService>().Attendees)
+        .Add(p => p.NoJSActionUrl, noJSActionUrl)
+        .Add(p => p.OnClick, EventCallback.Factory.Create<LH_AttendeeModel>(this, attendee => { /* handler */ }))
+        .Add(p => p.HandleSubmit, EventCallback.Factory.Create(this, () => { /* handler */ })));
+
+
+      
+
+        //Assert
+
+        Assert.Throws<ElementNotFoundException>(() => cut.Find(".update-db"));
+
+    }
+
+
+
+    [Trait("Category", "Unit Test")]
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public void ButtonClick_TriggersAssignedEvent(bool JSIsEnabled)
+    {
+        // Arrange
+        TestContext ctxJSEnabled = CreateTestContext(JSIsEnabled);
+        ctxJSEnabled.Services.AddTestDouble_LHS_AttendeesStateServices();
+        var noJSActionUrl = _fixture.Create<string>();
+
+        List<LH_AttendeeModel> attendees = ctxJSEnabled.Services.GetService<ILHS_AttendeesStateService>().Attendees;
+
+        // Create a list of booleans, one for each attendee, initialized to false
+        List<bool> eventTriggeredFlags = new List<bool>(new bool[attendees.Count()]);
+
+        var cut = ctxJSEnabled.RenderComponent<LHB_Attendees_RemoveListForm_TestComponent>(parameters => parameters
+        .Add(p => p.Attendees, attendees)
+        .Add(p => p.NoJSActionUrl, noJSActionUrl)
+        .Add(p => p.OnClick, EventCallback.Factory.Create<LH_AttendeeModel>(this, (attendee) =>
+        {
+            var index = attendees.IndexOf(attendee);
+            if (index >= 0)
+            {
+                eventTriggeredFlags[index] = true; // Mark the corresponding attendee's flag as triggered
+            }
+        })));
+
+
+     
+        var random = new Random();
+        int clickHalfTheButtons = attendees.Count/2;
+        List<int> buttonsToClickIndexes = Enumerable.Range(0, attendees.Count)
+            .OrderBy(_ => random.Next())
+            .Take(clickHalfTheButtons)
+            .ToList<int>();
+
+
+        // Act
+        foreach (var index in buttonsToClickIndexes)
+        {
+            var removeButton = cut.FindAll(".danger-list-item-btn")[index]; // Find the button for the specific attendee
+            removeButton.Click(); // Simulate a click on the button
+        }
+
+        // Assert
+        foreach (var index in buttonsToClickIndexes)
+        {
+            Assert.True(eventTriggeredFlags[index], $"The OnClick event was not triggered for the attendee at index {index}.");
+        }
+
+        //Assert that unclicked buttons did not trigger events
+        var unclickedIndexes = Enumerable.Range(0, attendees.Count).Except(buttonsToClickIndexes);
+        foreach (var index in unclickedIndexes)
+        {
+            Assert.False(eventTriggeredFlags[index], $"The OnClick event was incorrectly triggered for the attendee at index {index}.");
+        }
+
+      
+    }
+
+    [Trait("Category", "Functional")]
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public void RemoveButton_EfficientlyRenders_TriggersOnlyOneNodeChange(bool JSIsEnabled)
+    {
+        
+        @if (!JSIsEnabled) { throw new NotImplementedException("Test context does not simulate nojs environment yet"); }
+
+        // Arrange
+        TestContext ctxJSEnabled = CreateTestContext(JSIsEnabled);
+        ctxJSEnabled.Services.AddTestDouble_LHS_AttendeesStateServices();
+        var noJSActionUrl = _fixture.Create<string>();
+
+        List<LH_AttendeeModel> attendees = ctxJSEnabled.Services.GetService<ILHS_AttendeesStateService>().Attendees;
+
+        // Create a list of booleans, one for each attendee, initialized to false
+        List<bool> eventTriggeredFlags = new List<bool>(new bool[attendees.Count()]);
+
+        var cut = ctxJSEnabled.RenderComponent<LHB_Attendees_RemoveListForm_TestComponent>(parameters => parameters
+        .Add(p => p.Attendees, attendees)
+        .Add(p => p.NoJSActionUrl, noJSActionUrl)
+        .Add(p => p.OnClick, (attendee => {
+            ctxJSEnabled.Services.GetService<ILHS_AttendeesStateService>().RemoveAttendeeByTemporaryIdAsync(attendee.ClientTemporaryId);
+        })));
+
+        //Act
+        //Grab by component razor
+        var gbList = cut.FindComponent<Shared.BlazorComponents.Components.Lists.GB_ListWithButtons<LH_AttendeeModel>>();
+        var gbListButtons = gbList.FindComponents<GB_Button2>();
+        var gbListButtonsFirst = gbListButtons[0];
+        var htmlStringFirstButton = gbListButtonsFirst.Markup.ToString();
+
+        //Grab by semantic and capture snapshot
+        cut.SaveSnapshot();
+        var firstRemoveButton = cut.Find(".danger-list-item-btn");
+
+        firstRemoveButton.Click();
+        var diff = cut.GetChangesSinceSnapshot();
+       
+
+        //Assert
+        diff.ShouldHaveSingleChange();
+        //qqqq Getting 596 this indicates I am inefficiently rerendering but it may just mean its more complex than the simple list unit test
+        //This is an advantage over just comparing string
+        //is it because we dont listen to the service instead we rerender the parent
+
+
+
+        diff.ShouldHaveSingleChange().ShouldBeRemoval(htmlStringFirstButton);
+
+    }
+
+
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    //Better test if param not provided by test so also done as a page
+    public void SaveButton_CallsHandleSubmit(bool JSIsEnabled)
+    {
+
+
+        // Arrange
+        TestContext ctxJSEnabled = CreateTestContext(JSIsEnabled);
+        ctxJSEnabled.Services.AddTestDouble_LHS_AttendeesStateServices();
+        var noJSActionUrl = _fixture.Create<string>();
+
+
+
+        // Arrange
+        IFAKE_LHS_AttendeesStateServices attendeesStateService = ctxJSEnabled.Services.GetService<IFAKE_LHS_AttendeesStateServices>();
+       
+        List<LH_AttendeeModel> attendees = attendeesStateService.Attendees;
+        //Deep copy
+        GE_ServiceResponse<List<LH_AttendeeModel>> initialServiceResponse = 
+        new GE_ServiceResponse<List<LH_AttendeeModel>>
+            {
+                Success = attendeesStateService.T_LastServiceResponse.Success,
+                Message = attendeesStateService.T_LastServiceResponse.Message,
+                Data = attendeesStateService.T_LastServiceResponse.Data
+            };
+
+        
+        var cut = ctxJSEnabled.RenderComponent<LHB_Attendees_RemoveListForm_TestComponent>(parameters => parameters
+        .Add(p => p.NoJSActionUrl, noJSActionUrl)
+        .Add(p => p.OnClick, (attendee =>
+        {
+            /*Not used in test*/
+        }))
+        .Add(p => p.HandleSubmit, () => attendeesStateService.ReplaceDBWithListAsync()));
+
+
+        @if (!JSIsEnabled)
+        {
+            //Assert
+            Assert.Empty(cut.FindAll(".update-db"));
+
+        } 
+        else
+        {
+            //Act
+            var updateDbButton = cut.Find(".update-db");
+            updateDbButton.Click();
+
+            //Assert
+            // Verify starts empty
+            initialServiceResponse.Should().BeEquivalentTo(new GE_ServiceResponse<List<LH_AttendeeModel>>());
+            // Verify has data
+            Assert.NotEmpty(attendees);
+            //Verify last response
+            attendeesStateService.T_LastServiceResponse.Should().BeEquivalentTo(
+            new GE_ServiceResponse<List<LH_AttendeeModel>>()
+              {
+                  Success = true,
+                  Message = "",
+                  Data = attendees
+              });
+            //Verify same objects
+            Assert.Equal(attendeesStateService.T_LastServiceResponse.Data, attendeesStateService.Attendees);
+        }
+
+    }
+
+}

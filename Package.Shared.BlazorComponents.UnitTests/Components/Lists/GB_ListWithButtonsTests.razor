@@ -1,0 +1,94 @@
+﻿@using Moq
+@using Package.Shared.BlazorComponents.Components.Lists
+@inherits TestContext
+@using Package.Shared.BlazorComponents.Core
+@using Package.Shared.BlazorComponents.UnitTests.DependencyInjection
+@using Package.Shared.Services.ComponentServices
+@using Package.Shared.Services.StateServices.CharacterStateServices
+
+
+@code {
+
+    private readonly Fixture _fixture;
+
+    public GB_ListWithButtonsTests()
+    {
+        // Initialize AutoFixture
+        _fixture = new Fixture();
+    }
+
+    private TestContext CreateTestContext(bool JSIsEnabled)//Require it so remember to test it
+    {
+        //Arrange
+
+        var ctx = new TestContext();
+        ctx.Services.AddFallbackServiceProvider(new FallbackServiceProvider());
+
+        // Create a mock of IGS_JSEnabled
+        var mockJSEnabled = new Mock<IGS_JSEnabled>();
+        mockJSEnabled.Setup(js => js.JSIsEnabled).Returns(JSIsEnabled); // Mock behavior for JSIsEnabled
+        mockJSEnabled.Setup(js => js.TestingWhoAmI).Returns("MockedHost"); // Mock behavior for WhoAmI
+
+        ctx.Services.AddScoped(_ => mockJSEnabled.Object);
+
+        return ctx;
+    }
+
+    [Trait("Category", "Unit Test")]
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public void WithValidParameters_RendersCorrectly(bool JSIsEnabled)
+    {
+        // Arrange
+        TestContext ctxJSEnabled = CreateTestContext(JSIsEnabled);
+        var items = _fixture.CreateMany<string>(3).ToList();
+        var listTitle = _fixture.Create<string>();
+
+        // Act
+        var cut = ctxJSEnabled.RenderComponent<GB_ListWithButtons<string>>(parameters => parameters
+            .Add(p => p.Items, items)
+            .Add(p => p.ListTitle, listTitle)
+            .Add(p => p.GetItemText, item => item)
+            .Add(p => p.GetKey, item => item));
+
+  
+        var spanElementsTextContent = cut.FindAll(".nhsuk-inline-content span")
+                             .Select(e => e.TextContent)
+                             .ToList();
+        // Assert
+        Assert.Equal(items, spanElementsTextContent);
+        Assert.Equal(listTitle, cut.Find("h2").TextContent);
+        Assert.Equal(items.Count, cut.FindAll("li").Count());
+    }
+
+    [Trait("Category", "Unit Test")]
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public void CustomButton_RendersCorrectly(bool JSIsEnabled)
+    {
+        // Arrange
+        TestContext ctxJSEnabled = CreateTestContext(JSIsEnabled);
+        var items = _fixture.CreateMany<string>(1).ToList();
+        var listTitle = _fixture.Create<string>();
+
+        // Act
+        var cut = ctxJSEnabled.RenderComponent<GB_ListWithButtons<string>>(parameters => parameters
+            .Add(p => p.Items, items)
+            .Add(p => p.ListTitle, listTitle)
+            .Add(p => p.GetItemText, item => item)
+            .Add(p => p.GetKey, item => item)
+            .Add(p => p.ListButton, item => builder =>
+            {
+                builder.OpenElement(0, "button");
+                builder.AddContent(1, "Click me");
+                builder.CloseElement();
+            }));
+
+        // Assert
+        Assert.Equal("Click me", cut.Find("button").TextContent);
+
+    }
+
+}

@@ -1,0 +1,60 @@
+﻿
+<h3>Text List with Buttons</h3>
+
+<div>
+    <!-- Add Button -->
+    <button id="AddRandomItem" @onclick="AddRandomItem" class="btn btn-primary">Add Random Text</button>
+</div>
+
+<ul id="ListOfItem">
+    @foreach (var item in Items)
+    {
+        <li @key="item.ClientTemporaryId" class="list-item d-flex align-items-center">
+            <span style="flex-grow: 1; margin-right: 10px;">@item.Text</span>
+            <button @onclick="() => RemoveItem(item)" class="list-item-remove-button btn btn-danger btn-sm">Remove</button>
+        </li>
+    }
+</ul>
+
+@code {
+    // Item class with a string and a Guid
+    public class ListItem
+    {
+        public Random _random = new();
+        public ListItem()
+        {
+            Text = $"Random Item {_random.Next(1000)}";
+            ClientTemporaryId = Guid.NewGuid();
+        }
+        public string Text { get; set; }
+        public Guid ClientTemporaryId { get; set; }
+    }
+
+    // Parameter for the initial list
+    [Parameter]
+    public List<ListItem> InitialItems { get; set; } = new(); // Defaults to an empty list
+
+    // Internal list of items
+    public List<ListItem> Items;
+
+
+
+    protected override void OnInitialized()
+    {
+        // Initialize the Items list with the provided InitialItems or an empty list
+        Items = new List<ListItem>(InitialItems);
+    }
+
+    // Method to add a random item
+    public void AddRandomItem()
+    {
+        var newItem = new ListItem();
+        Items.Add(newItem);
+    }
+
+    // Method to remove an item
+    public void RemoveItem(ListItem item)
+    {
+        Items.Remove(item);
+    }
+}

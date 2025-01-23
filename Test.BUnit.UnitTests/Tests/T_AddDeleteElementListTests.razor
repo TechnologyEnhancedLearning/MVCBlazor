@@ -1,0 +1,95 @@
+﻿@using static Test.Components.Components.T_AddDeleteElementList
+
+@code {
+
+    /// Summary
+    // These test are to check efficient rendering
+    ///
+
+    private readonly Fixture _fixture;
+
+    public T_AddDeleteElementListTests()
+    {
+        // Initialize AutoFixture
+        _fixture = new Fixture();
+    }
+
+    private TestContext CreateTestContext()
+    {
+        //Arrange
+        var ctx = new TestContext();
+
+        //Register Fallback
+        ctx.Services.AddFallbackServiceProvider(new FallbackServiceProvider());
+
+        return ctx;
+    }
+
+    /// <summary>
+    /// This test makes list of markup updates which is worth a look qqqq
+    ///
+    /// </summary>
+    [Trait("Category", "Rendering Efficiency")]
+    [Fact]
+    public void AddCausesSingleDiffOnly()
+    {
+        // Arrange
+        TestContext ctx = CreateTestContext();
+        List<string> markupStringLs = new();//We dont actually use it but worth knowing about
+
+        // Act
+        var cut = ctx.RenderComponent<T_AddDeleteElementList>(parameters =>
+            parameters.Add(p => p.InitialItems,
+            Enumerable.Range(1, 2)
+                .Select(_ => new ListItem())
+                .ToList()));
+
+        //We dont actually use it but worth knowing about
+        cut.OnMarkupUpdated += (sender, args) => markupStringLs.Add(cut.Markup);
+
+        var list = cut.Find("#ListOfItem");
+        var AddRandomItemButton = cut.Find("#AddRandomItem");
+
+        // Capture
+        cut.SaveSnapshot();
+
+
+        //Trigger
+        AddRandomItemButton.Click();
+
+        //Assert
+        cut.GetChangesSinceSnapshot().ShouldHaveSingleChange();
+
+
+    }
+
+    /// <summary>
+    /// In other tests we see multiple changes where we expect one here we see a single change it may be due to the complexity of the other lists
+    /// </summary>
+    [Trait("Category", "Rendering Efficiency")]
+    [Fact]
+    public void RemoveCausesSingleDiffOnly()
+    {
+        // Arrange
+        TestContext ctx = CreateTestContext();
+        List<string> markupStringLs = new();
+
+        // Act
+        var cut = ctx.RenderComponent<T_AddDeleteElementList>(parameters =>
+            parameters.Add(p => p.InitialItems,
+            Enumerable.Range(1, 2)
+                .Select(_ => new ListItem())
+                .ToList()));
+
+
+        var listItemRemoveButtons = cut.FindAll(".list-item-remove-button");
+        var lastRemoveButton = listItemRemoveButtons.Last();
+
+        cut.SaveSnapshot();
+        lastRemoveButton.Click();
+
+
+        //Assert
+        cut.GetChangesSinceSnapshot().ShouldHaveSingleChange();
+    }
+}
