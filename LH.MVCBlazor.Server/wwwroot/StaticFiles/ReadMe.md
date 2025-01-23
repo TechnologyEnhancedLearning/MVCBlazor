@@ -314,7 +314,18 @@ so characters simulates a generic component/service of some kind. (Attendees is 
 
 ### Testing
 
-In this project we are not covering the unit testing that would happen already. Therefore there is no testing of services or controllers etc.
+In this project we are not covering the unit testing that would happen already. 
+Therefore there is no testing of services or controllers etc.
+
+**TODO: One example because nojs is not simulated in unit tests for rendering but mocking controlls may make more 
+tests capable of both **
+
+To be able to test the actual render output of a NoJS browser we need tests that can render static, or render using a nojs browser.
+This is because the lifecycle stages are different and are ordered different to the normal process (asyncs for example are awaited as there will be only one render).
+
+The project uses the recommended XUnit, BUnit, FluentAssert, AutoFixture.
+
+However the creator of BUnit who recommends XUnit for E2E recommend Playwright and 
 
 #### Unanswered Questions
 - How do we get test coverage
@@ -323,6 +334,8 @@ In this project we are not covering the unit testing that would happen already. 
 - document advice for creating tests to go with component advice
 - When sessionstorage there are specific tests
 - When js interoptobality there are specifics tests for it
+- controller
+- E2E
 
 #### Unit Test BUNIT
 
@@ -381,7 +394,7 @@ This means we need to specifically test in a Static rendermode, or control which
 ###### For future consideration
 - BaseComponent NoJS flag to pass a bool to Lifecycle stages and return straight out of them
 	- We should not change components to support testing
-	- We may still require inheritting components to have changes I expect where they use these lifecycle stages
+	- We may still require inheriting components to have changes I expect where they use these lifecycle stages
 - Use E2E only to test Static
 - Don't render with BUnit for these tests
 	- Explore making a static Blazor project and attempt turn it into a test project
@@ -404,10 +417,11 @@ get the actual component at the moment of that state so we will be calling addit
 
 
 
-#### E2E? Selenium?
+#### E2E Playwright?
 - When we look at further testing we should revisit BUnit limitation and attempt to create a process for Unit 
 testing static or NoJS browser or specific lifecycle stages so that the NoJS requirement is easy to test side by side with JSEnabled.
-
+- Egil BUnit library creator suggests Playwright with NUnit rather than XUnit
+	- Also for us normally we would be 90% Unit 10% E2E as its packages however to enable testing NoJS along side tests for normal functioning it may need to be the other way around.
 
 #### BUnits Notes
 - Maybe instead dependency injection extension do TestContextExtensions like blazor-workshop egil git
