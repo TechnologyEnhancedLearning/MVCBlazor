@@ -15,7 +15,6 @@
         {
             @foreach (var item in Items)
             {
-                //qqqq should i interface with itemized? or something to say it has .id
                 //Currently this is very naughty
                 <li class="nhsuk-list-item" @key="@GetKey(item)">
                     <!-- Use a consistent class name -->
@@ -50,7 +49,7 @@
     public required Func<TItem, string>  GetKey { get; set; }
 
     [Parameter]
-    public RenderFragment<TItem> ListButton { get; set; } // RenderFragment for button content
+    public RenderFragment<TItem>? ListButton { get; set; } =null; // RenderFragment for button content, builder is null equivalent
 
 
 }

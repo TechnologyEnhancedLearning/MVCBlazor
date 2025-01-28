@@ -15,11 +15,14 @@ namespace Package.Shared.BlazorComponents.UnitTests.TestDoubles
         private readonly List<GE_CharacterModel> characters;
         private readonly TaskCompletionSource<GE_CharacterModel> characterAdded = new();
 
+        public event Action CharactersChanged;
+
         public FakeGS_CharactersStateService()
         {
             // Use AutoFixture to create test data
             var fixture = new Fixture();
             this.characters = fixture.CreateMany<GE_CharacterModel>(5).ToList(); // 5 initial characters
+            CharactersChanged?.Invoke();
         }
 
 
@@ -39,6 +42,7 @@ namespace Package.Shared.BlazorComponents.UnitTests.TestDoubles
             if (character != null)
             {
                 // Simulate marking as favorite (no real change to data, just return true)
+                CharactersChanged?.Invoke();
                 return Task.FromResult(new GE_ServiceResponse<bool> { Data = true, Success = true });
             }
             else
@@ -47,12 +51,11 @@ namespace Package.Shared.BlazorComponents.UnitTests.TestDoubles
             }
         }
 
-        /*these should return the original list but its easier this way anyway qqqq */
         public Task<GE_ServiceResponse<bool>> AddCharacterAsync(GE_CharacterModel character)
         {
             // Simulate adding the character and returning the updated list
-            characters.Add(character);//qqqq is this too much logic should we just return the success obkect
-
+            characters.Add(character);
+            CharactersChanged?.Invoke();
             return Task.FromResult(new GE_ServiceResponse<bool> { Data = true, Success = true });
         }
 
@@ -61,14 +64,15 @@ namespace Package.Shared.BlazorComponents.UnitTests.TestDoubles
             var characterToRemove = characters.Single(c => c.ClientTemporaryId == clientTemporaryId);
             if (characterToRemove != null)
             {
+                CharactersChanged?.Invoke();
                 characters.Remove(characterToRemove);//qqqq is it too much logic
                 return Task.FromResult(new GE_ServiceResponse<bool> { Data = true, Success = true });
             }
-
+          
             return Task.FromResult(new GE_ServiceResponse<bool> { Data = false, Success = false });
         }
 
-        //qqqq why is this even expose for noJs ???
+
         public Task<GE_ServiceResponse<List<GE_CharacterModel>>> ReplaceDBWithListAsync()
         {
             return Task.FromResult(new GE_ServiceResponse<List<GE_CharacterModel>> { Data = characters, Success = true });

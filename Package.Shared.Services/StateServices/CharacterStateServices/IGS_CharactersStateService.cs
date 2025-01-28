@@ -23,5 +23,7 @@ namespace Package.Shared.Services.StateServices.CharacterStateServices
         bool DataIsLoaded { get; }
 
         List<GE_CharacterModel> Characters { get; }
+
+        public event Action CharactersChanged;
     }
 }

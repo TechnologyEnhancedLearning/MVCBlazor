@@ -12,12 +12,7 @@ using System.Threading.Tasks;
 
 namespace Package.Shared.BlazorComponents.UnitTests.DependencyInjection
 {
-    /// <summary>
-    /// qqqq really uncertain of this needs alot of testing
-    /// Not really sure what the fallback acheives suppose we dont have breaking concrete service where not used
-    /// we tend to be using them though
-    /// and we are generally injecting by interface
-    /// </summary>
+
     public class FallbackServiceProvider : IServiceProvider
     {
         private readonly Fixture _fixture;
@@ -42,7 +37,7 @@ namespace Package.Shared.BlazorComponents.UnitTests.DependencyInjection
 
                 //if (serviceType.IsInterface)
                 //{
-                // qqqq https://bunit.dev/docs/providing-input/inject-services-into-components.html#using-libraries-like-automocker-as-fallback-provider
+                //  https://bunit.dev/docs/providing-input/inject-services-into-components.html#using-libraries-like-automocker-as-fallback-provider
                 //    return _fixture.Create(serviceType);
                 //}
 

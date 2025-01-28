@@ -23,8 +23,8 @@ namespace Package.Shared.Services.StateServices.CharacterStateServices
         public bool DataIsLoaded { get; private set; } = false;
         private Task _loadingTask;
         public List<GE_CharacterModel> Characters { get; private set; } = new List<GE_CharacterModel>();
- 
 
+        public event Action CharactersChanged;
         public GS_CharactersStateService(IHttpClientFactory httpClientFactory, IOptions<GS_CharactersAPIConfiguration> charactersAPIConfiguration)
         {
             _charactersAPIConfiguration = charactersAPIConfiguration.Value;
@@ -38,6 +38,7 @@ namespace Package.Shared.Services.StateServices.CharacterStateServices
             if (!DataIsLoaded)
             {
                 await _loadingTask;
+                CharactersChanged?.Invoke();
             }
         }
 
@@ -65,7 +66,7 @@ namespace Package.Shared.Services.StateServices.CharacterStateServices
                 // Handle the error case
                 throw new Exception("Failed to set the character as favourite.");
             }
-
+            CharactersChanged?.Invoke();
             return new GE_ServiceResponse<bool> { Data = true };
         }
 
@@ -77,7 +78,7 @@ namespace Package.Shared.Services.StateServices.CharacterStateServices
                 Characters.Add(character);
             }
             Console.WriteLine("CharactersStateService: AddCharacter");
-
+            CharactersChanged?.Invoke();
             return new GE_ServiceResponse<bool> { Data = true };
         }
 
@@ -90,7 +91,7 @@ namespace Package.Shared.Services.StateServices.CharacterStateServices
                 Characters.Remove(attendee);
             }
             Console.WriteLine("CharactersStateService : Removed");
-
+            CharactersChanged?.Invoke();
             return new GE_ServiceResponse<bool> { Data = true };
         }
 

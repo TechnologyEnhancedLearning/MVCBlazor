@@ -3,6 +3,7 @@
 @inherits GB_PageBase
 @inject ILHS_AttendeesStateService LHS_AttendeesStateService
 @layout LHB_RenderModePageLayout
+@implements IDisposable
 
 <h3>LHB_Attendees_RemoveListForm_Page_TestComponent</h3>
 
@@ -16,6 +17,11 @@
 </LHB_RenderModePage>
 
 @code {
+
+    protected override void OnInitialized() => LHS_AttendeesStateService.AttendeesChanged += StateHasChanged;
+
+    public void Dispose() => LHS_AttendeesStateService.AttendeesChanged -= StateHasChanged;
+
     //Dont really need it to cascade or be setable here but shows it working
     [Parameter] public override string PageTitle { get; set; } = "Test AttendeesTestComponent Blazor Page"; // Set this for each page
 
@@ -23,13 +29,13 @@
     {
         await LHS_AttendeesStateService.RemoveAttendeeByTemporaryIdAsync(attendee.ClientTemporaryId);
         Console.WriteLine("Blazor Component : RemoveAttendee");
-        StateHasChanged();//because we change the list in the service rather than changing a blazor parameter, blazor doesnt know its changed so we need to tell it the state has change
+        //StateHasChanged();//because we change the list in the service rather than changing a blazor parameter, blazor doesnt know its changed so we need to tell it the state has change
     }
 
     public async Task HandleSubmit()
     {
         Console.WriteLine("Blazor Component : HandleSubmit");
-        await LHS_AttendeesStateService.ReplaceDBWithListAsync(); //qqqq but not going there
+        await LHS_AttendeesStateService.ReplaceDBWithListAsync(); 
         Console.WriteLine("Blazor Component : Submit finished");
 
     }

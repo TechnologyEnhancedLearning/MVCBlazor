@@ -224,7 +224,14 @@ lifecycle stage or static render mode )
 - the intention should be for prerender html to be as close to the hydrated version as possible so the screen does not flicker.
 - we dont have to prerender everything we can have loaders that wait until lifecycle stages that happen after prerender
 - Anything *Async* that updates after initial render will not happen in NoJS because lifecycles top after rendering.
-
+- Prerendering will wait for async services before rendering so there can be a wait
+	- we can build a loader into the layout if its decided needed
+	- this means we have a skeleton all be it very detailed and for nojs requirement functional, therefore often no 
+loader in components is needed as there will be visible html already. In this scenario adding a loader will 
+result in seeing (if very slow connect): blank loading of prerender, prerender, static parts of html with 
+loading on async parts from webassembly kicking in, webassembly hydration and async complete resulting in 
+complete view. But removing nojs prerendered html to place a loader to put back identical html do not seem the 
+best experience and instead relying on prerender in most cases will be best. 
 
 ### Further Information
 The project did have all the view components in and css in previously. 
@@ -333,7 +340,7 @@ However the creator of BUnit who recommends XUnit for E2E recommend Playwright a
 In this project we unit test the blazor component packages, we also have some components created just to be unit tested.
 This is so we have some examples of the different BUnit methods.
 
-
+There are good references for BUnit. The examples in the project are what work best practice is still to be determined.
 
 #### Unanswered Questions
 - How do we get test coverage
@@ -369,7 +376,27 @@ The RenderComponent is better than render.
 We can wait for tasks to complete cut.WaitForAssertion(() => cut.MarkupMatches("<output>3</output>"));
 
 
-
+#### What to look at
+	- JSIsEnabled wants to be tested at the same time so developer can see from the unit test that base components 
+		are doing the work and they dont need to. However BUnit without E2E is not able to replicate the lifecycle stages as they would occur for nojs browsers.
+	- Efficiency of rendering test may turn out to be good practice, they also may not, currently despite the keys we are not making a single node change we update the whole list.
+	- The tests are in razor so we can write razor html
+	- MarkupMatches can check output
+		- aria-label:ignore and diff:ignoreChildren are examples how we can match the parts of the html relevant to the test
+	- take and getsnap shot allows html comparisons between manipulations
+	- IFAKE_LHS_AttendeesStateServices see how the same instance is injected twice with a different one of its 
+interfaces to access it by so component injection can be faked and additional test functionality added to track 
+behaviour.
+	- cut.OnMarkupUpdated += (sender, args) => markupStringLs.Add(cut.Markup); is quite nice
+	- cut.GetChangesSinceSnapshot().ShouldHaveSingleChange();
+	- Even though the blazor gets turned into html can still grab by component type
+		- `
+			      var canWeGrabIt = cut.FindComponent<LHB_Attendees_RemoveListForm_TestComponent>();
+				  var canWeGrabIt1 = cut.FindComponent<Shared.BlazorComponents.Components.Lists.GB_ListWithButtons<LH_AttendeeModel>>();
+				  var canWeGrabIt2 = cut.FindComponent<GB_Button2>();
+		`
+	- not yet got a nice useable example of node counting var diff = cut.GetChangesSinceSnapshot();
+	- renderstage test have a component showing renderstages 
 
 #### BUnits Notes
 - bunit .net9 allows to alter renderinfo not rendermode so not behaviour ... .Net 10? to do our nojs requirement in BUnit?
@@ -475,6 +502,7 @@ This means we need to specifically test in a Static rendermode, or control which
 
 
 ###### BUnit nojs graveyard
+- anglesharp and building the program.cs in different ways -> just use playwright
 - builder.OpenComponent<JSTestSetupTestComponent>(0);
 - noContextNeeded.Render(@<JSTestSetupTestComponent />);
 - `   cut.SetParametersAndRender(parameters
@@ -512,6 +540,8 @@ we cant just interupt the process of rendering or catch it at a certain point.
 }
 
 `
+- Exporing AngleSharp
+ 
 ###### For future consideration Testing NoJS possible solutions
 - BaseComponent NoJS flag to pass a bool to Lifecycle stages and return straight out of them
 	- We should not change components to support testing
@@ -567,6 +597,10 @@ This project is not currently a reference for how to but an example of what can 
 
 
 ### Desired Future Additions
+- NoJS has controller actions on forms, this is also triggerable in prerender, however using event listeners to the stateservices will mean:
+	- controller hit page reload
+	- but if there is js disabling interactions including or mainly post on forms would mean we don't use nojs functionality while waiting for hydration
+	- IDisableUntilHydration? or based on the generic component
 - Explore ids, will guids result in more testability or will it cause less matching and so more rendering? what is best id practice.
 	- These handles will be vital for testing
 	- also keys for lists
@@ -595,8 +629,7 @@ This project is not currently a reference for how to but an example of what can 
 	- so we dont need to check nojs before deciding if to use localstorage or hit api
 	- so we can use localstorage to reduce calls
 
-- Loading behaviour [repo link](https://github.com/patrickgod/BlazorLoadingAnimation)
-	- Loader [repo link (there a youtube vid with it i think)](https://github.com/patrickgod/BlazorLoadingAnimation) 
+
 - Components render in views are islands. They can't talk to each other. Unless
 	- Mediatr package maybe
 	- Subscribe each others events maybe
@@ -618,6 +651,7 @@ This project is not currently a reference for how to but an example of what can 
 - **important** -> prototyping tools
 
 ### Car park desired features
+- look into blazor thread safety a bit, common mistakes etc
 - storage consideration of unencrypted on the browser
 - persistence for
 	- user prefs

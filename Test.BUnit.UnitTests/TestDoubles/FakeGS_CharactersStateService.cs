@@ -15,6 +15,8 @@ namespace Test.BUnit.UnitTests.TestDoubles
         private readonly List<GE_CharacterModel> characters;
         private readonly TaskCompletionSource<GE_CharacterModel> characterAdded = new();
 
+        public event Action CharactersChanged;
+
         public FakeGS_CharactersStateService()
         {
             // Use AutoFixture to create test data
@@ -47,11 +49,11 @@ namespace Test.BUnit.UnitTests.TestDoubles
             }
         }
 
-        /*these should return the original list but its easier this way anyway qqqq */
+
         public Task<GE_ServiceResponse<bool>> AddCharacterAsync(GE_CharacterModel character)
         {
             // Simulate adding the character and returning the updated list
-            characters.Add(character);//qqqq is this too much logic should we just return the success obkect
+            characters.Add(character);
 
             return Task.FromResult(new GE_ServiceResponse<bool> { Data = true, Success = true });
         }
@@ -61,14 +63,14 @@ namespace Test.BUnit.UnitTests.TestDoubles
             var characterToRemove = characters.Single(c => c.ClientTemporaryId == clientTemporaryId);
             if (characterToRemove != null)
             {
-                characters.Remove(characterToRemove);//qqqq is it too much logic
+                characters.Remove(characterToRemove);
                 return Task.FromResult(new GE_ServiceResponse<bool> { Data = true, Success = true });
             }
 
             return Task.FromResult(new GE_ServiceResponse<bool> { Data = false, Success = false });
         }
 
-        //qqqq why is this even expose for noJs ???
+
         public Task<GE_ServiceResponse<List<GE_CharacterModel>>> ReplaceDBWithListAsync()
         {
             return Task.FromResult(new GE_ServiceResponse<List<GE_CharacterModel>> { Data = characters, Success = true });

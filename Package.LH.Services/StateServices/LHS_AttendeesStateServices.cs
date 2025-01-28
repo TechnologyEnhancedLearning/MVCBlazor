@@ -19,6 +19,8 @@ namespace Package.LH.Services.StateServices
         private ILHS_AttendeesAPIEndpoints _attendeesAPIEndpoints;
         public bool DataIsLoaded { get; private set; } = false;
         private Task _loadingTask;
+
+        public event Action AttendeesChanged;
         public List<LH_AttendeeModel> Attendees { get; private set; } = new List<LH_AttendeeModel>();
 
         public LHS_AttendeesStateService(IHttpClientFactory httpClientFactory, IOptions<LHS_AttendeesAPIConfiguration> attendeesAPIConfiguration)
@@ -63,6 +65,7 @@ namespace Package.LH.Services.StateServices
                 Attendees = (await _http.GetFromJsonAsync<GE_ServiceResponse<List<LH_AttendeeModel>>>($"{_http.BaseAddress}{_attendeesAPIEndpoints.LoadAttendees}")).Data ?? new List<LH_AttendeeModel>();
                 DataIsLoaded = true; // Set the flag to true when data is loaded
                 Console.WriteLine("LHS_AttendeesStateService: LoadAttendeesAsync");
+                AttendeesChanged?.Invoke();
             }
         }
 
@@ -74,7 +77,7 @@ namespace Package.LH.Services.StateServices
                 Attendees.Add(attendee);
             }
             Console.WriteLine("AttendeesStateService: AddAttendee");
-
+            AttendeesChanged?.Invoke();
             return new GE_ServiceResponse<bool> { Data = true };
         }
 
@@ -87,7 +90,7 @@ namespace Package.LH.Services.StateServices
                 Attendees.Remove(attendee);
             }
             Console.WriteLine("AttendeesStateService : Removed");
-
+            AttendeesChanged?.Invoke();
             return new GE_ServiceResponse<bool> { Data = true };
         }
 
