@@ -51,11 +51,10 @@ namespace Package.Shared.BlazorComponents.UnitTests.TestDoubles
             }
         }
 
-        /*these should return the original list but its easier this way anyway qqqq */
         public Task<GE_ServiceResponse<bool>> AddCharacterAsync(GE_CharacterModel character)
         {
             // Simulate adding the character and returning the updated list
-            characters.Add(character);//qqqq is this too much logic should we just return the success obkect
+            characters.Add(character);
             CharactersChanged?.Invoke();
             return Task.FromResult(new GE_ServiceResponse<bool> { Data = true, Success = true });
         }
@@ -73,7 +72,7 @@ namespace Package.Shared.BlazorComponents.UnitTests.TestDoubles
             return Task.FromResult(new GE_ServiceResponse<bool> { Data = false, Success = false });
         }
 
-        //qqqq why is this even expose for noJs ???
+
         public Task<GE_ServiceResponse<List<GE_CharacterModel>>> ReplaceDBWithListAsync()
         {
             return Task.FromResult(new GE_ServiceResponse<List<GE_CharacterModel>> { Data = characters, Success = true });

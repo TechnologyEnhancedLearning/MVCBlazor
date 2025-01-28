@@ -136,7 +136,7 @@ else
         await LHS_AttendeesStateService.RemoveAttendeeByTemporaryIdAsync(attendee.ClientTemporaryId);
         Console.WriteLine("Blazor Component : RemoveAttendee");
 
-        // qqqq instead of statehaschanged use the listetemer
+        //instead of statehaschanged we are using the listener
         //StateHasChanged();//because we change the list in the service rather than changing a blazor parameter, blazor doesnt know its changed so we need to tell it the state has change
     }
 

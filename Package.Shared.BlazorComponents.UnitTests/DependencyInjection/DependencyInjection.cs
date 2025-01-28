@@ -15,11 +15,7 @@ using System.Threading.Tasks;
 
 namespace Package.Shared.BlazorComponents.UnitTests.DependencyInjection
 {
-    /// <summary>
-    /// We will want mocked service (generated empty)
-    /// Dummy services (custom replacements)
-    /// qqqq remember one service overwrite another so can set nojs after
-    /// </summary>
+
     public static class DependencyInjection
     {
         public static IServiceCollection AddTestDouble_GS_StateServices(this IServiceCollection services)

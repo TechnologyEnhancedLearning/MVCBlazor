@@ -98,7 +98,7 @@
 
     /// <summary>
     /// Here we are testing efficiency of the rerender but also trying some BUnit features.
-    /// QQQQ very much in progress
+    /// It may be expecting a single html node update is unnrealistic in this scenario due to the key not being in the component changing state, it needs more thought
     /// </summary>
     /// <param name="JSIsEnabled"></param>
     /// <exception cref="NotImplementedException"></exception>
@@ -131,7 +131,7 @@
         // Act: Simulate clicking the first "Remove" button
         var diff = cut.GetChangesSinceSnapshot();
         var currentMarkup = cut.Markup;
-        //qqqq  TODO: Getting 596 this indicates I am inefficiently rerendering though it may be unavoidable, come back to this after statehandling task?
+        //qqqq  TODO: Getting 596 this indicates I am inefficiently rerendering though it may be unavoidable
 
 
         //Capture
@@ -153,10 +153,11 @@
                     diff:ignoreChildren></button>");
         
 
-        // QQQQ TODO: We want to have an example of using diff so come back to his how do we do does not contain markup well?
-        // Verify markup not present (can grab by element type and check dispoe)
+        // QQQQ TODO: We want to have an example of using diff so come back to this. How do we check one markup doesnt contain another.?
+        // Verify markup not present
         Assert.False(currentMarkup.ToString().Contains(firstRemoveButton.ToString()));
         
+
         // Verify Diff Dom Efficiently Changed
         diff.ShouldHaveChanges(
             diff => diff.ShouldBeRemoval(@"<li diff:ignoreAttributes diff:ignoreChildren></li>")//,
@@ -195,7 +196,7 @@
         int ItemsCount = canWeGrabItFromAnother.Instance.Items.Count();
         var canWeGrabItFromAnother1 = canWeGrabItFromAnother.FindComponent<GB_Button2>();
 
-        //Ah it is hidden somewhere!
+        //Luckily there is a unique identifier to grab here
         string ClientTemporaryId = canWeGrabItFromAnother1.Instance.FormData["clientTemporaryId"];
         canWeGrabItFromAnother1.Find("button").Click();
 
@@ -233,8 +234,8 @@
         ctxJSEnabled.Services.AddTestDouble_LHS_AttendeesStateServices();
         var noJSActionUrl = _fixture.Create<string>();
 
-        // We have injected as the same service IFAKE_LHS_AttendeesStateServices and ILHS_AttendeesStateServices
-        // So we can track behaviour QQQQ TODO: Can we acheive this with logging instead?
+        // We have injected as the same service instanciation into IFAKE_LHS_AttendeesStateServices and ILHS_AttendeesStateServices
+        // We may be able to do something similar via loggin too
         IFAKE_LHS_AttendeesStateServices attendeesStateService = ctxJSEnabled.Services.GetService<IFAKE_LHS_AttendeesStateServices>();
 
         List<LH_AttendeeModel> attendees = attendeesStateService.Attendees;

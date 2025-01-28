@@ -23,7 +23,7 @@ namespace Package.LH.BlazorComponents.UnitTests.TestDoubles
 
         public event Action AttendeesChanged;
 
-        public GE_ServiceResponse<List<LH_AttendeeModel>> T_LastServiceResponse { get; set; } = new();//qqqq dont know if this is bad practice
+        public GE_ServiceResponse<List<LH_AttendeeModel>> T_LastServiceResponse { get; set; } = new();//QQQQ Consider building in loggers instead
         public FAKE_LHS_AttendeesStateServices()
         {
             // Use AutoFixture to create test data
@@ -65,7 +65,7 @@ namespace Package.LH.BlazorComponents.UnitTests.TestDoubles
             var characterToRemove = attendees.Single(c => c.ClientTemporaryId == clientTemporaryId);
             if (characterToRemove != null)
             {
-                attendees.Remove(characterToRemove);//qqqq is it too much logic
+                attendees.Remove(characterToRemove);
                 AttendeesChanged?.Invoke();
                 return Task.FromResult(new GE_ServiceResponse<bool> { Data = true, Success = true });
             }
