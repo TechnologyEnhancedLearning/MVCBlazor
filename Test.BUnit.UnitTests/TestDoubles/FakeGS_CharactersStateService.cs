@@ -15,6 +15,8 @@ namespace Test.BUnit.UnitTests.TestDoubles
         private readonly List<GE_CharacterModel> characters;
         private readonly TaskCompletionSource<GE_CharacterModel> characterAdded = new();
 
+        public event Action CharactersChanged;
+
         public FakeGS_CharactersStateService()
         {
             // Use AutoFixture to create test data

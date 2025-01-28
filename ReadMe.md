@@ -226,7 +226,14 @@ lifecycle stage or static render mode )
 - the intention should be for prerender html to be as close to the hydrated version as possible so the screen does not flicker.
 - we dont have to prerender everything we can have loaders that wait until lifecycle stages that happen after prerender
 - Anything *Async* that updates after initial render will not happen in NoJS because lifecycles top after rendering.
-
+- Prerendering will wait for async services before rendering so there can be a wait
+	- we can build a loader into the layout if its decided needed
+	- this means we have a skeleton all be it very detailed and for nojs requirement functional, therefore often no 
+loader in components is needed as there will be visible html already. In this scenario adding a loader will 
+result in seeing (if very slow connect): blank loading of prerender, prerender, static parts of html with 
+loading on async parts from webassembly kicking in, webassembly hydration and async complete resulting in 
+complete view. But removing nojs prerendered html to place a loader to put back identical html do not seem the 
+best experience and instead relying on prerender in most cases will be best. 
 
 ### Further Information
 The project did have all the view components in and css in previously. 
@@ -477,6 +484,7 @@ This means we need to specifically test in a Static rendermode, or control which
 
 
 ###### BUnit nojs graveyard
+- anglesharp and building the program.cs in different ways -> just use playwright
 - builder.OpenComponent<JSTestSetupTestComponent>(0);
 - noContextNeeded.Render(@<JSTestSetupTestComponent />);
 - `   cut.SetParametersAndRender(parameters
@@ -569,6 +577,10 @@ This project is not currently a reference for how to but an example of what can 
 
 
 ### Desired Future Additions
+- NoJS has controller actions on forms, this is also triggerable in prerender, however using event listeners to the stateservices will mean:
+	- controller hit page reload
+	- but if there is js disabling interactions including or mainly post on forms would mean we don't use nojs functionality while waiting for hydration
+	- IDisableUntilHydration? or based on the generic component
 - Explore ids, will guids result in more testability or will it cause less matching and so more rendering? what is best id practice.
 	- These handles will be vital for testing
 	- also keys for lists
@@ -597,8 +609,7 @@ This project is not currently a reference for how to but an example of what can 
 	- so we dont need to check nojs before deciding if to use localstorage or hit api
 	- so we can use localstorage to reduce calls
 
-- Loading behaviour [repo link](https://github.com/patrickgod/BlazorLoadingAnimation)
-	- Loader [repo link (there a youtube vid with it i think)](https://github.com/patrickgod/BlazorLoadingAnimation) 
+
 - Components render in views are islands. They can't talk to each other. Unless
 	- Mediatr package maybe
 	- Subscribe each others events maybe
@@ -620,6 +631,7 @@ This project is not currently a reference for how to but an example of what can 
 - **important** -> prototyping tools
 
 ### Car park desired features
+- look into blazor thread safety a bit, common mistakes etc
 - storage consideration of unencrypted on the browser
 - persistence for
 	- user prefs

@@ -226,7 +226,14 @@ lifecycle stage or static render mode )
 - the intention should be for prerender html to be as close to the hydrated version as possible so the screen does not flicker.
 - we dont have to prerender everything we can have loaders that wait until lifecycle stages that happen after prerender
 - Anything *Async* that updates after initial render will not happen in NoJS because lifecycles top after rendering.
-
+- Prerendering will wait for async services before rendering so there can be a wait
+	- we can build a loader into the layout if its decided needed
+	- this means we have a skeleton all be it very detailed and for nojs requirement functional, therefore often no 
+loader in components is needed as there will be visible html already. In this scenario adding a loader will 
+result in seeing (if very slow connect): blank loading of prerender, prerender, static parts of html with 
+loading on async parts from webassembly kicking in, webassembly hydration and async complete resulting in 
+complete view. But removing nojs prerendered html to place a loader to put back identical html do not seem the 
+best experience and instead relying on prerender in most cases will be best. 
 
 ### Further Information
 The project did have all the view components in and css in previously. 
@@ -314,21 +321,34 @@ so characters simulates a generic component/service of some kind. (Attendees is 
 
 ### Testing
 
+**Nb. There are failing tests throughout these show the limitations of our tests currently, and what we would like 
+them to achieve so do not worry if a fresh project has failing tests.**
+
 In this project we are not covering the unit testing that would happen already. 
 Therefore there is no testing of services or controllers etc.
 
 **TODO: One example because nojs is not simulated in unit tests for rendering but mocking controlls may make more 
 tests capable of both **
 
+Ideally we would be able to side by side be able to test our components in the NoJS environment and with JS Enabled, by html comparison or static rendering for example.
+
 To be able to test the actual render output of a NoJS browser we need tests that can render static, or render using a nojs browser.
 This is because the lifecycle stages are different and are ordered different to the normal process (asyncs for example are awaited as there will be only one render).
 
 The project uses the recommended XUnit, BUnit, FluentAssert, AutoFixture.
 
-However the creator of BUnit who recommends XUnit for E2E recommend Playwright and 
+However the creator of BUnit who recommends XUnit for E2E recommend Playwright and NUnit.
+
+In this project we unit test the blazor component packages, we also have some components created just to be unit tested.
+This is so we have some examples of the different BUnit methods.
+
+
 
 #### Unanswered Questions
 - How do we get test coverage
+- better way than string comparison for bunit surely
+
+
 
 #### Testing to do
 - document advice for creating tests to go with component advice
@@ -348,16 +368,108 @@ It can compare nodes after events [IDiff check](https://bunit.dev/docs/verificat
 BUnit seems like a good unit test library with good documentation.
 It does not allow lifecycle, rendermode controll of the component or its test context which is problamatic for testing our NoJS requirement.
 
-Ideally we would be able to side by side be able to test our components in the NoJS environment and with JS Enabled, by html comparison or static rendering for example.
 
 In the example project we are using a fallback provider [fallback service provider](https://bunit.dev/docs/providing-input/inject-services-into-components.html#fallback-service-provider)
 
 [node comparison, snapshot, click, compare](https://bunit.dev/docs/verification/verify-markup.html#finding-expected-differences)
 
+The Units Test file structure mirror what they are test.
+The RenderComponent is better than render.
+We can wait for tasks to complete cut.WaitForAssertion(() => cut.MarkupMatches("<output>3</output>"));
+
+
+
+
+#### BUnits Notes
+- bunit .net9 allows to alter renderinfo not rendermode so not behaviour ... .Net 10? to do our nojs requirement in BUnit?
+- Maybe instead dependency injection extension do TestContextExtensions like blazor-workshop egil git
+- We can also pick up inneffecient rendering such as
+`
+        diff.ShouldHaveSingleChange();
+        //Getting 596 this indicates I am inefficiently rerendering possibly because i should have used key?
+        //This is an advantage over just comparing string
+        var diff2 = cut.GetChangesSinceFirstRender();
+        diff.ShouldHaveSingleChange().ShouldBeRemoval(firstRemoveButton.ToString());
+`
 ##### BUnit Reference
 Creator of BUnit testing project and step by step, I think there are some long video accompaniments [not .net 8 but bunit repo](https://github.com/egil/blazor-workshop.git) 
 [wait for state covered in medium article for bunit](https://dev.to/webinadvance/unleashing-the-power-of-unit-testing-supercharge-blazor-server-async-components-ui-behavior-with-net-core-and-bunit-4n9j)
+*Egil is the BUnit creator*
+- [list blazor githubs some have unit tests](https://github.com/AdrienTorris/awesome-blazor)
+- [egil conference tests](https://www.youtube.com/watch?v=aorfcDeHUpw)
+- [pizza egil git](https://github.com/egil/blazor-workshop/blob/master/src/BlazingPizza.Tests/ComponentLibrary/PizzaCardTests.razor)
+- [useful for understanding comparer options for markup in bunit](https://bunit.dev/docs/verification/semantic-html-comparison.html)
 
+##### Carpark Test Examples
+- cut.Nodes.QuerySelector("main > span");
+- `    cut.FindAll(".list-group > .list-group-item > p")
+            .Select(x => x.TextContent)
+            .Should()
+            .BeEquivalentTo(data);`
+- `
+
+        cut.Find(".list-group")
+            .ClassList
+            .Should()
+            .Contain(listGroupClass);
+`
+- `       pizza.Toppings
+            .Should()
+            .Contain(x => x.Topping == toppings[0]);
+        pizza.Toppings.Count
+            .Should()
+            .Be(1);`
+- `
+    [Theory, AutoData]
+    public void When_PizzaRemoveButton_Is_Clicked_And_Confirm_Dialog_Accepted_Then_Pizza_Is_Removed_From_Order(
+        Order order)
+    {
+        SetupRemovePizzaConfirmCall(order.Pizzas[0], acceptRemoval: true);
+        var cut = Render(@<OrderInformation Order=order />);
+        var configuredPizza = cut.FindComponent<ConfiguredPizzaItem>();
+        var pizzaToRemove = configuredPizza.Instance.Pizza;
+
+        configuredPizza.Find("a").Click();
+        
+        order.Pizzas
+            .Should()
+            .NotContain(pizzaToRemove);
+    }
+
+`
+- `    [Theory, AutoData]
+    public void PizzaCard_Raises_Clicked_Event_When_Clicked_By_User(PizzaSpecial inputPizza)
+    {
+        PizzaSpecial? clickedPizza = null;
+        var cut = Render(@<PizzaCard Special="inputPizza" OnClick="pizza => clickedPizza = pizza" />);     
+
+        cut.Find("li").Click();
+
+        clickedPizza.Should().Be(inputPizza);
+    }`
+- `
+   [Theory]
+    [InlineData(".sorted-by", true)]
+    [InlineData(".sorted-by-desc", false)]
+    public void DataTableHeader_Adds_Sort_Css_Class_To_Sorted_Column(string expectedCssClass, bool isAscendingSort)
+    {
+        // Render DataTableHeader with sortBy set to last column
+        var cut = Render(@<DataTableHeader TItem="WeatherForecast" 
+                                           SortBy=@(("Summary", isAscendingSort)) />); 
+        
+        // Verify the correct column has the expected css class added
+        cut.FindAll(expectedCssClass)
+            .Should()
+            .ContainSingle()
+            .Which
+            .TextContent
+            .Should()
+            .Be("Summary");
+    }
+- `
+Testing with regex rules
+  <div id:regex="[\d\w-]+" aria-labelledby:regex="[\d\w-]+" class="Accordion-panel" hidden="">
+`
 
 ##### NoJS BUnit testing
 - There is an image in the project, and a test component showing the difference in rendering between prerender, static/nojs, and full render.
@@ -365,7 +477,26 @@ Prerender is required to get any html NoJS but prerendering with JS Enabled retu
 The rendering happens in a different order if there is JS. 
 This means we need to specifically test in a Static rendermode, or control which lifecycle stages occur
 
-###### Attempted
+
+
+##### Additional information of BUnit NoJS Lifecycle testing limitation
+
+
+
+###### BUnit nojs graveyard
+- anglesharp and building the program.cs in different ways -> just use playwright
+- builder.OpenComponent<JSTestSetupTestComponent>(0);
+- noContextNeeded.Render(@<JSTestSetupTestComponent />);
+- `   cut.SetParametersAndRender(parameters
+       => parameters.Add(p => p.ProvidedRenderModeText,
+           "Rerender new params"));
+   string NoJSMarkupStringAfterAwait = cut.Markup;`
+- cut.OnMarkupUpdated += (sender, args) => markupStringLs.Add(cut.Markup); We dont get the same execution order so 
+we cant just interupt the process of rendering or catch it at a certain point.
+-    var diffs = cut.GetChangesSinceFirstRender();
+
+
+###### Attempted to overcome nojs testing limitiation
 - RenderInfo is just info does not change how set up
 - Capturing all changes to html with lifecycle stages, but it is different order its not just a case of additional stages if JSEnabled
 - Different ways of rendering tried
@@ -391,7 +522,7 @@ This means we need to specifically test in a Static rendermode, or control which
 }
 
 `
-###### For future consideration
+###### For future consideration Testing NoJS possible solutions
 - BaseComponent NoJS flag to pass a bool to Lifecycle stages and return straight out of them
 	- We should not change components to support testing
 	- We may still require inheriting components to have changes I expect where they use these lifecycle stages
@@ -412,37 +543,28 @@ get the actual component at the moment of that state so we will be calling addit
 	- Though maybe they can be mocked to return nothing
 
 
-##### Limitations and Issues to Return to
-- NoJS environment testing via static, selected lifecycle.
 
 
-
-#### E2E Playwright?
+#### E2E Testing: Playwright?
 - When we look at further testing we should revisit BUnit limitation and attempt to create a process for Unit 
 testing static or NoJS browser or specific lifecycle stages so that the NoJS requirement is easy to test side by side with JSEnabled.
 - Egil BUnit library creator suggests Playwright with NUnit rather than XUnit
 	- Also for us normally we would be 90% Unit 10% E2E as its packages however to enable testing NoJS along side tests for normal functioning it may need to be the other way around.
 
-#### BUnits Notes
-- Maybe instead dependency injection extension do TestContextExtensions like blazor-workshop egil git
-- We can also pick up inneffecient rendering such as
-`
-        diff.ShouldHaveSingleChange();
-        //Getting 596 this indicates I am inefficiently rerendering possibly because i should have used key?
-        //This is an advantage over just comparing string
-        var diff2 = cut.GetChangesSinceFirstRender();
-        diff.ShouldHaveSingleChange().ShouldBeRemoval(firstRemoveButton.ToString());
-`
-##### BUnit nojs graveyard
-- builder.OpenComponent<JSTestSetupTestComponent>(0);
-- noContextNeeded.Render(@<JSTestSetupTestComponent />);
-- `   cut.SetParametersAndRender(parameters
-       => parameters.Add(p => p.ProvidedRenderModeText,
-           "Rerender new params"));
-   string NoJSMarkupStringAfterAwait = cut.Markup;`
-- cut.OnMarkupUpdated += (sender, args) => markupStringLs.Add(cut.Markup); We dont get the same execution order so 
-we cant just interupt the process of rendering or catch it at a certain point.
--    var diffs = cut.GetChangesSinceFirstRender();
+#### Testing Naming/Glossary
+- T_ components purely for test
+- Mock: A "mock" is typically a test double used to verify interactions, i.e., whether a method was called with the 
+right parameters. You generally use Mock when you expect the test to assert that the behavior of the object meets 
+certain expectations (e.g., checking that a method was called a certain number of times).
+- Fake: A "fake" provides a working implementation but simplified for testing purposes. Fakes are typically used 
+when a more complex behaviour is needed, but you don't want to call the actual logic in production. They are useful 
+for things like in-memory databases or simplified versions of service methods.
+- Dummy: A "dummy" is a test double that is passed around but never actually used. For instance, you might create a 
+dummy to satisfy the constructor signature of a class when you don’t care about the object’s behavior.
+- Spy: Tracks interactions with the object while allowing the real method to execute.
+- Stub: Returns predefined responses, usually with no logic, to isolate the unit under test.
+
+#### TODO: Profiling
 
 ## Project Limitations and Potential Future Additions
 
@@ -455,6 +577,10 @@ This project is not currently a reference for how to but an example of what can 
 
 
 ### Desired Future Additions
+- NoJS has controller actions on forms, this is also triggerable in prerender, however using event listeners to the stateservices will mean:
+	- controller hit page reload
+	- but if there is js disabling interactions including or mainly post on forms would mean we don't use nojs functionality while waiting for hydration
+	- IDisableUntilHydration? or based on the generic component
 - Explore ids, will guids result in more testability or will it cause less matching and so more rendering? what is best id practice.
 	- These handles will be vital for testing
 	- also keys for lists
@@ -483,8 +609,7 @@ This project is not currently a reference for how to but an example of what can 
 	- so we dont need to check nojs before deciding if to use localstorage or hit api
 	- so we can use localstorage to reduce calls
 
-- Loading behaviour [repo link](https://github.com/patrickgod/BlazorLoadingAnimation)
-	- Loader [repo link (there a youtube vid with it i think)](https://github.com/patrickgod/BlazorLoadingAnimation) 
+
 - Components render in views are islands. They can't talk to each other. Unless
 	- Mediatr package maybe
 	- Subscribe each others events maybe
@@ -506,6 +631,7 @@ This project is not currently a reference for how to but an example of what can 
 - **important** -> prototyping tools
 
 ### Car park desired features
+- look into blazor thread safety a bit, common mistakes etc
 - storage consideration of unencrypted on the browser
 - persistence for
 	- user prefs

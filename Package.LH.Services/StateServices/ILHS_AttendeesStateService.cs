@@ -25,7 +25,10 @@ namespace Package.LH.Services.StateServices
 
         List<LH_AttendeeModel> Attendees { get;  }
 
-  
+        //qqqq
+        public event Action AttendeesChanged;
+
+
 
 
     }

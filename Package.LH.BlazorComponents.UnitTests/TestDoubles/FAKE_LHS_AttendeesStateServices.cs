@@ -20,6 +20,9 @@ namespace Package.LH.BlazorComponents.UnitTests.TestDoubles
 
         private readonly List<LH_AttendeeModel> attendees;
         private readonly TaskCompletionSource<LH_AttendeeModel> attendeeAdded = new();
+
+        public event Action AttendeesChanged;
+
         public GE_ServiceResponse<List<LH_AttendeeModel>> T_LastServiceResponse { get; set; } = new();//qqqq dont know if this is bad practice
         public FAKE_LHS_AttendeesStateServices()
         {
@@ -39,7 +42,7 @@ namespace Package.LH.BlazorComponents.UnitTests.TestDoubles
         {
 
             attendees.Add(attendee);
-
+            AttendeesChanged?.Invoke();
             return Task.FromResult(new GE_ServiceResponse<bool> { Data = true, Success = true });
         }
 
@@ -63,6 +66,7 @@ namespace Package.LH.BlazorComponents.UnitTests.TestDoubles
             if (characterToRemove != null)
             {
                 attendees.Remove(characterToRemove);//qqqq is it too much logic
+                AttendeesChanged?.Invoke();
                 return Task.FromResult(new GE_ServiceResponse<bool> { Data = true, Success = true });
             }
 

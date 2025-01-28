@@ -1,5 +1,6 @@
 ﻿@inherits GB_ComponentBase 
 @inject ILHS_AttendeesStateService LHS_AttendeesStateService
+@implements IDisposable
 <GB_ComponentWrapper WrapperTitle="Meeting">
     <GB_EditForm 
         Title=@FormTitleForAddAttendee 
@@ -37,7 +38,7 @@
     else
     {
         //Don't anything it will probably be loaded in a flash
-                
+        // and prerender is showing        
     }
 }
 else
@@ -76,12 +77,14 @@ else
      
 
 @code {
-    
+
 
     //To enable NoJS to persist with validation failed data
 
     [Parameter]
     public LH_AttendeeFormModel newAttendee { get; set; } = new();
+
+    private CancellationTokenSource? cancellationTokenSource; //if during an await for timer we destroy the component we would get a leak so we need the token
 
     private string ActionForRemoveAttendeeByTemporaryId { get; set; } = "/Attendees/NoJS/RemoveAttendeeByTemporaryId";
     private string ActionForAddAttendee { get; set; } = "/Attendees/NoJS/AddAttendee";
@@ -94,6 +97,11 @@ else
     private string FormTitleForAddAttendee { get; set; } = "Add Attendee";
 
 
+    protected override void OnInitialized()
+    {
+        cancellationTokenSource = new CancellationTokenSource();
+        LHS_AttendeesStateService.AttendeesChanged += StateHasChanged;
+    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -111,9 +119,9 @@ else
 
         //Fire forget but would have service response object
         await LHS_AttendeesStateService.AddAttendeeAsync(newAttendee);
-        
+
         newAttendee = new();
-        
+
 
     }
     // Handle invalid form submission (triggered if validation fails)
@@ -127,7 +135,9 @@ else
     {
         await LHS_AttendeesStateService.RemoveAttendeeByTemporaryIdAsync(attendee.ClientTemporaryId);
         Console.WriteLine("Blazor Component : RemoveAttendee");
-        StateHasChanged();//because we change the list in the service rather than changing a blazor parameter, blazor doesnt know its changed so we need to tell it the state has change
+
+        // qqqq instead of statehaschanged use the listetemer
+        //StateHasChanged();//because we change the list in the service rather than changing a blazor parameter, blazor doesnt know its changed so we need to tell it the state has change
     }
 
     private async Task HandleSubmit()
@@ -138,24 +148,38 @@ else
 
     }
 
-    //Not resolved the reload flash replace when introduce loader
+
     private async Task WaitHalfSecondBeforeShowingLoadingText()
     {
         if (!halfSecondPassed)
         {
-            // Wait for half a second
-            await Task.Delay(500);
-            if (!halfSecondPassed) //in case it updated e 
+            try
             {
-                halfSecondPassed = true; // Set the flag after 0.5 seconds
-                if (!LHS_AttendeesStateService.DataIsLoaded)
+                // Wait for half a second
+                await Task.Delay(500, cancellationTokenSource.Token);
+                if (!halfSecondPassed) //in case it updated e 
                 {
-                    StateHasChanged(); // Refresh UI we dont need to if already loaded
+                    halfSecondPassed = true; // Set the flag after 0.5 seconds
+                    if (!LHS_AttendeesStateService.DataIsLoaded)
+                    {
+                        StateHasChanged(); // Refresh UI we dont need to if already loaded
+                    }
                 }
+            }
+            catch (TaskCanceledException ex)
+            {
+                Console.WriteLine($"Task was cancelled: {ex.Message}");
             }
         }
     }
 
+    public void Dispose()
+    {
+        // Dispose resources
+        cancellationTokenSource?.Cancel();
+        cancellationTokenSource?.Dispose();
+        LHS_AttendeesStateService.AttendeesChanged -= StateHasChanged;
+    }
 
   
 

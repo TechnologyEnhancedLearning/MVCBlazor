@@ -19,6 +19,12 @@ namespace Package.LH.Services.StateServices
         private ILHS_AttendeesAPIEndpoints _attendeesAPIEndpoints;
         public bool DataIsLoaded { get; private set; } = false;
         private Task _loadingTask;
+
+        public event Action AttendeesChanged;//qqqq so if nojs this is called and is in controller,
+                                             /// <summary>
+                                             /// /which is fine if not nojs and Blazor interactive but if triggered during prerender. the circuit will have its own scoped version- what will happen with, there is none negligable risk of sometimes thing executing out of order, if next render stage renders data then db updated
+                                             /// So should we have a check and disable forms during prerender if jsenabled
+                                             /// </summary>
         public List<LH_AttendeeModel> Attendees { get; private set; } = new List<LH_AttendeeModel>();
 
         public LHS_AttendeesStateService(IHttpClientFactory httpClientFactory, IOptions<LHS_AttendeesAPIConfiguration> attendeesAPIConfiguration)
@@ -63,6 +69,7 @@ namespace Package.LH.Services.StateServices
                 Attendees = (await _http.GetFromJsonAsync<GE_ServiceResponse<List<LH_AttendeeModel>>>($"{_http.BaseAddress}{_attendeesAPIEndpoints.LoadAttendees}")).Data ?? new List<LH_AttendeeModel>();
                 DataIsLoaded = true; // Set the flag to true when data is loaded
                 Console.WriteLine("LHS_AttendeesStateService: LoadAttendeesAsync");
+                AttendeesChanged?.Invoke(); //qqqq
             }
         }
 
@@ -74,7 +81,7 @@ namespace Package.LH.Services.StateServices
                 Attendees.Add(attendee);
             }
             Console.WriteLine("AttendeesStateService: AddAttendee");
-
+            AttendeesChanged?.Invoke(); //qqqq
             return new GE_ServiceResponse<bool> { Data = true };
         }
 
@@ -87,7 +94,7 @@ namespace Package.LH.Services.StateServices
                 Attendees.Remove(attendee);
             }
             Console.WriteLine("AttendeesStateService : Removed");
-
+            AttendeesChanged?.Invoke(); //qqqq 
             return new GE_ServiceResponse<bool> { Data = true };
         }
 
