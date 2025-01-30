@@ -17,5 +17,7 @@ namespace LH.DB.API.Data
         public void AddCharacterToCartoon(int cartoonId, GE_CharacterModel character);
 
         public void ReassignListGroupPeopleIds<T>(List<GE_GroupBase<T>> groups) where T : IGE_Person;
+
+        public string ClickCount { get; set; }
     }
 }

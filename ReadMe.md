@@ -233,6 +233,8 @@ loading on async parts from webassembly kicking in, webassembly hydration and as
 complete view. But removing nojs prerendered html to place a loader to put back identical html do not seem the 
 best experience and instead relying on prerender in most cases will be best. 
 
+Our stateservices because the listeners wont be used in nojs controller actions so they will need to return data as well as update data and trigger all listeners to refetch it.
+
 ### Further Information
 The project did have all the view components in and css in previously. 
 It has been refactored out for convenience mostly but did work. See [Some commit may need reverting but can be found in older git repo in previous commits](https://github.com/TechnologyEnhancedLearning/MVCWebApp)

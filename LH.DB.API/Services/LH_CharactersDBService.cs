@@ -10,7 +10,7 @@ namespace LH.DB.API.Services
     public class LH_CharactersDBService : IGS_CharactersDBService
     {
         private readonly ISimulatedDatabase _database;
-        private readonly List<GE_CharacterModel> _characters;
+        //private readonly List<GE_CharacterModel> _characters;
 
         public LH_CharactersDBService(ISimulatedDatabase database)
         {

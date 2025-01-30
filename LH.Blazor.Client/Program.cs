@@ -8,6 +8,7 @@ using Package.Shared.Services.StateServices;
 using Package.Shared.BlazorComponents.DependencyInjection;
 using Package.LH.BlazorComponents.DependencyInjection;
 using Microsoft.AspNetCore.Components;
+using System.Diagnostics;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
@@ -52,6 +53,8 @@ builder.Services.AddSingleton<IGS_JSEnabled>(sp =>
 //!!Leave in tested in release mode but based on stack overflow expect publishing issues tree shaking again - though expect better solution is the assemblies creation in server proj!!
 
 //Want to pass a configuration that is a configuration just of what is relevant to the package. And interface to error in the server by not fitting appsettings.
+
+Debug.WriteLine("Wasm rebuilding services");
 builder.Services.LHS_AddConfiguration(builder.Configuration, "APIs:LH_DB_API");
 builder.Services.LHS_AddStateServices();
 

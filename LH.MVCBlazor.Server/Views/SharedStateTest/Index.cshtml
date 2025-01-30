@@ -1,0 +1,22 @@
+﻿@model AttendeesViewModel
+<h1> View rendered. 2 different component tags on same page. Controller scoped prerender will be same scoped service. WASM will not</h1>
+
+<h3>MVC Button, that hits the controller, causes view refresh and therefore breaks the circuit in the wasm due to the tab/page refresh the wasm reloads and state data is lost</h3>
+
+
+<form action="@Url.Action("IncrementControllerButtonHitCount", "SharedStateTest")" method="post">
+        <button type="submit">hit the controller for something, hit this many times : <strong>@ViewBag.Count</strong></button>
+</form>
+
+
+
+
+<h3>View Rendered Component 1</h3>
+<component type="typeof(LHB_Attendees_AddRemoveListForm)"
+           param-newAttendee="@Model.LH_AttendeeFormModel"
+           render-mode="WebAssembly" />
+
+<h3>View Rendered Component 2</h3>
+<component type="typeof(LHB_Attendees_AddRemoveListForm)"
+           param-newAttendee="@Model.LH_AttendeeFormModel"
+           render-mode="WebAssembly" />

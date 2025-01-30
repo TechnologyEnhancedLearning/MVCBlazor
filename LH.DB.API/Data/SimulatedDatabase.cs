@@ -11,6 +11,8 @@ namespace LH.DB.API.Data
 
         public List<GE_CartoonModel> Cartoons { get; private set; }
         public List<LH_MeetingModel> Meetings { get; private set; }
+        public string ClickCount { get; set; } = "0";
+
         public SimulatedDatabase()
         {
             Cartoons = new List<GE_CartoonModel>();
