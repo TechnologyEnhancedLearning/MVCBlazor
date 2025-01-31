@@ -9,7 +9,7 @@ namespace Package.Shared.Services.Interfaces
 {
     public interface IT_CounterDBService
     {
-        public Task<GE_ServiceResponse<string>> SaveCountToDB(string count);
+        public Task<GE_ServiceResponse<string>> SetCountInDB(string count);
         public Task<GE_ServiceResponse<string>> GetCountFromDB();
     }
 }

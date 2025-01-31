@@ -26,7 +26,7 @@ namespace Package.Shared.Services.Configuration.CounterConfiguration
 
     public class T_CounterAPIEndpoints : IT_CounterAPIEndpoints
     {
-        public string SaveCountToDB { get ; set ; }
+        public string SetCountInDB { get ; set ; }
         public string GetCountFromDB { get ; set ; }
     }
 }

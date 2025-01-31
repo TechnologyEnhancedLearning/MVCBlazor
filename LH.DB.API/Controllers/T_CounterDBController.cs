@@ -6,7 +6,7 @@ using Package.Shared.Services.Interfaces;
 namespace LH.DB.API.Controllers
 {
 
-
+   
     [ApiController]
     [Route("api/lh-db/counter")]
     public class T_CounterDBController : ControllerBase
@@ -19,27 +19,29 @@ namespace LH.DB.API.Controllers
 
         }
 
-        [HttpGet("loadCharacters")]
-        public async Task<ActionResult<GE_ServiceResponse<List<GE_CharacterModel>>>> LoadCharacters()
+        [HttpGet("GetCountFromDB")]
+        public async  Task<ActionResult<GE_ServiceResponse<string>>> GetCountFromDB()
         {
-            var result = await _charactersDbService.LoadCharactersAsync();
+            var result = await _counterDBService.GetCountFromDB();
 
             // Return a standardized ServiceResponse
-            return Ok(result);
+             return Ok(result);
+
         }
 
-        [HttpPost("replaceDBWithList")]
-        public async Task<ActionResult<GE_ServiceResponse<List<GE_CharacterModel>>>> ReplaceDBWithList([FromBody] List<GE_CharacterModel> characters)
+        [HttpPost("SetCountInDB")]
+        public async Task<ActionResult<GE_ServiceResponse<string>>> SetCountInDB([FromBody]string count)
         {
 
             // Update the database with the provided characters list
-            await _charactersDbService.ReplaceDBWithList(characters);
+            await _counterDBService.SetCountInDB(count);
 
             // Load the updated characters
-            var result = await _charactersDbService.LoadCharactersAsync();
+            var result = await _counterDBService.GetCountFromDB();
 
             // Return the updated characters in a standardized ServiceResponse
             return Ok(result);
+         
         }
 
     }

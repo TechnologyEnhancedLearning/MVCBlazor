@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Blazored.LocalStorage;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Package.Shared.Services.Configuration.CharactersConfiguration;
@@ -21,8 +22,9 @@ namespace Package.Shared.Services.DependencyInjection
         {
 
             //Add Services
+            services.AddBlazoredLocalStorage();
             services.AddScoped<IGS_CharactersStateService, GS_CharactersStateService>();
-            services.AddScoped<IT_StateCounterTestService, T_StateCounterTestService>();
+            services.AddScoped<IT_StateCounterTestService, T_StateCounterTestService>(); //qqqq but the impementation means nothing to serverside prerendering because no local storage, would we require and implementation argument, to force a good error
             return services;
         }
 

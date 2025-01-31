@@ -9,6 +9,7 @@ namespace LH.DB.API.DependencyInjection
         public static IServiceCollection LHAPI_AddDbServices(this IServiceCollection services)
         {
             //These are the default implementations
+            services.AddSingleton<IT_CounterDBService, T_CounterDBService>();
             services.AddSingleton<ILHS_AttendeesDbService, LH_AttendeesDBService>();
             services.AddSingleton<IGS_CharactersDBService, LH_CharactersDBService>();
             return services;

@@ -1,11 +1,222 @@
 ﻿@using Package.Shared.Services.StateServices.T_Services
 @inject IT_StateCounterTestService T_StateCounterTestService
-@* @implements IDisposable *@
+@implements IDisposable
+@inherits ComponentBase
+@* @inherits GB_ComponentBase - doing it in the test service for this example would generally use gb_componentbase *@
+
+
+
+<div style="padding: 2rem; margin: 2rem; border-radius: 1rem; background-color: #f0f0f0; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+    <div style="margin-bottom: 2rem;">
+        <h2 style="color: #333; margin-bottom: 1rem;">State Management Test</h2>
+        <h3>Component Created at: @ComponentLastReinitialisedAt</h3>
+        <h3>T_StateCounterTestService at: @T_StateCounterTestService.ServiceCreatedAt</h3>
+        <h3>Service made by: @T_StateCounterTestService.WhoMadeMe</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 2rem; margin-bottom: 2rem;">
+            <div style="background-color: @GenerateBackgroundColor(); white; padding: 1rem; border-radius: 0.5rem; text-align: center;">
+                <h3>Component State</h3>
+                <p style="font-size: 2rem; font-weight: bold; color: #2563eb;">@CounterStateInComponent</p>
+                <button @onclick="IncrementComponentState"
+                        style="background: #2563eb; color: white; padding: 0.5rem 1rem; border: none; border-radius: 0.25rem; cursor: pointer;">
+                    Increment Component
+                </button>
+            </div>
+
+            <div style="background-color: @GenerateBackgroundColor(); padding: 1rem; border-radius: 0.5rem; text-align: center;">
+                <h3>Service State</h3>
+                <p style="font-size: 2rem; font-weight: bold; color: #2563eb;">@CounterStateInWASMService</p>
+                <button @onclick="IncrementServiceState"
+                        style="background: #2563eb; color: white; padding: 0.5rem 1rem; border: none; border-radius: 0.25rem; cursor: pointer;">
+                    Increment Service
+                </button>
+            </div>
+
+            <div style="background-color: @GenerateBackgroundColor(); padding: 1rem; border-radius: 0.5rem; text-align: center;">
+                <h3>Storage State</h3>
+                <p style="font-size: 2rem; font-weight: bold; color: #2563eb;">@CounterStateInStorage</p>
+                <button @onclick="IncrementStorageState"
+                        style="background: #2563eb; color: white; padding: 0.5rem 1rem; border: none; border-radius: 0.25rem; cursor: pointer;">
+                    Increment Storage
+                </button>
+            </div>
+
+            <div style="background-color: @GenerateBackgroundColor(); padding: 1rem; border-radius: 0.5rem; text-align: center;">
+                <h3>DB State</h3>
+                <p style="font-size: 2rem; font-weight: bold; color: #2563eb;">@CounterStateInDB</p>
+                <button @onclick="IncrementDBState"
+                        style="background: #2563eb; color: white; padding: 0.5rem 1rem; border: none; border-radius: 0.25rem; cursor: pointer;">
+                    Increment DB
+                </button>
+            </div>
+
+            <div style="background-color: @GenerateBackgroundColor(); padding: 1rem; border-radius: 0.5rem; text-align: center;">
+                <h3>Session State : there is a blazored package for this and its unit test, will implement if useful</h3>
+
+            </div>
+
+           
+        </div>
+    </div>
+</div>
+
+
 
 
 @code
 {
-    public string CounterStateInComponent { get; set; }
 
-  qqqqqqqqqqqqqqqqqqqqqqq
+
+
+
+    /// <summary>
+    /// This component is to explore, and demonstrate state
+    /// We can use in the client to have state : *check exactly so its right*
+    /// We can store it in a session so it is : *qqqq*
+    /// We can store it in storage so it is accessible : 
+    /// We can send it to the db.
+    /// We can start a fresh every time there is a browser change
+    /// qqqqq
+    /// </summary>
+
+    public string CounterStateInComponent { get; set; } = "0";
+    public string CounterStateInDB { get; set; } = "0";
+    public string CounterStateInStorage { get; set; } = "0";
+    public string CounterStateInWASMService { get; set; } = "0";
+
+
+    public DateTime ComponentLastReinitialisedAt;
+
+    // protected override void OnInitialized()//qqqq shouldnt use both async and not ??????
+    // {
+
+    //     // T_StateCounterTestService.CountInDBChanged += TriggerStateChangeCountInDbChangeAsync;
+    //     // T_StateCounterTestService.CountInStorageChanged += TriggerStateChangeCountInStorageChangedAsync;
+    //     T_StateCounterTestService.CountInWASMServiceChanged += TriggerStateChangeCountInWASMServiceChanged;
+    //     ComponentLastReinitialisedAt = DateTime.UtcNow;
+    //     //qqqq put here a local storage to trip prerendering and example the issue
+    // }
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        T_StateCounterTestService.CountInDBChanged += TriggerStateChangeCountInDbChangeAsync;
+        T_StateCounterTestService.CountInStorageChanged += TriggerStateChangeCountInStorageChangedAsync;
+        T_StateCounterTestService.CountInWASMServiceChanged += TriggerStateChangeCountInWASMServiceChanged;
+        ComponentLastReinitialisedAt = DateTime.UtcNow;
+        //qqqq put here a local storage to trip prerendering and example the issue
+
+
+        // Trigger initial value retrieval not using the triggers to do this as will have 3 statehas changed
+        CounterStateInWASMService = T_StateCounterTestService.GetCountFromWASMService();
+
+
+        try
+        {
+            CounterStateInStorage = await T_StateCounterTestService.GetCountFromStorage();
+        }
+        catch (InvalidOperationException ex) when (ex.Message.Contains("JavaScript interop calls cannot be issued"))
+        {
+            //!!! This will be the prerender
+            var whoami = T_StateCounterTestService.WhoMadeMe;
+
+        }
+
+
+
+
+        CounterStateInDB = await T_StateCounterTestService.GetCountFromDB();
+
+    }
+
+
+
+    public void IncrementComponentState()
+    {
+        CounterStateInComponent = (int.Parse(CounterStateInComponent) + 1).ToString();
+
+    }
+
+
+
+    public void TriggerStateChangeCountInWASMServiceChanged()
+    {
+        CounterStateInWASMService = T_StateCounterTestService.GetCountFromWASMService();
+        StateHasChanged();//needed because triggered outside of render cycle in another component/service
+    }
+
+    public async void TriggerStateChangeCountInStorageChangedAsync()
+    {
+
+        CounterStateInStorage = await T_StateCounterTestService.GetCountFromStorage();
+        await InvokeAsync(StateHasChanged);//because async
+    }
+
+    public async void TriggerStateChangeCountInDbChangeAsync()
+    {
+        //await InvokeAsync(StateHasChanged);//lets not refresh everything and reget everything from the service
+
+
+
+        CounterStateInDB = await T_StateCounterTestService.GetCountFromDB();
+        await InvokeAsync(StateHasChanged);//because async
+    }
+
+    public void IncrementServiceState()
+    {
+        T_StateCounterTestService.IncrementCountInWASMService();
+        
+        //await InvokeAsync(StateHasChanged); //change to this if useful for illustration of behaviour. Will see not change then big jump as move between components.
+    }
+
+    public async Task IncrementDBState()
+    {
+        await T_StateCounterTestService.IncrementCountInDB();
+        
+        //await InvokeAsync(StateHasChanged); //change to this if useful for illustration of behaviour. Will see not change then big jump as move between components.
+    }
+
+    public async Task IncrementStorageState()
+    {
+        await T_StateCounterTestService.IncrementCountInStorage();
+        
+        //await InvokeAsync(StateHasChanged); //change to this if useful for illustration of behaviour. Will see not change then big jump as move between components.
+    }
+
+
+    public void Dispose()
+    {
+        // Unsubscribe from events to prevent memory leaks
+        T_StateCounterTestService.CountInDBChanged -= TriggerStateChangeCountInDbChangeAsync;
+        T_StateCounterTestService.CountInStorageChanged -= TriggerStateChangeCountInStorageChangedAsync;
+        T_StateCounterTestService.CountInWASMServiceChanged -= TriggerStateChangeCountInWASMServiceChanged;
+    }
+
+    // qqqq just styling for test communication
+    /// <summary>
+    /// /!!!!!!!!!!!!!!!!!!!!!!!!!
+    ///    /// //
+    /// </summary>
+
+
+    // Just for styling
+    //public int AdditionalColourStepsInt { get; set; } = 0;  // Hook this up to counts if want to see visibale difference per count change
+    public int AdditionalColourStepsInt => Int32.Parse(CounterStateInComponent) + Int32.Parse(CounterStateInDB) + Int32.Parse(CounterStateInStorage) + Int32.Parse(CounterStateInWASMService);  // Hook this up to counts if want to see visibale difference per count change
+    [Parameter] public int StartColourStepInt { get; set; } = 1;
+    private string GenerateBackgroundColor()
+    {
+        int totalColors = 20; // Fixed total variations
+        int hueStep = 18; // How much the hue shifts per step
+
+        // Combine start and additional steps
+        int ColourSteps = (StartColourStepInt + AdditionalColourStepsInt) % totalColors;
+
+        // Compute final hue
+        int hue = (ColourSteps * hueStep) % 360; // Keep hue within 0-359
+
+        int saturation = 50; // Keep it moderate
+        int lightness = 85;  // Soft pastel background
+
+        return $"hsl({hue}, {saturation}%, {lightness}%)";
+    }
+
 }

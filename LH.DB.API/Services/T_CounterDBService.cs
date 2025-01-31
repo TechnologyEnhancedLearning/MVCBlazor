@@ -23,8 +23,8 @@ namespace LH.DB.API.Services
         {
             return new GE_ServiceResponse<string> { Data = _database.ClickCount };
         }
-        [HttpGet("SaveCountToDB")]
-        public async Task<GE_ServiceResponse<string>> SaveCountToDB(string count)
+        [HttpGet("SetCountInDB")]
+        public async Task<GE_ServiceResponse<string>> SetCountInDB(string count)
         {
             _database.ClickCount = count;
             return new GE_ServiceResponse<string> { Data = _database.ClickCount };
