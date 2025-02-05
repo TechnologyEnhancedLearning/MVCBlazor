@@ -30,7 +30,7 @@ namespace Package.LH.Services.StateServices
             _attendeesAPIConfiguration = attendeesAPIConfiguration.Value;
             _attendeesAPIEndpoints = _attendeesAPIConfiguration.Endpoints.Attendees;
 
-            Debug.WriteLine(_attendeesAPIConfiguration.ClientName);//qqqq
+            Debug.WriteLine(_attendeesAPIConfiguration.ClientName);
             _http = httpClientFactory.CreateClient(_attendeesAPIConfiguration.ClientName);
             _loadingTask = LoadAttendeesAsync(true); //cant await in constuctor and often bad to load like this but we want to kick off the load from the beginning and just wait for it to finish when data requested
         }

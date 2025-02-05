@@ -1,12 +1,17 @@
-﻿@using Package.Shared.Services.StateServices.T_Services
+﻿@using Blazored.LocalStorage
+@using Package.Shared.Entities.T_Entities
+@using Package.Shared.Services.StateServices.T_Services
 @inject IT_StateCounterTestService T_StateCounterTestService
-@implements IDisposable
+@implements IAsyncDisposable 
+@inject ILocalStorageService LocalStorage 
+@*IDisposable*@
 @inherits ComponentBase
 @* @inherits GB_ComponentBase - doing it in the test service for this example would generally use gb_componentbase *@
 
 
 
 <div style="padding: 2rem; margin: 2rem; border-radius: 1rem; background-color: #f0f0f0; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+     <h3>I am a Blazor Component</h3>
     <div style="margin-bottom: 2rem;">
         <h2 style="color: #333; margin-bottom: 1rem;">State Management Test</h2>
         <h3>Component Created at: @ComponentLastReinitialisedAt</h3>
@@ -27,7 +32,7 @@
                 <p style="font-size: 2rem; font-weight: bold; color: #2563eb;">@CounterStateInWASMService</p>
                 <button @onclick="IncrementServiceState"
                         style="background: #2563eb; color: white; padding: 0.5rem 1rem; border: none; border-radius: 0.25rem; cursor: pointer;">
-                    Increment Service
+                    Increment WASM Service
                 </button>
             </div>
 
@@ -71,39 +76,31 @@
     /// <summary>
     /// This component is to explore, and demonstrate state
     /// We can use in the client to have state : *check exactly so its right*
-    /// We can store it in a session so it is : *qqqq*
+    /// We can store it in a session so it is : **
     /// We can store it in storage so it is accessible : 
     /// We can send it to the db.
     /// We can start a fresh every time there is a browser change
-    /// qqqqq
+    /// 
     /// </summary>
 
     public string CounterStateInComponent { get; set; } = "0";
     public string CounterStateInDB { get; set; } = "0";
     public string CounterStateInStorage { get; set; } = "0";
     public string CounterStateInWASMService { get; set; } = "0";
-
+    public string ComponentIdentifier { get; set; }
 
     public DateTime ComponentLastReinitialisedAt;
 
-    // protected override void OnInitialized()//qqqq shouldnt use both async and not ??????
-    // {
-
-    //     // T_StateCounterTestService.CountInDBChanged += TriggerStateChangeCountInDbChangeAsync;
-    //     // T_StateCounterTestService.CountInStorageChanged += TriggerStateChangeCountInStorageChangedAsync;
-    //     T_StateCounterTestService.CountInWASMServiceChanged += TriggerStateChangeCountInWASMServiceChanged;
-    //     ComponentLastReinitialisedAt = DateTime.UtcNow;
-    //     //qqqq put here a local storage to trip prerendering and example the issue
-    // }
 
     protected override async Task OnInitializedAsync()
     {
+        ComponentIdentifier = "Component_" + Guid.NewGuid().ToString();
 
         T_StateCounterTestService.CountInDBChanged += TriggerStateChangeCountInDbChangeAsync;
         T_StateCounterTestService.CountInStorageChanged += TriggerStateChangeCountInStorageChangedAsync;
         T_StateCounterTestService.CountInWASMServiceChanged += TriggerStateChangeCountInWASMServiceChanged;
         ComponentLastReinitialisedAt = DateTime.UtcNow;
-        //qqqq put here a local storage to trip prerendering and example the issue
+      
 
 
         // Trigger initial value retrieval not using the triggers to do this as will have 3 statehas changed
@@ -122,7 +119,7 @@
         }
 
 
-
+        var whoami2 = T_StateCounterTestService.WhoMadeMe;
 
         CounterStateInDB = await T_StateCounterTestService.GetCountFromDB();
 
@@ -164,38 +161,51 @@
     public void IncrementServiceState()
     {
         T_StateCounterTestService.IncrementCountInWASMService();
-        
+
         //await InvokeAsync(StateHasChanged); //change to this if useful for illustration of behaviour. Will see not change then big jump as move between components.
     }
 
     public async Task IncrementDBState()
     {
         await T_StateCounterTestService.IncrementCountInDB();
-        
+
         //await InvokeAsync(StateHasChanged); //change to this if useful for illustration of behaviour. Will see not change then big jump as move between components.
     }
 
     public async Task IncrementStorageState()
     {
         await T_StateCounterTestService.IncrementCountInStorage();
-        
+
         //await InvokeAsync(StateHasChanged); //change to this if useful for illustration of behaviour. Will see not change then big jump as move between components.
     }
 
 
-    public void Dispose()
+    public async ValueTask DisposeAsync()//void Dispose()
     {
-        // Unsubscribe from events to prevent memory leaks
+        // Unsubscribe from events to prevent memory leak
+
+
         T_StateCounterTestService.CountInDBChanged -= TriggerStateChangeCountInDbChangeAsync;
         T_StateCounterTestService.CountInStorageChanged -= TriggerStateChangeCountInStorageChangedAsync;
         T_StateCounterTestService.CountInWASMServiceChanged -= TriggerStateChangeCountInWASMServiceChanged;
+
+        
+
+        try
+        {
+
+            await LocalStorage.SetItemAsync($"{DateTime.Now.ToString("yyyyMMdd__HH_mm_ss_ffff")}_InsertedByComponentMethod", "Component" ?? "Unknown");
+            await T_StateCounterTestService.OnDisposeSaveObjectToStorage(count: "999", countType: "disposeTest", userName: "TestUser", typeDisposed: "Component", individualIdentifierForDisposed: ComponentIdentifier);
+            //Console.WriteLine("Component Disposing");
+        }
+        catch (Exception ex)
+        {
+            //Console.WriteLine($"Error during DisposeSaveObjectToStorage: {ex.Message}");
+        }
+        //await ValueTask.CompletedTask;// for now
     }
 
-    // qqqq just styling for test communication
-    /// <summary>
-    /// /!!!!!!!!!!!!!!!!!!!!!!!!!
-    ///    /// //
-    /// </summary>
+
 
 
     // Just for styling

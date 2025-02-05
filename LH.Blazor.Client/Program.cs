@@ -46,19 +46,6 @@ builder.Services.AddSingleton<IGS_JSEnabled>(sp =>
 
 
 
-
-//builder.Services.AddSingleton<NavigationManager>();
-
-//below works but want to try doing it via server program.cs
-
-//!!Leave in tested in release mode but based on stack overflow expect publishing issues tree shaking again - though expect better solution is the assemblies creation in server proj!!
-
-//Want to pass a configuration that is a configuration just of what is relevant to the package. And interface to error in the server by not fitting appsettings.
-
-// library itself suggests putting it in server side i think it may need to be wrapped in something else can protect from prerendering issue
-//builder.Services.AddBlazoredLocalStorage(); //Not in the serivce collection! because server side prerender can not use it qqqq some exploration here will be needed
-
-Debug.WriteLine("Wasm rebuilding services");
 builder.Services.LHS_AddConfiguration(builder.Configuration, "APIs:LH_DB_API");
 builder.Services.LHS_AddStateServices();
 

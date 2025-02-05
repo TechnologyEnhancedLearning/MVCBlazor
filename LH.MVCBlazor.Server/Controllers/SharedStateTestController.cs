@@ -9,12 +9,13 @@ namespace LH.MVCBlazor.Server.Controllers
     public class SharedStateTestController : Controller
     {
         private readonly ILHS_AttendeesStateService _attendeesStateService;
-        private readonly IT_StateCounterTestService t_stateCounterTestService;
-        private static string CounterStateInController = "0";
+        private readonly IT_StateCounterTestService _t_stateCounterTestService;
+        private string CounterStateInController = "0";
 
         //This will be the prerender service only
         public SharedStateTestController(ILHS_AttendeesStateService attendeesStateService, IT_StateCounterTestService t_stateCounterTestService)
         {
+            _t_stateCounterTestService = t_stateCounterTestService;
             _attendeesStateService = attendeesStateService;
         }
 
@@ -24,7 +25,7 @@ namespace LH.MVCBlazor.Server.Controllers
             // Load the list of attendees from the service
             var viewModel = new AttendeesViewModel { Attendees = (await _attendeesStateService.GetAttendeesAsync()).Data };
             ViewBag.CounterStateInController = CounterStateInController;
-            //TODO qqqqqqq 
+            ViewBag.CounterStateInServerService = _t_stateCounterTestService.GetCountFromServerService();
             return View(viewModel);
         }
 
@@ -34,12 +35,14 @@ namespace LH.MVCBlazor.Server.Controllers
             CounterStateInController = (int.Parse(CounterStateInController) + 1).ToString();
             return RedirectToAction("Index"); // Reload the view
         }
-        public ActionResult IncrementControllerState()
+
+        public ActionResult IncrementServiceState()
         {
 
-            CounterStateInController = (int.Parse(CounterStateInController) + 1).ToString();
+            _t_stateCounterTestService.IncrementCountInServerService();
             return RedirectToAction("Index"); // Reload the view
         }
+
 
     }
 }

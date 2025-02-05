@@ -24,7 +24,7 @@ namespace Package.Shared.Services.DependencyInjection
             //Add Services
             services.AddBlazoredLocalStorage();
             services.AddScoped<IGS_CharactersStateService, GS_CharactersStateService>();
-            services.AddScoped<IT_StateCounterTestService, T_StateCounterTestService>(); //qqqq but the impementation means nothing to serverside prerendering because no local storage, would we require and implementation argument, to force a good error
+            services.AddScoped<IT_StateCounterTestService, T_StateCounterTestService>(); // but the implementation means nothing to serverside prerendering because no local storage, would we require and implementation argument, to force a good error
             return services;
         }
 
