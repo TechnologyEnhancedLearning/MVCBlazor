@@ -233,6 +233,50 @@ loading on async parts from webassembly kicking in, webassembly hydration and as
 complete view. But removing nojs prerendered html to place a loader to put back identical html do not seem the 
 best experience and instead relying on prerender in most cases will be best. 
 
+Our stateservices because the listeners wont be used in nojs controller actions so they will need to return data as well as update data and trigger all listeners to refetch it.
+
+### Explanation of WebAssembly state and MVC
+
+WebAssembly prerender has been identified as the rendermode we will use.
+It could have interactive auto added later.
+
+Prerender allows html to be rendered where there isn't JS.
+Webassembly allows users browsers to do the heavy lifting and be quicker.
+
+The webassembly uses different instantiations of the dependency injected services than prerender. Prerender runs life cycle stages including async to produce 
+static html serverside. This is then replaced by webassembly produced interactive components, pages, using the web assembly client project scoped services.
+
+The webassembly in the browser reruns for new windows, new tabs, and on page request.
+When it reruns the services are recreated, any state in disposed services and components is lost.
+
+For pure blazor rerunning the webassembly won't happen very often because blazor sites are typically single page applications.
+
+In our context we will mix blazor components into views. 
+State lifetimes
+	- new tab, new state
+	- mvc component that hits a controller, new state for all blazor components on this page and its view
+	- multiple blazor components added via a component tag on the view will (if sharing a service and listening to it) share state
+	- blazor components in blazor components will share service state
+	- two blazor components in a view via component tags will not be sharing component state, nor would they in blazor pages this is done via services
+
+
+*local browser storage is not secure its text so should not be private data, it is per browser per computer, not stored if incognito, unlike session storageits 
+indefinate, still 5mb accessible across all tabs and windows of the same domain (so different wasm circuits could share it to communicate, though to keep up to 
+date would mean polling so its not effective like a service for communication). Requires JS. It can be encrypted but this seems not to make much difference. The patrick god e-commerce repo does encrypt but other educators suggest for wasm its fairly redundant*
+
+Persisting state options
+- if navigating pages via mvc or refreshing a page when hitting a controller
+	- we could on disposing services and components call a dispose method and store to localstorage in the browser
+	- we could store into local storage partially completed data as we go
+	- on dispose we could submit some data or ask for an are you sure
+	- the service in the controller could get data inputted on dispose of components
+		- because the webassembly service could save to a database and the newly created controller service would get the data on inititalisation
+			- these are async however so there may be nuance
+	- we could put into components via their parameters incomplete data
+	- hitting controllers could pass the model back to persist and ensure components take that model to start them too
+	- singleton state container, because client is in browser webassembly singletons are per browsers so less scope that server ones so could be used for state peristance
+
+
 ### Further Information
 The project did have all the view components in and css in previously. 
 It has been refactored out for convenience mostly but did work. See [Some commit may need reverting but can be found in older git repo in previous commits](https://github.com/TechnologyEnhancedLearning/MVCWebApp)
@@ -586,6 +630,66 @@ dummy to satisfy the constructor signature of a class when you don’t care abou
 
 #### TODO: Profiling
 
+
+
+
+### State & Local Storage
+
+The project has test components illustrating state behaviour. By putting T_StateCounterTest in T_ShowEveryWhere and exploring the webapp you can
+see how:
+- Going to an MVC page resets the WASM and scoped WASM service state is lost
+- Between blazor pages state is maintained, even if going from a WASM page the Blazor Server page and back you will see serverside state and client state.
+- The teardown can be seen to happen faster than dispose outside of a Blazor SPA and so should not be relied on for components and has not been seen for WASM services**
+- we do not see service disposal but we do see new service creation
+The service being used is T_StateCounterTestService
+
+The exploration in this project was to see if ondispose with blazored.localstorage could store, and restore state to services where moving between blazor and MVC components destroyed scoped services.
+- This was not achieved. 
+- It is possible that if this was desired that investigating how the client is creating a root component for the DI container, is it in layout, and can adding a component outside of @RenderBody()
+may achieve it. It may also create a requirement for thorough control of disposal so there is a need to fully understand the implications.
+- Mediatr in an api tracking if services are being unused or detecting tear down from component disposal would not be a good solution
+- Constant storage on blur for example seems more appropriate
+- if putting Blazor in multipage forms for example we could
+	- use local storage
+	- pass models back and forth through controllers to blazor parameters
+	- integrate with existing controller services that use and use redis. This may require no blazor changes if on moving to the next form page it is lifting data off the page.
+- the dispose behaviour was also tried in a seperate project set up to be purely wasm prerender and mvc without everything else, the behaviour was the same using an app.razor with @* No-op App component *@
+- there are javascript methods that can call jsinvokable attributed blazor, so we could make disposal happen that way, or storage etc but this seems like both an unreliable and potentially problematic approach generally.
+- not expected to solve any issues but easy to try so singletons were used client side to see if could get different behaviour
+- [stack overflow someone who want to save to storage on refresh, via javascript calling a custom function i could interface and have own dispose method](https://stackoverflow.com/questions/60085858/how-to-detect-a-full-page-refresh-reload-in-blazor)
+
+#### Local Storage
+
+The package used and recommended is Blazored.LocalStorage.
+There is also a package for unit testing it. Which isnt in the project but if we use Blazored.LocalStorage we should use both.
+( [repo readme bottom about extension blazored.localstorage unit testing example](https://github.com/Blazored/LocalStorage/pkgs/nuget/Blazored.LocalStorage.TestExtensions#testing-with-bunit)
+Local storage is per browser and isn't secure, and even encrypted as people do it isn't really secure.
+
+We may want to put the storage is in a service to manage it. We may even want to make that service potentially a singleton on the WASM side.
+
+We do put the storage server side too, but it cannot use it as it is browser side so we need to
+ - try catch
+ - check our whoami bool in the js_enabled service (needs a rename now)
+ - provide and alternative implementation serverside such as potentially reddis
+ - most likely we will not use storage much and will use redis which both server and client will interact with the same.
+ 
+ If we took storage further we would want 
+- some standard structure for user, time, etc.
+- something for cleaning it
+- where its collected data, not dirty or incomplete, we will need to track if its submitted to the db and which is source of truth
+- this project did not explore the example of offline behaviour of using browser storage to enable apps to persist until reconnection and work
+	- its not a desired feature though, maybe, possibly, there is some opportunity here to meet some nojs intentions???
+ 
+##### BLAZORED.LOCALSTORAGE
+- recommended in a few places
+- most popular package
+- ~is others with encryption~ not for wasm
+- is others with strong typing
+- local storage needs to be cleared when stale so doesn't stuff up the browser (5mb browsers often have)
+- remember private browsing or seperate machines and no storage
+- LocalStorage is still isolated per device and browser
+
+
 ## Project Limitations and Potential Future Additions
 
 ### What does it not show
@@ -613,30 +717,17 @@ This project is not currently a reference for how to but an example of what can 
 			KeyProvider="(item) => item" `
 - Add ErrorBoundary example in somewhere
 - Extract the add person to a generic component - We would also need the JS supported inline validator so do as an addition
-- StateService 
-	- should have an Event Action Subscription and handling it all in the service ensure no list of data in the components
-		- Different components via MVC view means losing the circuit and the state but only needed for component life 
-	- Revisit stateservices to include  public event Action AttendeesChanged; subscribe statehaschanged to this
-		- all handling occuring in state service
-		- added some failing unit tests
-		- also need to check enough use of @key
-		- also need to check no rebuilding the list
-		- also it may not be possible and what currently seems an inefficiency maybe okay
-			- yet if the out of the box list component can do it, we want ours to be just as efficient
+- ~~~StateService~~~ 
 - Auth headers and auth tokens in blazor see [This patrick god ecommerce repo does have and there is a confluence project for how to set it up](https://github.com/patrickgod/BlazorEcommerce)
-- blazorisedStorage
-	- nojs api calls from controller
-	- so we dont need to check nojs before deciding if to use localstorage or hit api
-	- so we can use localstorage to reduce calls
-
-
-- Components render in views are islands. They can't talk to each other. Unless
-	- Mediatr package maybe
-	- Subscribe each others events maybe
-	- May need a dispose function so state not lost but instead saved on destruction
-	- Or Blazorised storage may be the actual best solution
-
-
+- ~~~blazorisedStorage~~~ done
+- ~~~Components render in views are islands. Look at options for connecting them~~~
+	- covered in localstorage current expectation hook into existing redis. pass model to params and then not much requirement past that in current thinking.
+- redis with blazor multi page form or some other example
+- Created unit test to see if single node changes for list for efficient rendering possible. Currently failing see if acheivable
+	- also it may not be possible and what currently seems an inefficiency maybe okay
+		- also need to check enough use of @key
+		- yet if the out of the box list component can do it, we want ours to be just as efficient
+		- due to ref types? would we choose where to extract a value potentially
 
 ### Desired For Different Prototype Or Branch
 - packaging (may find package building package options removes need for service collections)
@@ -652,12 +743,10 @@ This project is not currently a reference for how to but an example of what can 
 
 ### Car park desired features
 - look into blazor thread safety a bit, common mistakes etc
-- storage consideration of unencrypted on the browser
 - persistence for
 	- user prefs
 	- auth tokens
 	- incomplete forms
-- we use reddis already explore this with blazor as they do get mentioned together
 - offline capabity - WASM gives us a certain amount of offline capability. Can we weight that up as more important than nojs capability.
 - fluxor and redux state management mentioned in a course to look at for complex requirements
 - i doubt its possible however if a user had nojs and we provided a button to download the wasm and instructions how 

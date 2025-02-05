@@ -1,0 +1,83 @@
+﻿@using Package.Shared.BlazorComponents.T_Components
+@using Package.Shared.Services.StateServices.T_Services
+@inject IT_StateCounterTestService T_StateCounterTestService /*same as controllers*/
+@model AttendeesViewModel
+<p>This view page has 2 blazor components rendered via the component tag. 
+    The page creates a root component (to my understanding) and the page shares WASM and so scoped services. 
+    Going to blazor pages form Blazor pages via blazor page navigation maintains this (not navigation manager in this example just @Html.Encode("@page \"/Attendees/InteractiveAuto-BlazorPage\"")).
+    Redirects and refreshes via mvc or normal none blazor navigation tear down the pages so fast that we get component onasyncdispose called but the page can be torn down before they are all called. 
+    The service onasyncdispose is not called (this may be something to do with blazor creating a root component for the components in the mvc view and that 'virtual' component not being torn down????').
+    Returning to the page initialises new scoped services but we have never had a dispose on them.
+</p>
+<h3></h3>
+<h3>Stick a debugger in initialise to see prerender</h3>
+<h3></h3>
+
+
+
+<div style="background-color: #2563eb; padding: 1.5rem; border-radius: 0.5rem; text-align: center;">
+    <h3 style="background-color:white;">This element is made by the view</h3>
+    <h3 style="background-color:white;">Controllers being transcient we do not expect these numbers to increase unless we did something drastic</h3>
+    <div style="display: flex; justify-content: space-around; margin-bottom: 1.5rem;">
+        <div>
+            <h3 style="color: white; margin-bottom: 0.5rem;">Server Service Count</h3>
+            <p style="font-size: 2rem; font-weight: bold; color: white;">@ViewBag.CounterStateInServerService</p>
+        </div>
+        <div>
+            <h3 style="color: white; margin-bottom: 0.5rem;">Controller CounterStateInController</h3>
+            <p style="font-size: 2rem; font-weight: bold; color: white;">@ViewBag.CounterStateInController</p>
+        </div>
+    </div>
+
+    <form action="@Url.Action("IncrementControllerState", "SharedStateTest")" method="post" style="margin-bottom: 1rem;">
+        <button type="submit" style="
+           background: white;
+           color: #2563eb;
+           padding: 0.75rem 1.5rem;
+           border: none;
+           border-radius: 0.25rem;
+           font-weight: bold;
+           width: 100%;
+           cursor: pointer;">
+            Increment Controller State
+        </button>
+    </form>
+
+    <form action="@Url.Action("IncrementServiceState", "SharedStateTest")" method="post">
+        <button type="submit" style="
+           background: white;
+           color: #2563eb;
+           padding: 0.75rem 1.5rem;
+           border: none;
+           border-radius: 0.25rem;
+           font-weight: bold;
+           width: 100%;
+           cursor: pointer;">
+            Increment Service State
+        </button>
+    </form>
+</div>
+
+@* <h3>(webassembly) View Rendered Shared Test State Component 1 </h3>
+<component type="typeof(T_StateCounterTest)" 
+           param-StartColourStepInt="1"
+           render-mode="WebAssembly" />
+<h3>(webassembly) View Rendered Shared Test State Component 2</h3>
+<component type="typeof(T_StateCounterTest)"
+           param-StartColourStepInt="2"
+           render-mode="WebAssembly" /> *@
+
+<h3>(webassembly prerendered) View Rendered Shared Test State Component 3</h3>
+<component type="typeof(T_StateCounterTest)"
+           param-StartColourStepInt="3"
+           render-mode="WebAssemblyPrerendered" />
+@* <h3>View Rendered Component 1</h3>
+<component type="typeof(LHB_Attendees_AddRemoveListForm)"
+           param-newAttendee="@Model.LH_AttendeeFormModel"
+           render-mode="WebAssembly" />
+
+<h3>View Rendered Component 2</h3>
+<component type="typeof(LHB_Attendees_AddRemoveListForm)"
+           param-newAttendee="@Model.LH_AttendeeFormModel"
+           render-mode="WebAssembly" /> *@
+<component type="typeof(T_ShowEveryWhere)" render-mode="WebAssemblyPrerendered" />

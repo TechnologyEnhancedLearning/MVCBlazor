@@ -1,4 +1,5 @@
-﻿@model CharactersViewModel
+﻿@using Package.Shared.BlazorComponents.T_Components
+@model CharactersViewModel
 @{
 
     Microsoft.AspNetCore.Mvc.Rendering.RenderMode renderMode = Microsoft.AspNetCore.Mvc.Rendering.RenderMode.Static;
@@ -7,7 +8,7 @@
         // Parsing succeeded
         Console.WriteLine($"Render mode is: {renderMode}");
     }
-    else
+    
     {
         // Parsing failed, use a default
         renderMode = Microsoft.AspNetCore.Mvc.Rendering.RenderMode.Static; // Default value
@@ -30,3 +31,4 @@
 
 
 
+<component type="typeof(T_ShowEveryWhere)" render-mode="WebAssemblyPrerendered" />

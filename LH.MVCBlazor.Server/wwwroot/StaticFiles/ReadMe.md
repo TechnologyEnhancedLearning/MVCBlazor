@@ -17,12 +17,12 @@ SSL certificate via the browser. In the end we didnt need to change appsettings
 
 1. You need .net 8
 **DONT run https**
-1. Before doing anything look at launch setting and appsetting and the hardcoded number
+1. Before doing anything look at launch setting and appsetting in the API project and the hardcoded number
 	- pin them watch for changes these changes may need applying across the project
 	- watch iisetting in server.properites (changes made we will want to propigate with find replace)
 	- watch git changes (some things may be ignored)
 	- watch browser console error
-1. run each iis express. ~~one at time~~. look in git compare to see changes to launch files.
+1. run each **IIS express**. ~~one at time~~. look in git compare to see changes to launch files.
 	1. api
 		- revert changes back when first run overwrites
 	**Dont run the server project separately** (- if you do you will need to revert/update ssl port number)
@@ -31,13 +31,11 @@ SSL certificate via the browser. In the end we didnt need to change appsettings
 	1. ~~client~~
 		- ~~revert changes back when first run overwrites~~
 1. then in visual studio 
-	- drop down on run button
-	- multiple startup projets
-		- multiple launch 
-			1. API (start)
-			1. Server (start)
+	- Run drop dwon -> Configure Startup Projects -> Multiple Startup Projects. Set the following start order and targets:
+		1. API | Start | IIS Express
+		1. Server | Start | IIS Express
 		- ![Startup Image](startup.gif)
-1. Appsettings change baseUrl to your local host - BaseUrl stuff is just for ease in places
+1. ~~Appsettings change baseUrl to your local host - BaseUrl stuff is just for ease in places~~
 	- we are launching IIS so in launch and apisettings those are the settings that are important http, https profile shouldnt matter
 1. Clean build
 	- take note of routes in launch?
@@ -234,6 +232,8 @@ result in seeing (if very slow connect): blank loading of prerender, prerender, 
 loading on async parts from webassembly kicking in, webassembly hydration and async complete resulting in 
 complete view. But removing nojs prerendered html to place a loader to put back identical html do not seem the 
 best experience and instead relying on prerender in most cases will be best. 
+
+Our stateservices because the listeners wont be used in nojs controller actions so they will need to return data as well as update data and trigger all listeners to refetch it.
 
 ### Further Information
 The project did have all the view components in and css in previously. 

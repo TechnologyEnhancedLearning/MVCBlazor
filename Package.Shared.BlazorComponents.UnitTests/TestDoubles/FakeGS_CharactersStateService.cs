@@ -65,7 +65,7 @@ namespace Package.Shared.BlazorComponents.UnitTests.TestDoubles
             if (characterToRemove != null)
             {
                 CharactersChanged?.Invoke();
-                characters.Remove(characterToRemove);//qqqq is it too much logic
+                characters.Remove(characterToRemove);
                 return Task.FromResult(new GE_ServiceResponse<bool> { Data = true, Success = true });
             }
           
