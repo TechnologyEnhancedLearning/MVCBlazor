@@ -23,7 +23,7 @@ namespace LH.DB.API.Services
         {
             return new GE_ServiceResponse<string> { Data = _database.ClickCount };
         }
-        [HttpGet("SetCountInDB")]
+        [HttpPost("SetCountInDB")]
         public async Task<GE_ServiceResponse<string>> SetCountInDB(string count)
         {
             _database.ClickCount = count;

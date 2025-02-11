@@ -10,9 +10,33 @@ using Package.Shared.BlazorComponents.DependencyInjection;
 using Package.Shared.Services.ComponentServices;
 using Package.Shared.Services.DependencyInjection;
 using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.Logging;
+using Serilog;
+using Serilog.Events;
+//using Serilog.Templates;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddRazorComponents()
+builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+builder.Logging.ClearProviders();
+Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration)
+    .CreateLogger();
+/*
+ Serverside is the prerender
+It wont browserConsole log
+We can instead have a logging service and hit an api if we want clientside browser logs from wasm and server side logs centralised
+
+ */
+
+
+// Add Serilog to logging providers
+builder.Logging.AddSerilog(Log.Logger, dispose: true);
+
+// Capture big failures
+try
+{
+
+    builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents()
                 .AddCircuitOptions(opt => opt.DetailedErrors = true)
                 .AddInteractiveWebAssemblyComponents();
@@ -118,3 +142,12 @@ app.MapRazorComponents<App>()
 app.MapFallbackToController("Blazor", "Home"); 
 
 app.Run();
+}
+catch (Exception ex)
+{
+    Log.Fatal(ex, "Application terminated unexpectedly");
+}
+finally
+{
+    Log.CloseAndFlush(); // Ensure logs are flushed before exit
+}

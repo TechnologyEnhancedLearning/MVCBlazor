@@ -13,6 +13,8 @@ namespace LH.DB.API.Data
         // Property to access the list of meetings
         List<LH_MeetingModel> Meetings { get; }
 
+        List<string> Logs { get; set; }
+
         public void AddAttendeeToMeeting(int meetingId, LH_AttendeeModel attendee);
         public void AddCharacterToCartoon(int cartoonId, GE_CharacterModel character);
 

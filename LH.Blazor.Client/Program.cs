@@ -10,8 +10,31 @@ using Package.LH.BlazorComponents.DependencyInjection;
 using Microsoft.AspNetCore.Components;
 using System.Diagnostics;
 using Blazored.LocalStorage;
+using Serilog;
+using Serilog.Core;
+using Serilog.Extensions.Logging;
+using Serilog.Configuration;
+
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Hosting;
+
+
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
+//move up qqqq
+// Add Configuration from appsettings.json
+builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+
+builder.Logging.ClearProviders();
+Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration)
+    .CreateLogger();
+
+// Add Serilog to logging providers
+builder.Logging.AddSerilog(Log.Logger, dispose: true);
+
+//for really bad fails
+try { 
 
 string LH_DB_API_BaseURL;
 string LH_DB_API_ClientName;
@@ -56,8 +79,19 @@ builder.Services.GS_AddStateServices();
 
 builder.Services.LHB_RegisterAllBlazorPageRoutes();
 
+//move up qqqq
 // Add Configuration from appsettings.json
-builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+//builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 
 
 await builder.Build().RunAsync();
+}
+catch (Exception ex)
+{
+    // qqqqqq but where would this log to ... we need a service and an api post... but that may rely on everything else having succeeded
+    Log.Fatal(ex, "Application terminated unexpectedly");
+}
+finally
+{
+    Log.CloseAndFlush(); // Ensure logs are flushed before exit
+}

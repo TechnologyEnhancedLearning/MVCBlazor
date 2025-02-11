@@ -1,19 +1,13 @@
 ﻿using Blazored.LocalStorage;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Microsoft.JSInterop;
 using Package.Shared.Entities.Communication;
 using Package.Shared.Entities.T_Entities;
 using Package.Shared.Services.ComponentServices;
 using Package.Shared.Services.Configuration.CounterConfiguration;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Net.Http.Json;
-using System.Text;
-using System.Threading.Tasks;
-using static Package.Shared.Entities.T_Entities.T_LocalStorage;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+using Serilog; //qqqq i hate i am sepcifying the logger in the package
+
 
 
 namespace Package.Shared.Services.StateServices.T_Services
@@ -36,8 +30,14 @@ namespace Package.Shared.Services.StateServices.T_Services
         public string CountInWASMService { get; set; } = "0";
         public string CountInServerService { get; set; } = "0";
         public string ServiceIdentifier { get; set; }
-        public T_StateCounterTestService(IHttpClientFactory httpClientFactory, IOptions<T_CounterAPIConfiguration> t_CounterAPIConfiguration, ILocalStorageService localStorage, IGS_JSEnabled gS_JSEnabled) 
+
+        private readonly ILogger<T_StateCounterTestService> _logger;
+        private readonly Serilog.ILogger _serilogger;
+        
+        public T_StateCounterTestService(IHttpClientFactory httpClientFactory, IOptions<T_CounterAPIConfiguration> t_CounterAPIConfiguration, ILocalStorageService localStorage, IGS_JSEnabled gS_JSEnabled, ILogger<T_StateCounterTestService> logger) 
         {
+            _logger = logger;
+            _serilogger = Log.ForContext<T_StateCounterTestService>(); // Create a logger 
             ServiceIdentifier = "Service_" + Guid.NewGuid().ToString();
 
             GS_JSEnabled = gS_JSEnabled;
@@ -125,11 +125,29 @@ namespace Package.Shared.Services.StateServices.T_Services
             return await GetCountFromStorage();
         }
 
+        public class WeatherForecast
+        {
+            // The date for the weather forecast
+            public DateTime Date { get; set; }
 
+            // Temperature in Celsius
+            public int TemperatureC { get; set; }
+
+            // Temperature in Fahrenheit (computed property)
+            public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+
+            // Weather summary (e.g., "Sunny", "Rainy", etc.)
+            public string Summary { get; set; }
+        }
 
         public async Task<string> GetCountFromDB()
         {
-            var count = (await _http.GetFromJsonAsync<GE_ServiceResponse<string>>($"{_http.BaseAddress}{_counterAPIEndpoints.GetCountFromDB}")).Data ?? "0";
+
+        
+            var result = (await _http.GetFromJsonAsync<GE_ServiceResponse<string>>($"{_http.BaseAddress}{_counterAPIEndpoints.GetCountFromDB}"));
+        
+            var count = result.Data ?? "0";
+  
             return count;
         }
 
