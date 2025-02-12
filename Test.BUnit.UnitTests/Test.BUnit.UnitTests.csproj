@@ -20,6 +20,13 @@
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 			<PrivateAssets>all</PrivateAssets>
 		</PackageReference>
+		<PackageReference Include="Serilog" Version="4.2.0" />
+		<PackageReference Include="Serilog.Expressions" Version="5.0.0" />
+		<PackageReference Include="Serilog.Extensions.Logging" Version="8.0.0" />
+		<PackageReference Include="Serilog.Formatting.Compact" Version="3.0.0" />
+		<PackageReference Include="Serilog.Settings.Configuration" Version="8.0.0" />
+		<PackageReference Include="Serilog.Sinks.InMemory" Version="0.13.0" />
+		<PackageReference Include="Serilog.Sinks.XUnit" Version="2.0.4" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -38,6 +45,8 @@
 	  <ProjectReference Include="..\Package.Shared.Services\Package.Shared.Services.csproj" />
 	  <ProjectReference Include="..\Test.Components\Test.Components.csproj" />
 	</ItemGroup>
+
+	<ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="https://json.schemastore.org/artifacthub-repo.json" /></VisualStudio></ProjectExtensions>
 
 
 

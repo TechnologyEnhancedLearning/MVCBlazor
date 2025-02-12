@@ -1,0 +1,63 @@
+﻿@using Package.Shared.BlazorComponents.T_Components
+@using Xunit.Abstractions
+
+
+@code {
+
+    //!!!!this way qqqq?
+        /*
+     *       // Create a logger with the in-memory sink
+    var logger = new LoggerConfiguration()
+        .WriteTo.Sink(_inMemorySink)
+        .CreateLogger();
+     *    // Check for expected log messages
+    Assert.Contains(logEvents, e => e.Level == LogEventLevel.Information && e.MessageTemplate.Text.Contains("informational log"));
+    Assert.Contains(logEvents, e => e.Level == LogEventLevel.Warning && e.MessageTemplate.Text.Contains("warning log"));
+         * 
+         */
+
+
+    private readonly Fixture _fixture;
+    private readonly ITestOutputHelper _outputHelper;//qqqq do we need to clear the output between tests and if so doenst that stops async
+
+    public T_ComponentWithLoggerTests(ITestOutputHelper outputHelper)
+    {
+        // Initialize AutoFixture
+        _fixture = new Fixture();
+        _outputHelper = outputHelper;
+    }
+
+
+    private TestContext CreateTestContext()//Require it so remember to test it
+    {
+        //Arrange
+
+        var ctx = new TestContext();
+        ctx.Services.AddFallbackServiceProvider(new FallbackServiceProvider());
+
+
+        ctx.Services.AddLogging(_outputHelper);//All this is doing is putting logs in the test runner logger
+
+        return ctx;
+    }
+
+    [Trait("Category", "Unit Test")]
+    [Fact]
+    public void Logger_ReturnsPrivateValues()
+    {
+        // Arrange
+        var ctx = CreateTestContext();
+
+        // Act
+        var cut = ctx.RenderComponent<T_ComponentWithLogger>();
+        cut.Find("#PrivateMethodAttachedToButtonClick").Click();
+
+        //Asserts
+        var whatisit = _outputHelper;
+        var ctxResult = ctx ;
+        var whatiscutnow = cut;
+        Assert.True(true);
+
+    }
+
+}

@@ -1,5 +1,71 @@
-﻿<h3>T_ComponentWithLogger</h3>
+﻿@using Microsoft.Extensions.Logging;
+@inject ILogger<T_ComponentWithLogger> _logger;
+@inherits ComponentBase
 
-@code {
-    // qqqqqqqqq
+<h3>T_ComponentWithLogger</h3>
+<h3>Weather Forecast</h3>
+<p>@StringMessageIsPrivateAndHardToUnitTest</p>
+<button id="PrivateMethodAttachedToButtonClick" @onclick="IAmPrivateUseTheLoggerToUnitTestMe">Generate Forecast</button>
+
+@if (ForecastsComplexObjectToDisplay.Count > 0)
+{
+    <table>
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Temp. (C)</th>
+                <th>Summary</th>
+                <th>String joined location</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var forecast in ForecastsComplexObjectToDisplay)
+            {
+                <tr>
+                    <td>@forecast.Date</td>
+                    <td>@forecast.TemperatureC</td>
+                    <td>@forecast.Summary</td>
+                            <td>@string.Join(", ", forecast.LocationsWeatherAveragedFrom.Select(x => x.LocationName))</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code{
+
+    private List<string> SummariesArePrivateAndHardToUnitTest = new List<string>();
+    private string StringMessageIsPrivateAndHardToUnitTest = "This is my initial text";
+    private List<T_WeatherForecast> ForecastsComplexObjectToDisplay { get; set; } = new List<T_WeatherForecast>(){
+        new T_WeatherForecast { Date = DateOnly.FromDateTime(DateTime.Now.AddDays(-10000)), TemperatureC = -9999, Summary = "Some initial placeholder data" }
+    };
+
+
+    private void IAmPrivateUseTheLoggerToUnitTestMe()
+    {
+
+        _logger.LogInformation(StringMessageIsPrivateAndHardToUnitTest);
+        StringMessageIsPrivateAndHardToUnitTest = "After Running The Method IAmPrivateUseTheLoggerToUnitTestMe This Is My Value";
+        _logger.LogInformation(StringMessageIsPrivateAndHardToUnitTest);
+
+
+        _logger.LogInformation("Object data should be in structure json: {@objectCastSadly}", (object)SummariesArePrivateAndHardToUnitTest);
+        SummariesArePrivateAndHardToUnitTest = new List<string>(){
+        "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
+        };
+
+
+        ForecastsComplexObjectToDisplay = new List<T_WeatherForecast>()
+        {
+            new T_WeatherForecast { Date = DateOnly.FromDateTime(DateTime.Now.AddDays(1)), TemperatureC = -5, Summary = "Freezing" },
+            new T_WeatherForecast { Date = DateOnly.FromDateTime(DateTime.Now.AddDays(2)), TemperatureC = 0, Summary = "Bracing" },
+            new T_WeatherForecast { Date = DateOnly.FromDateTime(DateTime.Now.AddDays(3)), TemperatureC = 10, Summary = "Chilly" },
+            new T_WeatherForecast { Date = DateOnly.FromDateTime(DateTime.Now.AddDays(4)), TemperatureC = 20, Summary = "Mild" },
+            new T_WeatherForecast { Date = DateOnly.FromDateTime(DateTime.Now.AddDays(5)), TemperatureC = 30, Summary = "Warm" }
+        };
+
+        _logger.LogInformation("Object data should be in structure json: {@objectCastSadly}", (object)ForecastsComplexObjectToDisplay);
+
+        StateHasChanged();//qqqqq come back to
+    }
 }

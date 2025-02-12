@@ -689,6 +689,9 @@ We do put the storage server side too, but it cannot use it as it is browser sid
 - remember private browsing or seperate machines and no storage
 - LocalStorage is still isolated per device and browser
 
+### Logging: TODO
+![Structured logging image]("Structured logs in console.PNG")
+
 
 ## Project Limitations and Potential Future Additions
 
@@ -757,6 +760,7 @@ to put it on their browser would that be requirement met? It would most likely b
 - serilog ui e.g Seq, Elasticsearch, and Grafana Loki,
 	- elmah maybe elf
 	- dls serilog https://hee-tis.atlassian.net/wiki/spaces/TP/pages/3755278353/DLS+Production+Error+Logs
+	- if we use serilogger ilogger interface instead of microsoft it is pretty ubiquous could other things use it anyway or will it do everything we need anywayzzz
 ### Approaches Discarded For Now
 - Improve validator component [try this blazor uni in future](https://blazor-university.com/forms/writing-custom-validation/)
 	- Uses fluent validation, which requires JS, so maybe not, attributes are better
@@ -789,6 +793,7 @@ In no particular order.
 				- what logging we use elsewhere and whether we want to match the ones for https://admin.learninghub.nhs.uk/Log
 				- how much is LH using Nlog, our unit tests are XUnit but to use playwright we may change to nunit, which may make nlog more applicable
 		- Recommendation - DISCUSSION REQUIRED
+	- the are common abstracting bridging interfaces but leaning towards just requiring serilog
 - I think from discussions webassembly prerender will be the choice. Without blazor pages. And keep this project as reference if we want to introduce them.
 - currently we do not have interactive layoutcomponents this is done via the header and route render mode being set in the app
 	- if we do blazor pages we should avoid all but the MainLayout as layout and rendermode are stripped when MVC renders MVC pages as components
