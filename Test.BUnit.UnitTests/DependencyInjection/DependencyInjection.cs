@@ -16,12 +16,14 @@ using Microsoft.Extensions.Configuration;
 using System.IO;
 using Microsoft.Extensions.Logging;
 using Serilog;
-using Serilog.Sinks.XUnit;
+//using Serilog.Sinks.XUnit; //This defines testoutput
 using Microsoft.Extensions.Logging.Abstractions;
 using Serilog.Events;
 using Serilog.Templates;
 using Xunit.Abstractions;
 using Serilog.Sinks.InMemory;
+using Serilog.Formatting.Json;
+using Serilog.Formatting.Compact;
 
 namespace Test.BUnit.UnitTests.DependencyInjection
 {
@@ -46,7 +48,7 @@ namespace Test.BUnit.UnitTests.DependencyInjection
         /// <param name="services"></param>
         /// <param name="outputHelper"></param>
         /// <returns></returns>
-        public static IServiceCollection AddLogging(this IServiceCollection services, ITestOutputHelper outputHelper)
+        public static IServiceCollection AddLogging(this IServiceCollection services, ITestOutputHelper outputHelper,InMemorySink  inMemorySink)
         {
             // Create configuration from appsettings.json
             var configuration = new ConfigurationBuilder()
@@ -54,14 +56,19 @@ namespace Test.BUnit.UnitTests.DependencyInjection
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                 .Build();
 
-
+          
             Log.Logger = new LoggerConfiguration()
-                .ReadFrom.Configuration(configuration)
-                .WriteTo.TestOutput(outputHelper)
-                //.WriteTo.InMemory()
+
+                //.ReadFrom.Configuration(configuration)
+                .WriteTo.TestOutput(outputHelper/*, new CompactJsonFormatter()*/)//can put formatter in, in this way
+                //.WriteTo.InMemory() //, new CompactJsonFormatter() inMemorySink
+                .WriteTo.Sink(inMemorySink)
+                //.MinimumLevel.Verbose() //works for setting everything
+                .ReadFrom.Configuration(configuration) //qqqq ths is doing nothing
                 .CreateLogger();
 
 
+           
             services.AddSingleton<ILoggerFactory>(_ => new LoggerFactory().AddSerilog(Log.Logger, dispose: true));
             services.AddSingleton(typeof(ILogger<>), typeof(Logger<>));
             return services;

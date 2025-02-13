@@ -1,4 +1,5 @@
 ﻿@using Microsoft.Extensions.Logging;
+@* @using Serilog.Context No we want it to agnostic*@
 @inject ILogger<T_ComponentWithLogger> _logger;
 @inherits ComponentBase
 
@@ -63,9 +64,32 @@
             new T_WeatherForecast { Date = DateOnly.FromDateTime(DateTime.Now.AddDays(4)), TemperatureC = 20, Summary = "Mild" },
             new T_WeatherForecast { Date = DateOnly.FromDateTime(DateTime.Now.AddDays(5)), TemperatureC = 30, Summary = "Warm" }
         };
-
-        _logger.LogInformation("Object data should be in structure json: {@objectCastSadly}", (object)ForecastsComplexObjectToDisplay);
-
+        //qqqqq do we want push property to find these things easier
+        // 
+       // using (LogContext.PushProperty("OrderId", orderId))//qqqq log context stops it being agnostic
+        using (_logger.BeginScope(new Dictionary<string, object> { { "OrderId", 123 }, { "UserId", 456 } }))
+        {
+            _logger.LogInformation("Order  processing");
+            _logger.LogInformation("Can i still deconstruct {@ComplexObj}", ForecastsComplexObjectToDisplay);
+        }
+        using (_logger.BeginScope(new Dictionary<string, List<T_WeatherForecast>> { { "CanScopeLogMyObj", ForecastsComplexObjectToDisplay } }))
+        {
+            _logger.LogInformation("Order  processing2");
+            _logger.LogInformation("Can i still deconstruct2 {@ComplexObj}", ForecastsComplexObjectToDisplay);
+        }
+       // _logger.LogInformation("Forecasts object: {@objectCastSadly}", (object)ForecastsComplexObjectToDisplay);
+        _logger.LogInformation("Forecasts object: {@objectCastSadly}", ForecastsComplexObjectToDisplay); //<---we dont need the @ anymore !!!!)
+       // _logger.LogInformation("{@ForecastsComplexObjectToDisplay}", ForecastsComplexObjectToDisplay);
+        //_logger.LogInformation("{{@ForecastsComplexObjectToDisplay}}", ForecastsComplexObjectToDisplay);
+        //_logger.LogInformation((object)ForecastsComplexObjectToDisplay);
+        _logger.LogInformation("Later Info Call");        
+        _logger.LogInformation("myKey");
+      
+        _logger.LogInformation("This is an informational log.");  // This will be logged, but not captured by InMemorySink (since it's not Critical)
+        _logger.LogDebug("This is a debug log.");                // This will be logged, but not captured by InMemorySink (since it's not Critical)
+        _logger.LogWarning("This is a warning log.");            // This will be logged, but not captured by InMemorySink (since it's not Critical)
+        _logger.LogError("This is an error log.");              // This will be logged, but not captured by InMemorySink (since it's not Critical)
+        _logger.LogCritical("This is a Critical log!");
         StateHasChanged();//qqqqq come back to
     }
 }
