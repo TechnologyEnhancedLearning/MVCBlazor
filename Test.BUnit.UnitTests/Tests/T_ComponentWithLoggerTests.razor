@@ -14,8 +14,6 @@
     private readonly Fixture _fixture;
     private readonly ITestOutputHelper _outputHelper;//qqqq do we need to clear the output between tests and if so doenst that stops async
 
-
-
     public T_ComponentWithLoggerTests(ITestOutputHelper outputHelper)//qqqq in memory sink here specifies serilog
     {
         // Initialize AutoFixture
@@ -38,132 +36,124 @@
         return ctx;
     }
 
+    //This is testing the logger the test insert so can check the configuration
     [Trait("Category", "Unit Test")]
     [Fact]
-    public void Logger_ReturnsPrivateValues()
+    public void Logger_TestLoggerCorrectlyLogsLevels()
     {
-
-
         // Arrange
-        InMemorySink inMemorySink = new InMemorySink();
+        InMemorySink inMemorySink = new InMemorySink(/* outputTemplate: "{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}" */);//Doesnt work
         var ctx = CreateTestContext(inMemorySink);
-
-        // Example: Logging a structured object
-        List<T_WeatherForecast> weatherForecasts = new List<T_WeatherForecast>()
-        {
-            new T_WeatherForecast { Date = DateOnly.FromDateTime(DateTime.Now.AddDays(1)), TemperatureC = -5, Summary = "Freezing" },
-            new T_WeatherForecast { Date = DateOnly.FromDateTime(DateTime.Now.AddDays(2)), TemperatureC = 0, Summary = "Bracing" },
-            new T_WeatherForecast { Date = DateOnly.FromDateTime(DateTime.Now.AddDays(3)), TemperatureC = 10, Summary = "Chilly" },
-            new T_WeatherForecast { Date = DateOnly.FromDateTime(DateTime.Now.AddDays(4)), TemperatureC = 20, Summary = "Mild" },
-            new T_WeatherForecast { Date = DateOnly.FromDateTime(DateTime.Now.AddDays(5)), TemperatureC = 30, Summary = "Warm" }
-        };
 
         // Act
         var cut = ctx.RenderComponent<T_ComponentWithLogger>();
         cut.Find("#PrivateMethodAttachedToButtonClick").Click();
+        List<Serilog.Events.LogEvent> logEvents = inMemorySink.LogEvents.ToList();
 
         //Asserts
-        List<Serilog.Events.LogEvent> logEvents = inMemorySink.LogEvents.ToList();
-        //logEvents.Should()
-        inMemorySink.Should().HaveMessage("myKey");
-        //We are not restricting with config or set up
+
         Assert.Contains(logEvents, e => e.Level == LogEventLevel.Fatal);
         Assert.Contains(logEvents, e => e.Level == LogEventLevel.Warning);
         Assert.Contains(logEvents, e => e.Level == LogEventLevel.Debug);
         Assert.Contains(logEvents, e => e.Level == LogEventLevel.Information);
-       
-       Assert.Contains(logEvents, e => e.Level == LogEventLevel.Information && e.MessageTemplate.Text.Contains("This is my initial text"));
-       Assert.Contains(logEvents, e => e.Level == LogEventLevel.Information && e.MessageTemplate.Text.Contains("Later Info Call"));
-
-       
-       // var jsonString = logEvents[7].Properties["ComplexObj"].ToString();
-        //var myObject = JsonSerializer.Deserialize<List<T_ComponentWithLogger>>(jsonString);
-
-/* Before applying the formatter
-                   "[T_WeatherForecast { Date: 02/14/2025, TemperatureC: -5, Summary: \"Freezing\", TemperatureF: 24, LocationsWeatherAveragedFrom: [T_WeatherReadingLocation { LocationName: \"Just want a complex object 1\" }, T_WeatherReadingLocation { LocationName: \"Just want a complex object 2\" }] }, T_WeatherForecast { Date: 02/15/2025, TemperatureC: 0, Summary: \"Bracing\", TemperatureF: 32, LocationsWeatherAveragedFrom: [T_WeatherReadingLocation { LocationName: \"Just want a complex object 1\" }, T_WeatherReadingLocation { LocationName: \"Just want a complex object 2\" }] }, T_WeatherForecast { Date: 02/16/2025, TemperatureC: 10, Summary: \"Chilly\", TemperatureF: 49, LocationsWeatherAveragedFrom: [T_WeatherReadingLocation { LocationName: \"Just want a complex object 1\" }, T_WeatherReadingLocation { LocationName: \"Just want a complex object 2\" }] }, T_WeatherForecast { Date: 02/17/2025, TemperatureC: 20, Summary: \"Mild\", TemperatureF: 67, LocationsWeatherAveragedFrom: [T_WeatherReadingLocation { LocationName: \"Just
-                want a complex object 1\" }, T_WeatherReadingLocation { LocationName: \"Just want a complex object 2\" }] }, T_WeatherForecast { Date: 02/18/2025, TemperatureC: 30, Summary: \"Warm\", TemperatureF: 85, LocationsWeatherAveragedFrom: [T_WeatherReadingLocation { LocationName: \"Just want a complex object 1\" }, T_WeatherReadingLocation { LocationName: \"Just want a complex object 2\" }] }]"
-
-                {[T_WeatherForecast { Date: 02/14/2025, TemperatureC: -5, Summary: "Freezing", TemperatureF: 24, LocationsWeatherAveragedFrom: [T_WeatherReadingLocation { LocationName: "Just want a complex object 1" }, T_WeatherReadingLocation { LocationName: "Just want a complex object 2" }] }, T_WeatherForecast { Date: 02/15/2025, TemperatureC: 0, Summary: "Bracing", TemperatureF: 32, LocationsWeatherAveragedFrom: [T_WeatherReadingLocation { LocationName: "Just want a complex object 1" }, T_WeatherReadingLocation { LocationName: "Just want a complex object 2" }] }, T_WeatherForecast { Date: 02/16/2025, TemperatureC: 10, Summary: "Chilly", TemperatureF: 49, LocationsWeatherAveragedFrom: [T_WeatherReadingLocation { LocationName: "Just want a complex object 1" }, T_WeatherReadingLocation { LocationName: "Just want a complex object 2" }] }, T_WeatherForecast { Date: 02/17/2025, TemperatureC: 20, Summary: "Mild", TemperatureF: 67, LocationsWeatherAveragedFrom: [T_WeatherReadingLocation { LocationName: "Just want a complex object
-                 1" }, T_WeatherReadingLocation { LocationName: "Just want a complex object 2" }] }, T_WeatherForecast { Date: 02/18/2025, TemperatureC: 30, Summary: "Warm", TemperatureF: 85, LocationsWeatherAveragedFrom: [T_WeatherReadingLocation { LocationName: "Just want a complex object 1" }, T_WeatherReadingLocation { LocationName: "Just want a complex object 2" }] }]}
-                    Elements: {Serilog.Events.LogEventPropertyValue[5]}
-                    _elements: {Serilog.Events.LogEventPropertyValue[5]}
-
-                {[T_WeatherForecast { Date: 02/14/2025, TemperatureC: -5, Summary: "Freezing", TemperatureF: 24, LocationsWeatherAveragedFrom: [T_WeatherReadingLocation { LocationName: "Just want a complex object 1" }, T_WeatherReadingLocation { LocationName: "Just want a complex object 2" }] }, T_WeatherForecast { Date: 02/15/2025, TemperatureC: 0, Summary: "Bracing", TemperatureF: 32, LocationsWeatherAveragedFrom: [T_WeatherReadingLocation { LocationName: "Just want a complex object 1" }, T_WeatherReadingLocation { LocationName: "Just want a complex object 2" }] }, T_WeatherForecast { Date: 02/16/2025, TemperatureC: 10, Summary: "Chilly", TemperatureF: 49, LocationsWeatherAveragedFrom: [T_WeatherReadingLocation { LocationName: "Just want a complex object 1" }, T_WeatherReadingLocation { LocationName: "Just want a complex object 2" }] }, T_WeatherForecast { Date: 02/17/2025, TemperatureC: 20, Summary: "Mild", TemperatureF: 67, LocationsWeatherAveragedFrom: [T_WeatherReadingLocation { LocationName: "Just want a complex object
-                1" }, T_WeatherReadingLocation { LocationName: "Just want a complex object 2" }] }, T_WeatherForecast { Date: 02/18/2025, TemperatureC: 30, Summary: "Warm", TemperatureF: 85, LocationsWeatherAveragedFrom: [T_WeatherReadingLocation { LocationName: "Just want a complex object 1" }, T_WeatherReadingLocation { LocationName: "Just want a complex object 2" }] }]}
-            Elements: {Serilog.Events.LogEventPropertyValue[5]}
-            _elements: {Serilog.Events.LogEventPropertyValue[5]}
-                */
-
-        //qqqqqqqqqqqqq
-        // this looks like may work actually
-        //logEvents[7].Properties["ComplexObj"]
-
-        // var logEventProperty = logEvents[0].Properties.Where(x => x.Key == "myKey").Single();
-        // var propertyValue = logEventProperty.Value as ScalarValue;
-
-        // logEventProperty.Key.Should().Be("myKey");
-        // propertyValue!.Value.Should().Be("expectedValue");
-
-        //NEXT TIME qqqqqqq -> just try serialising in instead of serialising out
-        /*
-           var logEvent = TestCorrelator.GetLogEventsFromCurrentContext().Single();
-            // qqqqqqqqqqqq just try without bothering with the library - from the serilog TestCorrelator
-            var logEventProperty = logEvent.Properties.Where(x => x.Key == expectedKey).Single();
-            var propertyValue = logEventProperty.Value as ScalarValue;
-
-            logEventProperty.Key.Should().Be(expectedKey);
-            propertyValue!.Value.Should().Be(expectedValue);
 
 
-         */
+    }
+
+    [Trait("Category", "Unit Test")]
+    [Fact]
+    public void Logger_LogEventsLambdaLogicWorks()
+    {
+        // Arrange
+        InMemorySink inMemorySink = new InMemorySink(/* outputTemplate: "{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}" */);//Doesnt work
+        var ctx = CreateTestContext(inMemorySink);
+
+        // Act
+        var cut = ctx.RenderComponent<T_ComponentWithLogger>();
+        List<Serilog.Events.LogEvent> logEvents = inMemorySink.LogEvents.ToList();
+
+        //Assert
+        Assert.Contains(logEvents, e => e.Level == LogEventLevel.Information && e.MessageTemplate.Text.Contains("This is my initial text"));
+        
+
+    }
+
+    [Trait("Category", "Unit Test")]
+    [Fact]
+    public void Logger_ComplexObjectFluentAssertionOnInMemorySinkWorks()
+    {
+
+        // Arrange
+        InMemorySink inMemorySink = new InMemorySink(/* outputTemplate: "{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}" */);//Doesnt work
+        var ctx = CreateTestContext(inMemorySink);
+
+        // Act
+        var cut = ctx.RenderComponent<T_ComponentWithLogger>();
+        cut.Find("#PrivateMethodAttachedToButtonClick").Click();
+        List<Serilog.Events.LogEvent> logEvents = inMemorySink.LogEvents.ToList();
 
 
-        //logEvents[0].Should().
+        //Asserts
 
-        // logEvents
-        //    .Should()
-        //    .HaveMessage("Later Info Call");
-
-        // InMemorySink
-        //     .Instance
-        //     .Should()
-        //     .HaveMessage("Later Info Call");
-        //qqqqq i want to use the specific one
-        // InMemorySink.Instance
-        //     .Should()
-        //     .HaveMessage("Later Info Call");
-
-        // Console.Write(logEvents);
-
-        // foreach (var logEvent in logEvents)
-        // {
-        //     if (logEvent.Properties.TryGetValue("MyObject", out var propertyValue))
-        //     {
-        //         if (propertyValue is Serilog.Events.StructureValue structureValue)
-        //         {
-        //             var json = JsonConvert.SerializeObject(structureValue.Properties.ToDictionary(kvp => kvp.Name, kvp => kvp.Value.ToString()));
-        //             var deserializedObject = JsonConvert.DeserializeObject<T_WeatherForecast>(json);
-        //             Console.WriteLine(deserializedObject.Summary); // Output: Test Object
-        //         }
-        //     }
-        // }
+        inMemorySink.Should()
+            .HaveMessage("This is my initial text");
 
 
+        //Assert log property for object
+        inMemorySink.Should()
+                .HaveMessage("Can i still deconstruct {@ComplexObj}")
+               .Appearing().Once()
+               .WithLevel(LogEventLevel.Information)
+               .WithProperty("ComplexObj");
 
-        // var structuredLogEvent = logEvents.FirstOrDefault(e =>
-        //     e.Level == LogEventLevel.Information &&
-        //     e.MessageTemplate.Text.Contains("Object data should be in structure json"));
-
-        // var jsonProperty = structuredLogEvent.Properties["WeatherForecasts"];
-        // string jsonString = jsonProperty.ToString(); // Get the JSON string
+        //Assert object properties and values
+        var logEvent = inMemorySink.LogEvents.First(e => e.MessageTemplate.Text == "Can i still deconstruct {@ComplexObj}");
         
         
-        // qqqq not managing to pull out the structured object
-        // not managed to use fluent seertion on it
-        //string jsonString = "{}";//qqqqqqqqqqqq
-        //List<T_WeatherForecast> deserializedForecastsFromLog = JsonConvert.DeserializeObject<List<T_WeatherForecast>>(jsonString);
+        
+        var forecastSequence = (logEvent.Properties["ComplexObj"] as SequenceValue);
+        var firstForecast = (StructureValue)forecastSequence.Elements.First();
 
-        //Assert.Equivalent(weatherForecasts[2], deserializedForecastsFromLog[2]);
+        firstForecast.Properties.Should().SatisfyRespectively(
+            p => p.Name.Should().Be("Date"),
+            p => p.Name.Should().Be("TemperatureC"),
+            p => p.Name.Should().Be("Summary"),
+            p => p.Name.Should().Be("TemperatureF"),
+            p => p.Name.Should().Be("LocationsWeatherAveragedFrom")
+        );
+
+        firstForecast.Properties.Should().SatisfyRespectively(
+       date =>
+       {
+           date.Name.Should().Be("Date");
+           date.Value.ToString().Should().Be("01/02/2024");
+       },
+       temp =>
+       {
+           temp.Name.Should().Be("TemperatureC");
+           temp.Value.ToString().Should().Be("-5");
+       },
+       summary =>
+       {
+           summary.Name.Should().Be("Summary");
+           summary.Value.ToString().Should().Be("\"Freezing\"");
+       },
+       tempF =>
+       {
+           tempF.Name.Should().Be("TemperatureF");
+           tempF.Value.ToString().Should().Be("24");
+       },
+       locations =>
+       {
+           locations.Name.Should().Be("LocationsWeatherAveragedFrom");
+           //Nested classes values and properties
+           var locationArray = (locations.Value as SequenceValue).Elements;
+           locationArray.Should().HaveCount(2);
+
+           var firstLocation = (StructureValue)locationArray.First();
+           firstLocation.Properties.Single().Value.ToString().Should().Be("\"Just want a complex object 1\"");
+       }
+       );
 
     }
 }

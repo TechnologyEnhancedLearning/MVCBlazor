@@ -24,6 +24,7 @@ using Xunit.Abstractions;
 using Serilog.Sinks.InMemory;
 using Serilog.Formatting.Json;
 using Serilog.Formatting.Compact;
+using Serilog.Core;
 
 namespace Test.BUnit.UnitTests.DependencyInjection
 {
@@ -58,12 +59,14 @@ namespace Test.BUnit.UnitTests.DependencyInjection
 
           
             Log.Logger = new LoggerConfiguration()
-
-                //.ReadFrom.Configuration(configuration)
-                .WriteTo.TestOutput(outputHelper/*, new CompactJsonFormatter()*/)//can put formatter in, in this way
-                //.WriteTo.InMemory() //, new CompactJsonFormatter() inMemorySink
+                .WriteTo.TestOutput(outputHelper)
                 .WriteTo.Sink(inMemorySink)
-                //.MinimumLevel.Verbose() //works for setting everything
+                //.WriteTo.TestOutput(testOutputHelper: outputHelper, //WORKS if we want to specify
+                //    formatter: new ExpressionTemplate("[{UtcDateTime(@t):mm:ss.ffffff} | {@l:u3} | {Substring(SourceContext, LastIndexOf(SourceContext, '.') + 1)} | {Coalesce(EventId.Name, '<none>')}] {@m}\n{@x}"),
+                //    restrictedToMinimumLevel: LogEventLevel.Verbose)
+                 //.WriteTo.Sink<InMemorySink>(inMemorySink, // DOESNT WORK
+                 //   new ExpressionTemplate("[{UtcDateTime(@t):mm:ss.ffffff} | {@l:u3} | {Substring(SourceContext, LastIndexOf(SourceContext, '.') + 1)} | {Coalesce(EventId.Name, '<none>')}] {@m}\n{@x}"),
+                 //   LogEventLevel.Verbose)
                 .ReadFrom.Configuration(configuration) //qqqq ths is doing nothing
                 .CreateLogger();
 

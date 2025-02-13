@@ -6,7 +6,7 @@
 <h3>T_ComponentWithLogger</h3>
 <h3>Weather Forecast</h3>
 <p>@StringMessageIsPrivateAndHardToUnitTest</p>
-<button id="PrivateMethodAttachedToButtonClick" @onclick="IAmPrivateUseTheLoggerToUnitTestMe">Generate Forecast</button>
+<button id="PrivateMethodAttachedToButtonClick" @onclick="IAmPrivateClickTheButtonAndUseTheLoggerToUnitTestMe">Generate Forecast</button>
 
 @if (ForecastsComplexObjectToDisplay.Count > 0)
 {
@@ -41,16 +41,38 @@
         new T_WeatherForecast { Date = DateOnly.FromDateTime(DateTime.Now.AddDays(-10000)), TemperatureC = -9999, Summary = "Some initial placeholder data" }
     };
 
-
-    private void IAmPrivateUseTheLoggerToUnitTestMe()
+    protected override async Task OnInitializedAsync()
     {
-
         _logger.LogInformation(StringMessageIsPrivateAndHardToUnitTest);
+    }
+
+    private void LogTheDifferentLogLevels()
+    {
+        //Can be used to check the inserted loggers minimum levels setting is being respected
+
+        _logger.LogInformation("This is an informational log.");  // This will be logged, but not captured by InMemorySink (since it's not Critical)
+        _logger.LogDebug("This is a debug log.");                // This will be logged, but not captured by InMemorySink (since it's not Critical)
+        _logger.LogWarning("This is a warning log.");            // This will be logged, but not captured by InMemorySink (since it's not Critical)
+        _logger.LogError("This is an error log.");              // This will be logged, but not captured by InMemorySink (since it's not Critical)
+        _logger.LogCritical("This is a Critical log!");
+
+
+    }
+    private void LogAPrivateString()
+    {
+        _logger.LogInformation(StringMessageIsPrivateAndHardToUnitTest);
+
+    }
+    private void LogAComplexObject()
+    {
+        _logger.LogInformation("Can i still deconstruct {@ComplexObj}", ForecastsComplexObjectToDisplay);
+    }
+
+    private void SetTheData()
+    {
         StringMessageIsPrivateAndHardToUnitTest = "After Running The Method IAmPrivateUseTheLoggerToUnitTestMe This Is My Value";
-        _logger.LogInformation(StringMessageIsPrivateAndHardToUnitTest);
 
 
-        _logger.LogInformation("Object data should be in structure json: {@objectCastSadly}", (object)SummariesArePrivateAndHardToUnitTest);
         SummariesArePrivateAndHardToUnitTest = new List<string>(){
         "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
         };
@@ -58,38 +80,33 @@
 
         ForecastsComplexObjectToDisplay = new List<T_WeatherForecast>()
         {
-            new T_WeatherForecast { Date = DateOnly.FromDateTime(DateTime.Now.AddDays(1)), TemperatureC = -5, Summary = "Freezing" },
-            new T_WeatherForecast { Date = DateOnly.FromDateTime(DateTime.Now.AddDays(2)), TemperatureC = 0, Summary = "Bracing" },
-            new T_WeatherForecast { Date = DateOnly.FromDateTime(DateTime.Now.AddDays(3)), TemperatureC = 10, Summary = "Chilly" },
-            new T_WeatherForecast { Date = DateOnly.FromDateTime(DateTime.Now.AddDays(4)), TemperatureC = 20, Summary = "Mild" },
-            new T_WeatherForecast { Date = DateOnly.FromDateTime(DateTime.Now.AddDays(5)), TemperatureC = 30, Summary = "Warm" }
+
+            new T_WeatherForecast { Date = DateOnly.FromDateTime(new DateTime(2024, 1, 1).AddDays(1)), TemperatureC = -5, Summary = "Freezing" },
+            new T_WeatherForecast { Date = DateOnly.FromDateTime(new DateTime(2024, 1, 1).AddDays(2)), TemperatureC = 0, Summary = "Bracing" },
+            new T_WeatherForecast { Date = DateOnly.FromDateTime(new DateTime(2024, 1, 1).AddDays(3)), TemperatureC = 10, Summary = "Chilly" },
+            new T_WeatherForecast { Date = DateOnly.FromDateTime(new DateTime(2024, 1, 1).AddDays(4)), TemperatureC = 20, Summary = "Mild" },
+            new T_WeatherForecast { Date = DateOnly.FromDateTime(new DateTime(2024, 1, 1).AddDays(5)), TemperatureC = 30, Summary = "Warm" }
         };
-        //qqqqq do we want push property to find these things easier
-        // 
-       // using (LogContext.PushProperty("OrderId", orderId))//qqqq log context stops it being agnostic
-        using (_logger.BeginScope(new Dictionary<string, object> { { "OrderId", 123 }, { "UserId", 456 } }))
-        {
-            _logger.LogInformation("Order  processing");
-            _logger.LogInformation("Can i still deconstruct {@ComplexObj}", ForecastsComplexObjectToDisplay);
-        }
+
+
+    }
+    private void IAmPrivateClickTheButtonAndUseTheLoggerToUnitTestMe()
+    {
+        SetTheData();
+        LogTheDifferentLogLevels();
+        LogAComplexObject();
+        LogScopedObject();
+
+    }
+
+    private void LogScopedObject()
+    {
+        //qqqq is this useful    
         using (_logger.BeginScope(new Dictionary<string, List<T_WeatherForecast>> { { "CanScopeLogMyObj", ForecastsComplexObjectToDisplay } }))
         {
-            _logger.LogInformation("Order  processing2");
-            _logger.LogInformation("Can i still deconstruct2 {@ComplexObj}", ForecastsComplexObjectToDisplay);
+            _logger.LogInformation("Can i still deconstruct2 {@BeginScopeObj}", ForecastsComplexObjectToDisplay);
         }
-       // _logger.LogInformation("Forecasts object: {@objectCastSadly}", (object)ForecastsComplexObjectToDisplay);
-        _logger.LogInformation("Forecasts object: {@objectCastSadly}", ForecastsComplexObjectToDisplay); //<---we dont need the @ anymore !!!!)
-       // _logger.LogInformation("{@ForecastsComplexObjectToDisplay}", ForecastsComplexObjectToDisplay);
-        //_logger.LogInformation("{{@ForecastsComplexObjectToDisplay}}", ForecastsComplexObjectToDisplay);
-        //_logger.LogInformation((object)ForecastsComplexObjectToDisplay);
-        _logger.LogInformation("Later Info Call");        
-        _logger.LogInformation("myKey");
-      
-        _logger.LogInformation("This is an informational log.");  // This will be logged, but not captured by InMemorySink (since it's not Critical)
-        _logger.LogDebug("This is a debug log.");                // This will be logged, but not captured by InMemorySink (since it's not Critical)
-        _logger.LogWarning("This is a warning log.");            // This will be logged, but not captured by InMemorySink (since it's not Critical)
-        _logger.LogError("This is an error log.");              // This will be logged, but not captured by InMemorySink (since it's not Critical)
-        _logger.LogCritical("This is a Critical log!");
-        StateHasChanged();//qqqqq come back to
+    
     }
+
 }
