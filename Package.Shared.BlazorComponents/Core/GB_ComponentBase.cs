@@ -32,12 +32,7 @@ namespace Package.Shared.BlazorComponents.Core
         {
             base.OnInitialized();
             Logger.LogInformation($"base component made by {WhoAmI}", WhoAmI);
-            //Logger.LogDebug("Processing request");
-            //Logger.LogWarning("Something might be wrong");
-            //Logger.LogError("An error occurred");
-            //Logger.LogInformation("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-            //Logger.LogInformation("{ComponentName} initialized. JSIsEnabled: {JSIsEnabled}, WhoAmI: {WhoAmI}",
-            //    this.GetType().Name, JSIsEnabled, WhoAmI);
+
         }
 
 

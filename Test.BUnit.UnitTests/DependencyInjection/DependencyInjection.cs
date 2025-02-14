@@ -60,18 +60,20 @@ namespace Test.BUnit.UnitTests.DependencyInjection
           
             Log.Logger = new LoggerConfiguration()
                 .WriteTo.TestOutput(outputHelper)
-                .WriteTo.Sink(inMemorySink)
-                //.WriteTo.TestOutput(testOutputHelper: outputHelper, //WORKS if we want to specify
-                //    formatter: new ExpressionTemplate("[{UtcDateTime(@t):mm:ss.ffffff} | {@l:u3} | {Substring(SourceContext, LastIndexOf(SourceContext, '.') + 1)} | {Coalesce(EventId.Name, '<none>')}] {@m}\n{@x}"),
-                //    restrictedToMinimumLevel: LogEventLevel.Verbose)
-                 //.WriteTo.Sink<InMemorySink>(inMemorySink, // DOESNT WORK
-                 //   new ExpressionTemplate("[{UtcDateTime(@t):mm:ss.ffffff} | {@l:u3} | {Substring(SourceContext, LastIndexOf(SourceContext, '.') + 1)} | {Coalesce(EventId.Name, '<none>')}] {@m}\n{@x}"),
-                 //   LogEventLevel.Verbose)
+                .WriteTo.Sink(inMemorySink)         
                 .ReadFrom.Configuration(configuration) //qqqq ths is doing nothing
                 .CreateLogger();
 
+            //They are not Serilog packages! so config may not work unless directly mapped.
+            //.WriteTo.TestOutput(testOutputHelper: outputHelper, //WORKS if we want to specify
+            //    formatter: new ExpressionTemplate("[{UtcDateTime(@t):mm:ss.ffffff} | {@l:u3} | {Substring(SourceContext, LastIndexOf(SourceContext, '.') + 1)} | {Coalesce(EventId.Name, '<none>')}] {@m}\n{@x}"),
+            //    restrictedToMinimumLevel: LogEventLevel.Verbose)
+            //.WriteTo.Sink<InMemorySink>(inMemorySink, // DOESNT WORK
+            //   new ExpressionTemplate("[{UtcDateTime(@t):mm:ss.ffffff} | {@l:u3} | {Substring(SourceContext, LastIndexOf(SourceContext, '.') + 1)} | {Coalesce(EventId.Name, '<none>')}] {@m}\n{@x}"),
+            //   LogEventLevel.Verbose)
 
-           
+
+
             services.AddSingleton<ILoggerFactory>(_ => new LoggerFactory().AddSerilog(Log.Logger, dispose: true));
             services.AddSingleton(typeof(ILogger<>), typeof(Logger<>));
             return services;

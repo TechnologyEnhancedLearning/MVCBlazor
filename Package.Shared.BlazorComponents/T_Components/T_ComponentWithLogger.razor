@@ -26,7 +26,7 @@
                     <td>@forecast.Date</td>
                     <td>@forecast.TemperatureC</td>
                     <td>@forecast.Summary</td>
-                            <td>@string.Join(", ", forecast.LocationsWeatherAveragedFrom.Select(x => x.LocationName))</td>
+                    <td>@string.Join(", ", forecast.LocationsWeatherAveragedFrom.Select(x => x.LocationName))</td>
                 </tr>
             }
         </tbody>
@@ -67,6 +67,11 @@
     {
         _logger.LogInformation("Can i still deconstruct {@ComplexObj}", ForecastsComplexObjectToDisplay);
     }
+    private void LogASimpleObject()
+    {
+        _logger.LogInformation("SimpleObj {@SimpleObj}", new T_WeatherForecast { Date = DateOnly.FromDateTime(DateTime.Now.AddDays(-10000)), TemperatureC = -9999, Summary = "SimpleObj" });
+    }
+
 
     private void SetTheData()
     {
@@ -96,17 +101,28 @@
         LogTheDifferentLogLevels();
         LogAComplexObject();
         LogScopedObject();
-
+        LogASimpleObject();
     }
 
     private void LogScopedObject()
     {
-        //qqqq is this useful    
-        using (_logger.BeginScope(new Dictionary<string, List<T_WeatherForecast>> { { "CanScopeLogMyObj", ForecastsComplexObjectToDisplay } }))
+
+        //useful as connects property data so can do things like select * from Logs where UserId = '12345' if using Seq for example
+
+        // Using BeginScope to add contextual information to the log messages
+        using (_logger.BeginScope("user {UserId}", "12345"))
         {
-            _logger.LogInformation("Can i still deconstruct2 {@BeginScopeObj}", ForecastsComplexObjectToDisplay);
+            using (_logger.BeginScope("order {OrderId}", "ORD-789"))
+            {
+                using (_logger.BeginScope("payment {PaymentId}", "PAY-456"))
+                {
+                    _logger.LogInformation("I'm scoped");
+                    _logger.LogInformation("ObjInScope {@ObjInScope}", ForecastsComplexObjectToDisplay);
+                    _logger.LogInformation("I'm STILL scoped");
+                }
+            }
         }
-    
+      
     }
 
 }

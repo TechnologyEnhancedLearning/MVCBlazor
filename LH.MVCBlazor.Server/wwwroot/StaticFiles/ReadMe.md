@@ -690,7 +690,7 @@ We do put the storage server side too, but it cannot use it as it is browser sid
 - LocalStorage is still isolated per device and browser
 
 ### Logging: TODO
-![Structured logging image]("Structured logs in console.PNG")
+![Structured logging image](Structured%20logs%20in%20console.PNG)
 
 
 ## Project Limitations and Potential Future Additions

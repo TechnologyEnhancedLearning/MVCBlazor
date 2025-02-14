@@ -74,7 +74,7 @@
 
         //Assert
         Assert.Contains(logEvents, e => e.Level == LogEventLevel.Information && e.MessageTemplate.Text.Contains("This is my initial text"));
-        
+
 
     }
 
@@ -106,11 +106,11 @@
                .WithLevel(LogEventLevel.Information)
                .WithProperty("ComplexObj");
 
-        //Assert object properties and values
+
         var logEvent = inMemorySink.LogEvents.First(e => e.MessageTemplate.Text == "Can i still deconstruct {@ComplexObj}");
-        
-        
-        
+
+
+
         var forecastSequence = (logEvent.Properties["ComplexObj"] as SequenceValue);
         var firstForecast = (StructureValue)forecastSequence.Elements.First();
 
@@ -156,4 +156,122 @@
        );
 
     }
+
+    [Trait("Category", "Unit Test")]
+    [Fact]
+    public void Logger_ComplexObjectFluentAssertionOnInMemorySinkWorks_IsDeconstructedObject()
+    {
+
+        // Arrange
+        InMemorySink inMemorySink = new InMemorySink(/* outputTemplate: "{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}" */);//Doesnt work
+        var ctx = CreateTestContext(inMemorySink);
+
+        // Act
+        var cut = ctx.RenderComponent<T_ComponentWithLogger>();
+        cut.Find("#PrivateMethodAttachedToButtonClick").Click();
+        List<Serilog.Events.LogEvent> logEvents = inMemorySink.LogEvents.ToList();
+
+
+        // Assert
+        // Destructured
+
+        //Because this is a list it seems to be treated as a scalar but in the immediate window
+        /*
+
+        var logEvent = inMemorySink.LogEvents.First(e => e.MessageTemplate.Text == "Can i still deconstruct {@ComplexObj}");
+
+        logEvent.Properties["ComplexObj"];
+        {[T_WeatherForecast { Date: 01/02/2024, TemperatureC: -5, Summary: "Freezing", TemperatureF: 24, LocationsWeatherAveragedFrom: [T_WeatherReadingLocation { LocationName: "Just want a complex object 1" }, T_WeatherReadingLocation { LocationName: "Just want a complex object 2" }] }, T_WeatherForecast { Date: 01/03/2024, TemperatureC: 0, Summary: "Bracing", TemperatureF: 32, LocationsWeatherAveragedFrom: [T_WeatherReadingLocation { LocationName: "Just want a complex object 1" }, T_WeatherReadingLocation { LocationName: "Just want a complex object 2" }] }, T_WeatherForecast { Date: 01/04/2024, TemperatureC: 10, Summary: "Chilly", TemperatureF: 49, LocationsWeatherAveragedFrom: [T_WeatherReadingLocation { LocationName: "Just want a complex object 1" }, T_WeatherReadingLocation { LocationName: "Just want a complex object 2" }] }, T_WeatherForecast { Date: 01/05/2024, TemperatureC: 20, Summary: "Mild", TemperatureF: 67, LocationsWeatherAveragedFrom: [T_WeatherReadingLocation { LocationName: "Just want a complex object
+                     1" }, T_WeatherReadingLocation { LocationName: "Just want a complex object 2" }] }, T_WeatherForecast { Date: 01/06/2024, TemperatureC: 30, Summary: "Warm", TemperatureF: 85, LocationsWeatherAveragedFrom: [T_WeatherReadingLocation { LocationName: "Just want a complex object 1" }, T_WeatherReadingLocation { LocationName: "Just want a complex object 2" }] }]}
+                        Elements: {Serilog.Events.LogEventPropertyValue[5]}
+                _elements: {Serilog.Events.LogEventPropertyValue[5]}
+
+                    */
+
+                        inMemorySink.Should()
+                                .HaveMessage("Can i still deconstruct {@ComplexObj}")
+                                .Appearing().Once()
+                                .WithLevel(LogEventLevel.Information)
+                                .WithProperty("ComplexObj")
+                                .HavingADestructuredObject();
+
+
+
+    }
+
+    [Trait("Category", "Unit Test")]
+    [Fact]
+    public void Logger_SimpleObjectFluentAssertionOnInMemorySinkWorks_IsDeconstructedObject()
+    {
+        // Arrange
+        InMemorySink inMemorySink = new InMemorySink(/* outputTemplate: "{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}" */);//Doesnt work
+        var ctx = CreateTestContext(inMemorySink);
+
+        // Act
+        var cut = ctx.RenderComponent<T_ComponentWithLogger>();
+        cut.Find("#PrivateMethodAttachedToButtonClick").Click();
+        List<Serilog.Events.LogEvent> logEvents = inMemorySink.LogEvents.ToList();
+
+
+        // Assert
+        // Destructured
+
+        //Because its not a list it is coming through as deconstructed
+        inMemorySink.Should()
+                .HaveMessage("SimpleObj {@SimpleObj}")
+                .Appearing().Once()
+                .WithLevel(LogEventLevel.Information)
+                .WithProperty("SimpleObj")
+                .HavingADestructuredObject();
+    }
+
+    [Trait("Category", "Unit Test")]
+    [Fact]
+    public void Logger_SimpleObjectFluentAssertionOnInMemorySinkWorks_ScopedLogWorks()
+    {
+        // Arrange
+        InMemorySink inMemorySink = new InMemorySink(/* outputTemplate: "{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}" */);//Doesnt work
+        var ctx = CreateTestContext(inMemorySink);
+
+        // Act
+        var cut = ctx.RenderComponent<T_ComponentWithLogger>();
+        cut.Find("#PrivateMethodAttachedToButtonClick").Click();
+        List<Serilog.Events.LogEvent> logEvents = inMemorySink.LogEvents.ToList();
+
+         var logEvent = inMemorySink.LogEvents.First(e => e.MessageTemplate.Text == "I'm scoped");
+
+
+        logEvent.Properties.Should().ContainKey("UserId");
+        logEvent.Properties["UserId"].ToString().Should().Be("\"12345\"");
+
+        
+        logEvent.Properties.Should().ContainKey("UserId")
+            .WhoseValue.ToString().Should().Be("\"12345\"");
+        logEvent.Properties.Should().ContainKey("OrderId")
+            .WhoseValue.ToString().Should().Be("\"ORD-789\"");
+        logEvent.Properties.Should().ContainKey("PaymentId")
+            .WhoseValue.ToString().Should().Be("\"PAY-456\"");
+
+
+        // Assert
+        //Because its not a list it is coming through as deconstructed
+        //Documentation has examples like this
+                    //Unsure why "and" isnt recognised [github docs](https://github.com/serilog-contrib/SerilogSinksInMemory/tree/master?tab=readme-ov-file#asserting-properties-on-messages)
+        // inMemorySink.Should()
+        //     .HaveMessage("SimpleObj {@SimpleObj}")
+        //     .Appearing().Once()
+        //     .WithLevel(LogEventLevel.Information) // If you need to assert the level
+        //     .WithProperty("SimpleObj") // Assert presence of SimpleObj property
+        //     .And
+        //     .WithProperty("UserId")
+        //     .WithValue("12345")
+        //     .And
+        //     .WithProperty("OperationType")
+        //     .WithValue("checkout")
+        //     .And
+        //     .WithProperty("RequestId")
+        //     .WithValue("req-123");
+
+
+    }          
 }
