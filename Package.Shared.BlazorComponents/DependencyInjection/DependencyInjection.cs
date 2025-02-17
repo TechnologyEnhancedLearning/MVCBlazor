@@ -22,19 +22,6 @@ namespace Package.Shared.BlazorComponents.DependencyInjection
 {
     public static class DependencyInjection
     {
-        // qqqq i want logger here so we get an error when things not provided to the collection on update
-        //public static IServiceCollection GB_ComponentServices(this IServiceCollection services,  <ILogger> logger)//qqqq can i have a default
-        //{
-        //    services.AddScoped<ILogger, logger>();//qqqq but for blazor this could be singleton, serverside it shouldnt be
-        //    return services;
-        //}
-        //qqqq loook at later just make work for now - automatic for serilog and ilogger interface
-        //public static IServiceCollection GB_AddConfiguration(this IServiceCollection services, IConfiguration configuration, string loggerSection)
-        //{
-
-        //    //Add Configuration
-        //    services.Configure<GS_CharactersAPIConfiguration>(configuration.GetSection(loggerSection));
-        //    return services;
-        //}
+        //Not injecting logging because logging may already be in serverside or clientside and may not need to be changed. So just doing it in dot notation in program.cs is fine.
     }
 }

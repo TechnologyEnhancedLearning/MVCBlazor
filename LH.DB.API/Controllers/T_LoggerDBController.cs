@@ -16,9 +16,13 @@ namespace LH.DB.API.Controllers
             _loggerDBService = loggerDBService;
         }
 
-
+        /// <summary>
+        /// Note: We would define a structured log object
+        /// </summary>
+        /// <param name="structuredLogs"></param>
+        /// <returns></returns>
         [HttpPost("InsertLogs")]
-        public async Task<ActionResult<GE_ServiceResponse<List<string>>>> InsertLogs([FromBody] JsonElement structuredLogs)//qqqq we would define an object
+        public async Task<ActionResult<GE_ServiceResponse<List<string>>>> InsertLogs([FromBody] JsonElement structuredLogs)
         {
 
             var result = await _loggerDBService.InsertLogsToDB(structuredLogs.GetRawText());
@@ -29,7 +33,7 @@ namespace LH.DB.API.Controllers
 
         }
         [HttpGet("GetLogs")]
-        public async Task<ActionResult<GE_ServiceResponse<List<string>>>> GetLogs()//qqqq we would define an object
+        public async Task<ActionResult<GE_ServiceResponse<List<string>>>> GetLogs()
         {
 
             var result = await _loggerDBService.GetLogsFromDB();

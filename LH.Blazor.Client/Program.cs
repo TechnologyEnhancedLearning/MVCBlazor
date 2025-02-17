@@ -21,7 +21,7 @@ using Microsoft.Extensions.Hosting;
 
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
-//move up qqqq
+
 // Add Configuration from appsettings.json
 builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 
@@ -36,59 +36,53 @@ builder.Logging.AddSerilog(Log.Logger, dispose: true);
 //for really bad fails
 try { 
 
-string LH_DB_API_BaseURL;
-string LH_DB_API_ClientName;
+    string LH_DB_API_BaseURL;
+    string LH_DB_API_ClientName;
 
-try
-{
-    LH_DB_API_BaseURL = builder.Configuration["APIs:LH_DB_API:BaseURL"];
-    LH_DB_API_ClientName = builder.Configuration["APIs:LH_DB_API:ClientName"];
-}
-catch (Exception e)
-{
-    // Log or handle the error appropriately
-    // Its probably missing appsetting info
-    Console.WriteLine($"Configuration validation failed: {e.Message}");
-    throw; // Re-throw if necessary
-
-}
-builder.Services.AddHttpClient(LH_DB_API_ClientName, client =>
-{
-    client.BaseAddress = new Uri(LH_DB_API_BaseURL);
-});
-
-
-builder.Services.AddSingleton<IGS_JSEnabled>(sp =>
-{
-    return new GS_JSEnabled
+    try
     {
-        JSIsEnabled = true, //if we are inject the client then it is true
-        TestingWhoAmI = "Client"
-    };
-});
+        LH_DB_API_BaseURL = builder.Configuration["APIs:LH_DB_API:BaseURL"];
+        LH_DB_API_ClientName = builder.Configuration["APIs:LH_DB_API:ClientName"];
+    }
+    catch (Exception e)
+    {
+        // Log or handle the error appropriately
+        //If this is in production and this error is to do with configuration that we may never get it as will be relying on the api, which comes from the configuration
+        Log.Error(e, "Configuration validation failed");
+        throw; 
+
+    }
+
+    builder.Services.AddHttpClient(LH_DB_API_ClientName, client =>
+    {
+        client.BaseAddress = new Uri(LH_DB_API_BaseURL);
+    });
 
 
-
-builder.Services.LHS_AddConfiguration(builder.Configuration, "APIs:LH_DB_API");
-builder.Services.LHS_AddStateServices();
-
-builder.Services.GS_AddConfiguration(builder.Configuration, "APIs:LH_DB_API");
-builder.Services.GS_AddStateServices();
-
-
-
-builder.Services.LHB_RegisterAllBlazorPageRoutes();
-
-//move up qqqq
-// Add Configuration from appsettings.json
-//builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+    builder.Services.AddSingleton<IGS_JSEnabled>(sp =>
+    {
+        return new GS_JSEnabled
+        {
+            JSIsEnabled = true, //if we are inject the client then it is true
+            TestingWhoAmI = "Client"
+        };
+    });
 
 
-await builder.Build().RunAsync();
+    // Add Configurations and Services
+    builder.Services.LHS_AddConfiguration(builder.Configuration, "APIs:LH_DB_API");
+    builder.Services.LHS_AddStateServices();
+
+    builder.Services.GS_AddConfiguration(builder.Configuration, "APIs:LH_DB_API");
+    builder.Services.GS_AddStateServices();
+
+    builder.Services.LHB_RegisterAllBlazorPageRoutes();
+
+    await builder.Build().RunAsync();
 }
 catch (Exception ex)
 {
-    // qqqqqq but where would this log to ... we need a service and an api post... but that may rely on everything else having succeeded
+    //If in production as requires sending to api we may never receive it
     Log.Fatal(ex, "Application terminated unexpectedly");
 }
 finally

@@ -6,7 +6,7 @@ using Package.Shared.Entities.T_Entities;
 using Package.Shared.Services.ComponentServices;
 using Package.Shared.Services.Configuration.CounterConfiguration;
 using System.Net.Http.Json;
-using Serilog; //qqqq i hate i am sepcifying the logger in the package
+//using Serilog; //want agnostic logging
 
 
 
@@ -32,12 +32,12 @@ namespace Package.Shared.Services.StateServices.T_Services
         public string ServiceIdentifier { get; set; }
 
         private readonly ILogger<T_StateCounterTestService> _logger;
-        private readonly Serilog.ILogger _serilogger;
+        //private readonly Serilog.ILogger _serilogger;
         
         public T_StateCounterTestService(IHttpClientFactory httpClientFactory, IOptions<T_CounterAPIConfiguration> t_CounterAPIConfiguration, ILocalStorageService localStorage, IGS_JSEnabled gS_JSEnabled, ILogger<T_StateCounterTestService> logger) 
         {
             _logger = logger;
-            _serilogger = Log.ForContext<T_StateCounterTestService>(); // Create a logger 
+            //_serilogger = Log.ForContext<T_StateCounterTestService>(); // Create a logger 
             ServiceIdentifier = "Service_" + Guid.NewGuid().ToString();
 
             GS_JSEnabled = gS_JSEnabled;
@@ -175,6 +175,7 @@ namespace Package.Shared.Services.StateServices.T_Services
             Console.WriteLine("OnDisposeSaveObjectToStorage");
             var userStorage = new T_LocalStorage.UserStorageClass(typeDisposed, individualIdentifierForDisposed, ServiceIdentifier/*userName*/, count, countType);
             //await Task.Delay(5000);//Yep concurrency issue --- Even so 2 not 3 often finish, suggesting the service is lost before it is finished and when it is is lost its dispose is not called 
+            
             try
             {
                 await _localStorage.SetItemAsync($"{DateTime.Now.ToString("yyyyMMdd__HH_mm_ss_ffff")}_InsertedByServiceMethod", individualIdentifierForDisposed ?? "Unknown");

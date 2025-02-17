@@ -3,8 +3,7 @@
 @using Package.Shared.Entities.T_Entities
 @using Serilog.Events
 @using Serilog.Sinks.InMemory
-
-@using Serilog.Sinks.InMemory.Assertions@* isnt working qqqq*@
+@using Serilog.Sinks.InMemory.Assertions
 @using FluentAssertions
 @using Xunit.Abstractions
 
@@ -12,26 +11,25 @@
 @code {
 
     private readonly Fixture _fixture;
-    private readonly ITestOutputHelper _outputHelper;//qqqq do we need to clear the output between tests and if so doenst that stops async
+    private readonly ITestOutputHelper _outputHelper; //This is for shwoing logger outputs in the the testrunner
 
-    public T_ComponentWithLoggerTests(ITestOutputHelper outputHelper)//qqqq in memory sink here specifies serilog
+    public T_ComponentWithLoggerTests(ITestOutputHelper outputHelper)
     {
         // Initialize AutoFixture
         _fixture = new Fixture();
-        _outputHelper = outputHelper;//qqqqq shouldnt this be new so not all test use it
+        _outputHelper = outputHelper;
 
     }
 
 
-    private TestContext CreateTestContext(InMemorySink inMemorySink)//Require it so remember to test it
+    private TestContext CreateTestContext(InMemorySink inMemorySink)
     {
         //Arrange
 
         var ctx = new TestContext();
         //ctx.Services.AddFallbackServiceProvider(new FallbackServiceProvider());
 
-
-        ctx.Services.AddLogging(_outputHelper, inMemorySink);//All this is doing is putting logs in the test runner logger
+        ctx.Services.AddLogging(_outputHelper, inMemorySink);
 
         return ctx;
     }
@@ -39,7 +37,7 @@
     //This is testing the logger the test insert so can check the configuration
     [Trait("Category", "Unit Test")]
     [Fact]
-    public void Logger_TestLoggerCorrectlyLogsLevels()
+    public void Logger_ShouldLogCorrectLevels()
     {
         // Arrange
         InMemorySink inMemorySink = new InMemorySink(/* outputTemplate: "{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}" */);//Doesnt work
@@ -159,7 +157,7 @@
 
     [Trait("Category", "Unit Test")]
     [Fact]
-    public void Logger_ComplexObjectFluentAssertionOnInMemorySinkWorks_IsDeconstructedObject()
+    public void Logger_ComplexObjectFluentAssertionOnInMemorySinkWorks_IsDeconstructedObject()//TODO: Not broken recently broken it has never succeeded - Lists are stored as scalar we can configure how serilog deconstructs this may be useful here
     {
 
         // Arrange
@@ -188,12 +186,12 @@
 
                     */
 
-                        inMemorySink.Should()
-                                .HaveMessage("Can i still deconstruct {@ComplexObj}")
-                                .Appearing().Once()
-                                .WithLevel(LogEventLevel.Information)
-                                .WithProperty("ComplexObj")
-                                .HavingADestructuredObject();
+        inMemorySink.Should()
+                .HaveMessage("Can i still deconstruct {@ComplexObj}")
+                .Appearing().Once()
+                .WithLevel(LogEventLevel.Information)
+                .WithProperty("ComplexObj")
+                .HavingADestructuredObject();
 
 
 

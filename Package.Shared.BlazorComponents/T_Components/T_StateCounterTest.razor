@@ -3,8 +3,6 @@
 @inject ILocalStorageService LocalStorage 
 @*IDisposable*@
 @inherits GB_ComponentBase
-@* @inject ILogger<T_StateCounterTest> Logger *@
-@* @inherits GB_ComponentBase - doing it in the test service for this example would generally use gb_componentbase *@
 
 
 
@@ -92,9 +90,9 @@
 
     protected override async Task OnInitializedAsync()
     {
-        Logger.LogInformation("LOGGING!!!! QQQQ !!!");
+        
         ComponentIdentifier = "Component_" + Guid.NewGuid().ToString();
-
+        Logger.LogInformation("LOGGING {component}", ComponentIdentifier);
         T_StateCounterTestService.CountInDBChanged += TriggerStateChangeCountInDbChangeAsync;
         T_StateCounterTestService.CountInStorageChanged += TriggerStateChangeCountInStorageChangedAsync;
         T_StateCounterTestService.CountInWASMServiceChanged += TriggerStateChangeCountInWASMServiceChanged;

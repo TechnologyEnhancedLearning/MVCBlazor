@@ -61,14 +61,14 @@ namespace Test.BUnit.UnitTests.DependencyInjection
             Log.Logger = new LoggerConfiguration()
                 .WriteTo.TestOutput(outputHelper)
                 .WriteTo.Sink(inMemorySink)         
-                .ReadFrom.Configuration(configuration) //qqqq ths is doing nothing
+                .ReadFrom.Configuration(configuration) //this does not apply to custom sinks so custom sinks need to be dot notation configured. The config can still be used for setting up the serilog mainstream packages settings
                 .CreateLogger();
 
             //They are not Serilog packages! so config may not work unless directly mapped.
             //.WriteTo.TestOutput(testOutputHelper: outputHelper, //WORKS if we want to specify
             //    formatter: new ExpressionTemplate("[{UtcDateTime(@t):mm:ss.ffffff} | {@l:u3} | {Substring(SourceContext, LastIndexOf(SourceContext, '.') + 1)} | {Coalesce(EventId.Name, '<none>')}] {@m}\n{@x}"),
             //    restrictedToMinimumLevel: LogEventLevel.Verbose)
-            //.WriteTo.Sink<InMemorySink>(inMemorySink, // DOESNT WORK
+            //.WriteTo.Sink<InMemorySink>(inMemorySink, // DOESNT WORK this package cant be set like this
             //   new ExpressionTemplate("[{UtcDateTime(@t):mm:ss.ffffff} | {@l:u3} | {Substring(SourceContext, LastIndexOf(SourceContext, '.') + 1)} | {Coalesce(EventId.Name, '<none>')}] {@m}\n{@x}"),
             //   LogEventLevel.Verbose)
 

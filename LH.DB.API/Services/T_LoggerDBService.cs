@@ -17,8 +17,12 @@ namespace LH.DB.API.Services
             //For the current scope just want a list
 
         }
-
-        public async Task<GE_ServiceResponse<List<string>>> InsertLogsToDB(string logs)//qqqq we will define a standard log object, probably the existing structure
+        /// <summary>
+        /// Note: We would define a structured log object
+        /// </summary>
+        /// <param name="logs"></param>
+        /// <returns></returns>
+        public async Task<GE_ServiceResponse<List<string>>> InsertLogsToDB(string logs)
         {
             await Task.Delay(100);//some db work
             _database.Logs.Add(logs);

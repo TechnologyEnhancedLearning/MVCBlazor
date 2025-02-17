@@ -33,7 +33,7 @@
 
     [Theory]
     [InlineData(true)]
-    [InlineData(false)]
+    [InlineData(false)]//TODO: JSIsEnaabled is not yet fully simulated
     public void HydrationIsSimulated(bool JSIsEnabled)
     {
         // Arrange
@@ -62,8 +62,8 @@
     /// <param name="JSIsEnabled"></param>
     [Theory]
     [InlineData(true)]
-    [InlineData(false)]
-    public void WaitingExample_Interactivity_IsSimulatedCorrectly(bool JSIsEnabled)
+    [InlineData(false)]//TODO:Maybe E2E will enable nojs testing
+    public void WaitingExample_Interactivity_IsSimulatedCorrectly(bool JSIsEnabled)//qqqq
     {
 
         // Arrange
@@ -105,7 +105,7 @@
     /// This test is to show some comparison options for html as well as that NoJS is not yet sufficiently simulated
     /// </summary>
     [Fact]
-    public async Task NoJSBrowserIsSimulated()
+    public async Task NoJSBrowserIsSimulated()//qqqq
     {
         // Arrange
         bool JSIsEnabled = false;
@@ -134,7 +134,7 @@
 
     [Theory]
     [InlineData(true)]
-    [InlineData(false)]
+    [InlineData(false)]//TODO: JSIsEnabled is not yet fully simulated
     public async Task RenderStageList(bool JSIsEnabled)
     {
         // Arrange
@@ -160,8 +160,4 @@
 
     }
 
-
-  
-
- 
 }

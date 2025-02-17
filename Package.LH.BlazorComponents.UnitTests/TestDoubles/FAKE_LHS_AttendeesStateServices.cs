@@ -23,7 +23,8 @@ namespace Package.LH.BlazorComponents.UnitTests.TestDoubles
 
         public event Action AttendeesChanged;
 
-        public GE_ServiceResponse<List<LH_AttendeeModel>> T_LastServiceResponse { get; set; } = new();//QQQQ Consider building in loggers instead
+        //Loggers will be in real implementation of services so test double like this will be less necessary
+        public GE_ServiceResponse<List<LH_AttendeeModel>> T_LastServiceResponse { get; set; } = new();
         public FAKE_LHS_AttendeesStateServices()
         {
             // Use AutoFixture to create test data

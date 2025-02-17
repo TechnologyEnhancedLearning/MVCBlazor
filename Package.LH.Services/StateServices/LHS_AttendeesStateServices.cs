@@ -48,7 +48,7 @@ namespace Package.LH.Services.StateServices
         public async Task<GE_ServiceResponse<List<LH_AttendeeModel>>> GetAttendeesAsync()
         {
             await EnsureDataIsLoadedAsync();
-           ///qqqqq Log.Information("Serilog should provide full list: {@Results}", results);
+    
             return new GE_ServiceResponse<List<LH_AttendeeModel>> { Data = Attendees };
         }
 

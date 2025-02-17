@@ -1,0 +1,31 @@
+﻿@{
+    ViewData["Title"] = "Logging Control";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<p>Click a button below to change the log level:</p>
+
+<div>
+    <button class="btn btn-primary" onclick="setLogLevel('Information')">Set Information Level</button>
+    <button class="btn btn-success" onclick="setLogLevel('Debug')">Set Debug Level</button>
+    <button class="btn btn-warning" onclick="setLogLevel('Warning')">Set Warning Level</button>
+    <button class="btn btn-danger" onclick="setLogLevel('Error')">Set Error Level</button>
+    <button class="btn btn-dark" onclick="setLogLevel('Fatal')">Set Fatal Level</button>
+</div>
+
+<script>
+    // Function to call the API and change the log level
+    function setLogLevel(level) {
+        fetch('/api/logging/set-log-level', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(level)
+        })
+        .then(response => response.json())
+        .then(data => alert(data.message)) // Show a success message
+        .catch(error => alert('Error: ' + error)); // Handle any errors
+    }
+</script>

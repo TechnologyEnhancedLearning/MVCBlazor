@@ -745,6 +745,7 @@ This project is not currently a reference for how to but an example of what can 
 - **important** -> prototyping tools
 
 ### Car park desired features
+- Memory profiling as part of testing
 - look into blazor thread safety a bit, common mistakes etc
 - persistence for
 	- user prefs
@@ -774,26 +775,6 @@ It does not seem to be useful to our needs on first look.
 
 ## Recommendations from project
 In no particular order.
-- Serilog is recommended as an aid in testing in BUnit and it is a very popular logging library
-	- it is seemingly better for analytics structural login
-	- opportunities to hook into out of the box admin logging ui
-	- However still to decide whether do inject via ilogger interface or direct coupling with @using
-		- initially it seemed very much better to make components logger agnostic, serilog uses the ilogger interface
-			- this would mean other consumers of the library could inject the library of their choice
-			- However serilog features like structured data being returned so we get a whole list of class for example is acheived via @using not using the ilogger methods e.g.
-				- we only get the first result `   //_logger.Providers[0].Name == Serilog QQQQ we ARE getting Serilog 
-												   // - but we are not getting the power of it through its ilogger, interface
-												   // - we get the full object list with Log.Information we dont through _logger.LogInformation, is this forcing our own logging service
-												   _logger.LogInformation("normal ilogger interface serilog {@results}", results);
-												   //Log.Information("logging serilog by its @using implimentation {@results}", results);//qqqq this requires serilog so this would mean component need serilog build in but i want to use it via ilogger interface
-												`
-			- we could use our own service taking ilogger that given our prefered logger give our prefered logs maybe????? needs a little thought
-			- we should get an idea of
-				- who may use the library what loggers they use
-				- what logging we use elsewhere and whether we want to match the ones for https://admin.learninghub.nhs.uk/Log
-				- how much is LH using Nlog, our unit tests are XUnit but to use playwright we may change to nunit, which may make nlog more applicable
-		- Recommendation - DISCUSSION REQUIRED
-	- the are common abstracting bridging interfaces but leaning towards just requiring serilog
 - I think from discussions webassembly prerender will be the choice. Without blazor pages. And keep this project as reference if we want to introduce them.
 - currently we do not have interactive layoutcomponents this is done via the header and route render mode being set in the app
 	- if we do blazor pages we should avoid all but the MainLayout as layout and rendermode are stripped when MVC renders MVC pages as components
