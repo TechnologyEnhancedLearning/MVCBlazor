@@ -10,10 +10,13 @@ using Package.Shared.BlazorComponents.DependencyInjection;
 using Package.Shared.Services.ComponentServices;
 using Package.Shared.Services.DependencyInjection;
 using Microsoft.AspNetCore.Components;
-using Microsoft.Extensions.Logging;
+
 using Serilog;
 using Serilog.Events;
 using Serilog.Core;
+using Package.Shared.Services.HelperServices.LogLevelSwitcherService;
+using Microsoft.Extensions.Logging;
+
 //using Serilog.Templates;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -32,7 +35,11 @@ if (!Enum.TryParse(logLevelString, true, out LogEventLevel defaultLogLevel))
 
 
 // Create a LoggingLevelSwitch that can be updated dynamically
-var levelSwitch = new LoggingLevelSwitch(defaultLogLevel); // Default: Information added this so in production can change the logging
+LoggingLevelSwitch levelSwitch = new LoggingLevelSwitch(defaultLogLevel); // Default: Information added this so in production can change the logging
+
+
+
+
 Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration)
     .MinimumLevel.ControlledBy(levelSwitch)
@@ -47,17 +54,16 @@ Log.Logger = new LoggerConfiguration()
 
 // Add Serilog to logging providers
 builder.Logging.AddSerilog(Log.Logger, dispose: true);
-builder.Host.UseSerilog();//qqqq dont think i need this
+builder.Host.UseSerilog();
+
 
 
 // Register the LoggingLevelSwitch in DI container
-builder.Services.AddSingleton(levelSwitch);
-
 
 // Capture big failures
 try
 {
-
+    
     builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents()
                 .AddCircuitOptions(opt => opt.DetailedErrors = true)
@@ -109,6 +115,9 @@ try
     });
 
 
+
+
+
     builder.Services.AddScoped<IGS_JSEnabled>(provider =>
     {
         //In here we would get our appsettings etc and configure - but then we have an object to pass it 
@@ -123,8 +132,9 @@ try
             TestingWhoAmI = "Server"
         };
     });
-
-
+    //Scoped because being consumed with storage where singleton doesnt survive mvc page teardown
+    builder.Services.AddScoped<LoggingLevelSwitch>(sp=>levelSwitch);
+    builder.Services.AddScoped<ILogLevelSwitcherService, SerilogLogLevelSwitcherService>();
     var app = builder.Build();
 
     app.UseSession(); //session so we can track if noJs browser

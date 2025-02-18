@@ -689,8 +689,159 @@ We do put the storage server side too, but it cannot use it as it is browser sid
 - remember private browsing or seperate machines and no storage
 - LocalStorage is still isolated per device and browser
 
-### Logging: TODO
+### Logging
 ![Structured logging image](Structured%20logs%20in%20console.PNG)
+
+The logging example is an example of how we can handle it. It may not be best practice.
+Generally Microsoft ILogger is used so other consumers of the project can use their own logger.
+The projects we use currently is expected to be serilog.
+
+**Recommendations**
+- Build some logging into components (though the services and apis are most important)
+- Use serilog middleware everywhere else so http requests tracked
+- Enable in production and dynamic loglevel switching so can increase log level when issues
+- Have a logging API
+- In future hook up to cloud service or throw up docker based service. e.g. Seq
+- Components should be logger agnostic
+- Shared services should be logging agnostic
+- our services should be serilog
+- logging should be set from configuration so can change throughout pipeline
+- logs should be human readable and formatted for storage and utilities like seq to make them searchable
+- Some discussion as to what form experience would be useful to log, and for who, should be had
+- There should be agreement on what to exclude from clientside and maybe all around logging for security
+
+#### Logging Blazor
+- Clientside will have to be to browser and to an api via http sink that can do batching etc
+- Serverside can debug to console, file, and also http as well
+
+#### Unit Tests Using Logging
+- Logging should be per test context
+- It can give us information from services at times without having to mock them enabling us to test more thoroughly 
+- There are two logging practices in the logging test, logging to the test runner, console, etc for debugging
+	- and actually logging as part of test using inmemory logging, and fluent assertions on inmemory logging.
+
+#### Serilog
+- @ will make objects be logged to multiple levels rather than just the first entry.
+A property will also be created with the @name that will hold the object.
+- we can just how it is serialised and to what depth through config
+- Seq and some other tools are built for serilog that allow a logging site to be thrown up via docker or via azure pipeline etc.
+- middleware APP.USESERILOGREQUESTLOGGING <- we can get logs on all controllers api requests if we like
+
+
+#### Logging Recommendations
+
+Some agreement should be found on Clientside logging what should not be in them.
+
+- Debug (As these are used just in development can be pretty liberal)
+	- for lifecycle events
+		- OnInitialized, OnParametersSet
+	- Authentification state changes
+	- Events being triggered
+- Information for user interactions
+	- Async calls to other services
+	- User journey
+- Unit Tests
+	- Check failure produces an Error log
+
+
+##### Log Levels
+
+Who (user, or userType), What(Id's), Where(service/component) and Why(What trying to do)
+
+| Log Level | Description |
+|---|---|
+| Verbose | The lowest log level, enable detailed trace logging mainly for application troubleshooting. |
+| Debug | Used for application debugging purposes and to inspect run-time outcomes in development environments. |
+| Information | Used for application monitoring and to track request and response details or specific operation results. |
+| Warning | Used to review potential non-critical, non-friendly operation outcomes. |
+| Error | The most helpful, and yet the most unwanted, log level. Enables detailed error tracking and helps to write error-free applications. |
+| Fatal | The most important log level, used to log critical system operations or outcomes that require urgent attention. |
+
+#### Integrating with our current ecosystem
+- We will probably want to match the classes used for current logs
+- - hub.log <-- current LH logs table
+	- https://admin.learninghub.nhs.uk/Log <- admin ui for seeing logs
+
+
+#### References and Packages
+- The Serilog.InMemory.Assertions and Serilog.Sinks.XUnit seem less robust than the others.
+We may in future want to consider 
+- [git read me with fluent assertions available on inmemory](https://github.com/serilog-contrib/SerilogSinksInMemory)
+- [Test Correlator may in future be an alternative to consider](https://github.com/MitchBodmer/serilog-sinks-testcorrelator)
+- [Serilog use described in blog](https://codewithmukesh.com/blog/structured-logging-with-serilog-in-aspnet-core)
+- [Test Correlator Blog](https://daninacan.com/how-to-unit-test-serilog-logcontext-with-testcorrelator/)
+- [Serilog vid clear not blazor Mohammad](https://www.youtube.com/watch?v=SsMqwuYJvKk)
+
+
+	
+
+
+#### Notes
+Some applications use sampling so not everything is logged, but instead 20% of users.
+
+- worth adding to notes ? 
+	- [long logging video](https://www.youtube.com/watch?v=2aDlSA_-rSg)
+		- [custom log provided could be useful depending on what we find in serilog](https://youtu.be/2aDlSA_-rSg?t=766)
+		- [injects as singleton](https://youtu.be/2aDlSA_-rSg?t=2165)
+		- microsoft docs custom logger section being followed
+		- see code with the config https://youtu.be/2aDlSA_-rSg?t=3288
+		- cant find the mentioned git
+	- https://youtu.be/SmFsQJBbsO0?t=436
+		- https://github.com/CuriousDrive/BlazingChat
+	- [microsoft Auth logging clientside?](https://learn.microsoft.com/en-us/aspnet/core/blazor/fundamentals/logging?view=aspnetcore-9.0#client-side-authentication-logging)
+	- [Bunit suggest serilog but also if i move to playwright and nunit for bunit then nlogger maybe better?](https://bunit.dev/docs/misc-test-tips.html#capturing-logs-from-ilogger-in-test-output)
+
+
+
+#### Logging Carpark
+- [Our current logging panel](https://admin.learninghub.nhs.uk/Log)
+- [SignalR connection for logging was suggested sounds like overkill](https://github.com/stewartcelani/WasmTwoWayLogging?source=post_page-----cf45ced27082--------------------------------)
+- [mediatr with logging, also locally seq for development maybe a good idea](https://youtu.be/w7yDuoCLVvQ?t=208)
+- Not worked
+	-   // Assert
+        //Because its not a list it is coming through as deconstructed
+        //Documentation has examples like this
+                    //Unsure why "and" isnt recognised [github docs](https://github.com/serilog-contrib/SerilogSinksInMemory/tree/master?tab=readme-ov-file#asserting-properties-on-messages)
+        // inMemorySink.Should()
+        //     .HaveMessage("SimpleObj {@SimpleObj}")
+        //     .Appearing().Once()
+        //     .WithLevel(LogEventLevel.Information) // If you need to assert the level
+        //     .WithProperty("SimpleObj") // Assert presence of SimpleObj property
+        //     .And
+        //     .WithProperty("UserId")
+        //     .WithValue("12345")
+        //     .And
+        //     .WithProperty("OperationType")
+        //     .WithValue("checkout")
+        //     .And
+        //     .WithProperty("RequestId")
+        //     .WithValue("req-123");
+
+
+### Debugging
+
+#### Debugging Tips
+- Have chrome browser and Brave Browser on visual studio with Brave set to NoJs so from point of load it has nojs
+- preserve console log so moving to mvc components wont hide any logging from components 
+ 
+
+#### Debugging whole solution
+- Server launch settings needed to hit debuggers when on client side
+	- "inspectUri": "{wsProtocol}://{url.hostname}:{url.port}/_framework/debug/ws-proxy?browser={browserInspectUri}",
+		- `
+		 "IIS Express": {
+   "commandName": "IISExpress",
+   "launchBrowser": true,
+   "inspectUri": "{wsProtocol}://{url.hostname}:{url.port}/_framework/debug/ws-proxy?browser={browserInspectUri}",
+   "environmentVariables": {
+     "ASPNETCORE_ENVIRONMENT": "Development"
+   }
+ }
+		`
+
+
+
+
 
 
 ## Project Limitations and Potential Future Additions

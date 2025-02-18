@@ -17,6 +17,9 @@ using Serilog.Configuration;
 
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Hosting;
+using Serilog.Events;
+using Package.Shared.Services.HelperServices.LogLevelSwitcherService;
+using Microsoft.Extensions.DependencyInjection;
 
 
 
@@ -26,12 +29,28 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 
 builder.Logging.ClearProviders();
+
+
+// Read default logging level from configuration
+var logLevelString = builder.Configuration["Serilog:MinimumLevel:Default"];
+
+// Convert string to LogEventLevel (with fallback)
+if (!Enum.TryParse(logLevelString, true, out LogEventLevel defaultLogLevel))
+{
+    defaultLogLevel = LogEventLevel.Information; // Default if parsing fails
+}
+
+// Create a LoggingLevelSwitch that can be updated dynamically
+LoggingLevelSwitch levelSwitch = new LoggingLevelSwitch(defaultLogLevel); // Default: Information added this so in production can change the logging
 Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration)
+    .MinimumLevel.ControlledBy(levelSwitch)
     .CreateLogger();
 
 // Add Serilog to logging providers
 builder.Logging.AddSerilog(Log.Logger, dispose: true);
+
+
 
 //for really bad fails
 try { 
@@ -59,6 +78,7 @@ try {
     });
 
 
+
     builder.Services.AddSingleton<IGS_JSEnabled>(sp =>
     {
         return new GS_JSEnabled
@@ -78,6 +98,9 @@ try {
 
     builder.Services.LHB_RegisterAllBlazorPageRoutes();
 
+    //Scoped because being consumed with storage where singleton doesnt survive mvc page teardown
+    builder.Services.AddScoped<LoggingLevelSwitch>(sp=>levelSwitch);
+    builder.Services.AddScoped<ILogLevelSwitcherService, SerilogLogLevelSwitcherService>();
     await builder.Build().RunAsync();
 }
 catch (Exception ex)
