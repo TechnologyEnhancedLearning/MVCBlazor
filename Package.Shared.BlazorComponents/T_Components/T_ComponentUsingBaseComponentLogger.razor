@@ -1,0 +1,11 @@
+﻿@inherits GB_ComponentBase
+
+<h3>I log</h3>
+
+@code {
+
+    protected override async Task OnInitializedAsync()
+    {
+        Logger.LogInformation("Log using the basecomponent logger");
+    }
+}

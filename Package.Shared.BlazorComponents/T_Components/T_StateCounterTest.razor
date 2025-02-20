@@ -1,12 +1,8 @@
-﻿@using Blazored.LocalStorage
-@using Package.Shared.Entities.T_Entities
-@using Package.Shared.Services.StateServices.T_Services
-@inject IT_StateCounterTestService T_StateCounterTestService
+﻿@inject IT_StateCounterTestService T_StateCounterTestService
 @implements IAsyncDisposable 
 @inject ILocalStorageService LocalStorage 
 @*IDisposable*@
-@inherits ComponentBase
-@* @inherits GB_ComponentBase - doing it in the test service for this example would generally use gb_componentbase *@
+@inherits GB_ComponentBase
 
 
 
@@ -94,8 +90,9 @@
 
     protected override async Task OnInitializedAsync()
     {
+        
         ComponentIdentifier = "Component_" + Guid.NewGuid().ToString();
-
+        Logger.LogInformation("LOGGING {component}", ComponentIdentifier);
         T_StateCounterTestService.CountInDBChanged += TriggerStateChangeCountInDbChangeAsync;
         T_StateCounterTestService.CountInStorageChanged += TriggerStateChangeCountInStorageChangedAsync;
         T_StateCounterTestService.CountInWASMServiceChanged += TriggerStateChangeCountInWASMServiceChanged;

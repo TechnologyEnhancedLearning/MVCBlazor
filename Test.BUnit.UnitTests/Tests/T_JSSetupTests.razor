@@ -33,7 +33,7 @@
 
     [Theory]
     [InlineData(true)]
-    [InlineData(false)]
+    [InlineData(false)]//TODO: JSIsEnaabled is not yet fully simulated
     public void HydrationIsSimulated(bool JSIsEnabled)
     {
         // Arrange
@@ -62,7 +62,7 @@
     /// <param name="JSIsEnabled"></param>
     [Theory]
     [InlineData(true)]
-    [InlineData(false)]
+    [InlineData(false)]//TODO:Maybe E2E will enable nojs testing
     public void WaitingExample_Interactivity_IsSimulatedCorrectly(bool JSIsEnabled)
     {
 
@@ -134,7 +134,7 @@
 
     [Theory]
     [InlineData(true)]
-    [InlineData(false)]
+    [InlineData(false)]//TODO: JSIsEnabled is not yet fully simulated
     public async Task RenderStageList(bool JSIsEnabled)
     {
         // Arrange
@@ -160,8 +160,4 @@
 
     }
 
-
-  
-
- 
 }

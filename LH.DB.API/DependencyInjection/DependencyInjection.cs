@@ -12,6 +12,7 @@ namespace LH.DB.API.DependencyInjection
             services.AddSingleton<IT_CounterDBService, T_CounterDBService>();
             services.AddSingleton<ILHS_AttendeesDbService, LH_AttendeesDBService>();
             services.AddSingleton<IGS_CharactersDBService, LH_CharactersDBService>();
+            services.AddSingleton<T_LoggerDBService>();
             return services;
         }
     }

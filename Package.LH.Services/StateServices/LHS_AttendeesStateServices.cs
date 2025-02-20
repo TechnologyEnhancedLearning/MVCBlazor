@@ -9,6 +9,7 @@ using Microsoft.Extensions.Options;
 using Package.LH.Services.Configurations.AttendeesConfiguration;
 using Package.Shared.Entities.Communication;
 using System.Diagnostics;
+using Microsoft.Extensions.Logging;
 
 
 namespace Package.LH.Services.StateServices
@@ -47,7 +48,7 @@ namespace Package.LH.Services.StateServices
         public async Task<GE_ServiceResponse<List<LH_AttendeeModel>>> GetAttendeesAsync()
         {
             await EnsureDataIsLoadedAsync();
-            
+    
             return new GE_ServiceResponse<List<LH_AttendeeModel>> { Data = Attendees };
         }
 

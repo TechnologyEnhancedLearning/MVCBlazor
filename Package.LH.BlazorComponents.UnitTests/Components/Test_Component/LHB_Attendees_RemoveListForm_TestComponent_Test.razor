@@ -197,7 +197,7 @@
     [Theory]
     [InlineData(true)]
     [InlineData(false)]
-    public void RemoveButton_EfficientlyRenders_TriggersOnlyOneNodeChange(bool JSIsEnabled)
+    public void RemoveButton_EfficientlyRenders_TriggersOnlyOneNodeChange(bool JSIsEnabled)//TODO: Not broken recently broken it has never succeeded
     {
         
         @if (!JSIsEnabled) { throw new NotImplementedException("Test context does not simulate nojs environment yet"); }
@@ -236,10 +236,9 @@
 
         //Assert
         diff.ShouldHaveSingleChange();
-        //qqqq Getting 596 this indicates I am inefficiently rerendering but it may just mean its more complex than the simple list unit test
+        //TODO: Getting 596 this indicates I am inefficiently rerendering but it may just mean its more complex than the simple list unit test
         //This is an advantage over just comparing string
         //is it because we dont listen to the service instead we rerender the parent
-
 
 
         diff.ShouldHaveSingleChange().ShouldBeRemoval(htmlStringFirstButton);

@@ -1,0 +1,51 @@
+﻿@using Package.Shared.Services.HelperServices.LogLevelSwitcherService
+@inject ILogLevelSwitcherService LogLevelSwitcher
+
+<h3>Log Level Slider</h3>
+
+
+<select value="@CurrentLogLevel" @onchange="HandleLogLevelChange" class="form-select">
+    @foreach (var item in AvailableLogLevels)
+    {
+        <option value="@item" >@item</option>
+    }
+</select>
+
+<p>Current Log Level: @CurrentLogLevel</p>
+<p><b>Note:</b> Changing the log level does not trigger events because everything 
+    would need one so it will affect new components. 
+    Also we have complete tare down between mvc components so local storage for 24 hours 
+    or db user logging state would be needed the singleton will not be enough</p> 
+
+
+@code{
+    private string CurrentLogLevel = string.Empty;
+
+    private List<string> AvailableLogLevels = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LogLevelSwitcher.InitializeLogLevelFromAsyncSourceIfAvailable();
+        AvailableLogLevels = LogLevelSwitcher.GetAvailableLogLevels();
+         CurrentLogLevel = LogLevelSwitcher.GetCurrentLogLevel();
+     }
+
+    private void SetLogLevel(string level)
+     {
+         CurrentLogLevel = LogLevelSwitcher.SetLogLevel(level);
+        // No StateHasChanged needed here.  The component will re-render
+         // when CurrentLogLevel is updated due to how Blazor change detection works.
+     }
+
+     private void HandleLogLevelChange(ChangeEventArgs e)
+     {
+         if (e.Value is string selectedLevel) // Safe casting
+         {
+             CurrentLogLevel = e.Value.ToString();
+             LogLevelSwitcher.SetLogLevel(CurrentLogLevel); // Crucial: Update the service!
+             StateHasChanged();
+         }
+     }
+
+}
+

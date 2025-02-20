@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Razor">
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
 	<PropertyGroup>
 		<TargetFramework>net8.0</TargetFramework>
@@ -15,11 +15,20 @@
 
 	<ItemGroup>
 		<PackageReference Include="bunit" Version="1.34.0" />
+		<PackageReference Include="FluentAssertions" Version="8.0.1" />
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
 		<PackageReference Include="coverlet.collector" Version="6.0.0">
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 			<PrivateAssets>all</PrivateAssets>
 		</PackageReference>
+		<PackageReference Include="Serilog" Version="4.2.0" />
+		<PackageReference Include="Serilog.Expressions" Version="5.0.0" />
+		<PackageReference Include="Serilog.Extensions.Logging" Version="8.0.0" />
+		<PackageReference Include="Serilog.Formatting.Compact" Version="3.0.0" />
+		<PackageReference Include="Serilog.Settings.Configuration" Version="8.0.0" />
+		<PackageReference Include="Serilog.Sinks.InMemory" Version="0.14.0" />
+		<PackageReference Include="Serilog.Sinks.InMemory.Assertions" Version="0.14.0" />
+		<PackageReference Include="Serilog.Sinks.XUnit" Version="2.0.4" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -38,6 +47,8 @@
 	  <ProjectReference Include="..\Package.Shared.Services\Package.Shared.Services.csproj" />
 	  <ProjectReference Include="..\Test.Components\Test.Components.csproj" />
 	</ItemGroup>
+
+	<ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="https://json.schemastore.org/artifacthub-repo.json" /></VisualStudio></ProjectExtensions>
 
 
 
