@@ -401,6 +401,9 @@ There are good references for BUnit. The examples in the project are what work b
 
 #### Unit Test BUNIT
 
+**Next project should include verify.bunit as well**
+
+
 BUnit uses testing packages we already use such as moq xunit autofixture.
 
 It complete a render cycle of a component.
@@ -421,26 +424,26 @@ We can wait for tasks to complete cut.WaitForAssertion(() => cut.MarkupMatches("
 
 
 #### What to look at
-	- JSIsEnabled wants to be tested at the same time so developer can see from the unit test that base components 
-		are doing the work and they dont need to. However BUnit without E2E is not able to replicate the lifecycle stages as they would occur for nojs browsers.
-	- Efficiency of rendering test may turn out to be good practice, they also may not, currently despite the keys we are not making a single node change we update the whole list.
-	- The tests are in razor so we can write razor html
-	- MarkupMatches can check output
-		- aria-label:ignore and diff:ignoreChildren are examples how we can match the parts of the html relevant to the test
-	- take and getsnap shot allows html comparisons between manipulations
-	- IFAKE_LHS_AttendeesStateServices see how the same instance is injected twice with a different one of its 
+- JSIsEnabled wants to be tested at the same time so developer can see from the unit test that base components 
+	are doing the work and they dont need to. However BUnit without E2E is not able to replicate the lifecycle stages as they would occur for nojs browsers.
+- Efficiency of rendering test may turn out to be good practice, they also may not, currently despite the keys we are not making a single node change we update the whole list.
+- The tests are in razor so we can write razor html
+- MarkupMatches can check output
+	- aria-label:ignore and diff:ignoreChildren are examples how we can match the parts of the html relevant to the test
+- take and getsnap shot allows html comparisons between manipulations
+- IFAKE_LHS_AttendeesStateServices see how the same instance is injected twice with a different one of its 
 interfaces to access it by so component injection can be faked and additional test functionality added to track 
 behaviour.
-	- cut.OnMarkupUpdated += (sender, args) => markupStringLs.Add(cut.Markup); is quite nice
-	- cut.GetChangesSinceSnapshot().ShouldHaveSingleChange();
-	- Even though the blazor gets turned into html can still grab by component type
-		- `
-			      var canWeGrabIt = cut.FindComponent<LHB_Attendees_RemoveListForm_TestComponent>();
-				  var canWeGrabIt1 = cut.FindComponent<Shared.BlazorComponents.Components.Lists.GB_ListWithButtons<LH_AttendeeModel>>();
-				  var canWeGrabIt2 = cut.FindComponent<GB_Button2>();
-		`
-	- not yet got a nice useable example of node counting var diff = cut.GetChangesSinceSnapshot();
-	- renderstage test have a component showing renderstages 
+- cut.OnMarkupUpdated += (sender, args) => markupStringLs.Add(cut.Markup); is quite nice
+- cut.GetChangesSinceSnapshot().ShouldHaveSingleChange();
+- Even though the blazor gets turned into html can still grab by component type
+	- `
+			  var canWeGrabIt = cut.FindComponent<LHB_Attendees_RemoveListForm_TestComponent>();
+			  var canWeGrabIt1 = cut.FindComponent<Shared.BlazorComponents.Components.Lists.GB_ListWithButtons<LH_AttendeeModel>>();
+			  var canWeGrabIt2 = cut.FindComponent<GB_Button2>();
+	`
+- not yet got a nice useable example of node counting var diff = cut.GetChangesSinceSnapshot();
+- renderstage test have a component showing renderstages 
 
 #### BUnits Notes
 - bunit .net9 allows to alter renderinfo not rendermode so not behaviour ... .Net 10? to do our nojs requirement in BUnit?
