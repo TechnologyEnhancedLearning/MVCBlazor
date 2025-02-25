@@ -28,10 +28,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="SnapShotTesting\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Test.BrowserBased.Host\Test.BrowserBased.Host\Test.BrowserBased.Host.csproj" />
   </ItemGroup>
 
