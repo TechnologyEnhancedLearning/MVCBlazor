@@ -11,7 +11,7 @@ namespace Test.BrowserBased.UnitE2ETests.Helpers
     public static class BrowserHelper
     {
 
-        public static async Task<IPage> CreatePageAsync(IPlaywright playwright, string browserType, bool jsEnabled, ViewportType viewport, string baseUrl)
+        public static async Task<IBrowserContext> CreateBrowserContextAsync(IPlaywright playwright, string browserType, bool jsEnabled, ViewportType viewport, string baseUrl)
         {
             //qqqqq try catch
             //qqqqq it will be this using so we need to move this bit out
@@ -43,9 +43,11 @@ namespace Test.BrowserBased.UnitE2ETests.Helpers
                 ViewportSize = ViewportHelper.Viewports[viewport]
             };
             IBrowserContext context = await browser.NewContextAsync(contextOptions);
-            IPage page = await context.NewPageAsync();
 
-            return page;
+            //qqqq we probably want to set context options while testing so lets return the context
+            return context;
+            //IPage page = await context.NewPageAsync();
+            //return page;
 
         }
 

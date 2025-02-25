@@ -47,78 +47,125 @@ namespace Test.BrowserBased.UnitE2ETests.Tests
 
 
         [Theory]
+
         [InlineData("chromium", true, ViewportHelper.ViewportType.Desktop)]
-        //[InlineData("chromium", false, ViewportHelper.ViewportType.Desktop)]
+        [InlineData("chromium", false, ViewportHelper.ViewportType.Desktop)]
         [InlineData("chromium", true, ViewportHelper.ViewportType.Mobile)]
-        //[InlineData("chromium", false, ViewportHelper.ViewportType.Mobile)]
+        [InlineData("chromium", false, ViewportHelper.ViewportType.Mobile)]
 
         [InlineData("firefox", true, ViewportHelper.ViewportType.Desktop)]
-        //[InlineData("firefox", false, ViewportHelper.ViewportType.Desktop)]
+        [InlineData("firefox", false, ViewportHelper.ViewportType.Desktop)]
         [InlineData("firefox", true, ViewportHelper.ViewportType.Mobile)]
-        //[InlineData("firefox", false, ViewportHelper.ViewportType.Mobile)]
+        [InlineData("firefox", false, ViewportHelper.ViewportType.Mobile)]
 
         [InlineData("webkit", true, ViewportHelper.ViewportType.Desktop)]
-        //[InlineData("webkit", false, ViewportHelper.ViewportType.Desktop)]
+        [InlineData("webkit", false, ViewportHelper.ViewportType.Desktop)]
         [InlineData("webkit", true, ViewportHelper.ViewportType.Mobile)]
-        //[InlineData("webkit", false, ViewportHelper.ViewportType.Mobile)]
+        [InlineData("webkit", false, ViewportHelper.ViewportType.Mobile)]
         public async Task Page_Loads_Correctly(string browserType, bool jsEnabled, ViewportHelper.ViewportType viewport)
         {
-
-            //qqqqqqqqqqqqqq tommorrow THIS code works when not extracted
+            
             string baseUrl = Host.ServerAddress;
-            IPlaywright playwright = await Microsoft.Playwright.Playwright.CreateAsync();
-            IPage page = await BrowserHelper.CreatePageAsync(playwright, browserType, jsEnabled, viewport, baseUrl);
 
-         
+            //Handling this per test and running them all on the browser is quick for writing tests slow for running test
+            //alternatively we could have a browser per test file
+            using IPlaywright playwright = await Microsoft.Playwright.Playwright.CreateAsync();
+
+            //qqqq ussually we will use it like this? probs
+            //IPage page = await (await BrowserHelper.CreateBrowserContextAsync(playwright, browserType, jsEnabled, viewport, baseUrl)).NewPageAsync();
+           
+            IBrowserContext browserContext = await BrowserHelper.CreateBrowserContextAsync(playwright, browserType, jsEnabled, viewport, baseUrl);
+            //Debug option
+            await browserContext.Tracing.StartAsync(new()
+            {
+
+                Screenshots = true,
+                Snapshots = true,
+                Sources = true
+            });
 
 
+            IPage page = await browserContext.NewPageAsync();
 
+            //Debug option
+            //await page.PauseAsync();
 
             //await page.GotoPreRenderedAsync("counter");
             await page.GotoAsync("counter", new PageGotoOptions() { WaitUntil = WaitUntilState.NetworkIdle });
             ILocator status = page.GetByRole(AriaRole.Status);
             await Expect(status).ToHaveTextAsync("Current count: 0");
 
-
-
-            //!!!!!!!!! Compare
-            /*
-
-
-            using var host = new BlazorApplicationFactory<Program>(); // Replace with your Program class
-
-            using IPlaywright playwright = await Microsoft.Playwright.Playwright.CreateAsync();
-            await using IBrowser? browser = await playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions { Headless = false }); // Headless set to false to see the browser
-            BrowserNewContextOptions contextOptions = new BrowserNewContextOptions
+            await browserContext.Tracing.StopAsync(new()
             {
-                BaseURL = host.ServerAddress,
-                IgnoreHTTPSErrors = true,
-            };
-            await Page.PauseAsync();
-            await Context.Tracing.StartAsync(new(){Screenshots = true,Snapshots = true,Sources = true});
-            IBrowserContext context = await browser.NewContextAsync(contextOptions);
-            IPage page = await context.NewPageAsync();
-            await page.GotoAsync("counter",new PageGotoOptions(){WaitUntil = WaitUntilState.NetworkIdle });
-            await page.GetByRole(AriaRole.Button, new PageGetByRoleOptions() { Name = "Click me" }).ClickAsync();
-            ILocator status = page.GetByRole(AriaRole.Status);
-            await Expect(status).ToHaveTextAsync("Current count: 1");
-
-
-            */
-
+                Path = "trace.zip",
+            });
 
         }
 
+        //qqqqqq counter test nojs
+        //qqqqqq page for prerender server wasm and no prerender
+
+        [Theory]
+        [InlineData("chromium", true, ViewportHelper.ViewportType.Desktop)]
+        [InlineData("chromium", false, ViewportHelper.ViewportType.Desktop)]
+        [InlineData("chromium", true, ViewportHelper.ViewportType.Mobile)]
+        [InlineData("chromium", false, ViewportHelper.ViewportType.Mobile)]
+
+        [InlineData("firefox", true, ViewportHelper.ViewportType.Desktop)]
+        [InlineData("firefox", false, ViewportHelper.ViewportType.Desktop)]
+        [InlineData("firefox", true, ViewportHelper.ViewportType.Mobile)]
+        [InlineData("firefox", false, ViewportHelper.ViewportType.Mobile)]
+
+        [InlineData("webkit", true, ViewportHelper.ViewportType.Desktop)]
+        [InlineData("webkit", false, ViewportHelper.ViewportType.Desktop)]
+        [InlineData("webkit", true, ViewportHelper.ViewportType.Mobile)]
+        [InlineData("webkit", false, ViewportHelper.ViewportType.Mobile)]
+        public async Task Page_InteractivityIsCorrectlySimulated(string browserType, bool jsEnabled, ViewportHelper.ViewportType viewport)
+        {
+
+            string baseUrl = Host.ServerAddress;
+
+            //Handling this per test and running them all on the browser is quick for writing tests slow for running test
+            //alternatively we could have a browser per test file
+            using IPlaywright playwright = await Microsoft.Playwright.Playwright.CreateAsync();
+
+            //qqqq ussually we will use it like this? probs
+            //IPage page = await (await BrowserHelper.CreateBrowserContextAsync(playwright, browserType, jsEnabled, viewport, baseUrl)).NewPageAsync();
+
+            IBrowserContext browserContext = await BrowserHelper.CreateBrowserContextAsync(playwright, browserType, jsEnabled, viewport, baseUrl);
+            //Debug option
+            await browserContext.Tracing.StartAsync(new()
+            {
+
+                Screenshots = true,
+                Snapshots = true,
+                Sources = true
+            });
 
 
-            //await Expect(page).ToHaveTitleAsync(new Regex("Example Domain"));
+            IPage page = await browserContext.NewPageAsync();
 
-            //if (!jsEnabled)
-            //{
-            //    var content = await page.ContentAsync();
-            //    Assert.Contains("Example Domain", content);
-            //}
-        //}
+            //Debug option
+            await page.PauseAsync();
+
+            //await page.GotoPreRenderedAsync("counter");
+            await page.GotoAsync("counter", new PageGotoOptions() { WaitUntil = WaitUntilState.NetworkIdle });
+            ILocator status = page.GetByRole(AriaRole.Status);
+            await Expect(status).ToHaveTextAsync("Current count: 0");
+
+            // Find the button and click it
+            ILocator button = page.GetByRole(AriaRole.Button, new() { Name = "Click me" }); // Change the name if needed
+            await button.ClickAsync();
+
+            // Check if JavaScript is enabled by verifying the text changes
+            await Expect(status).ToHaveTextAsync(jsEnabled ? "Current count: 1" : "Current count: 0");
+
+            await browserContext.Tracing.StopAsync(new()
+            {
+                Path = "trace.zip",
+            });
+
+        }
 
 
         /// <summary>
