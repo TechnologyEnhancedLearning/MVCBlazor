@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
+using Microsoft.Playwright;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,8 +11,8 @@ namespace Test.BrowserBased.UnitE2ETests.Helpers
 {
     public static class BrowserHelper
     {
-
-        public static async Task<IBrowserContext> CreateBrowserContextAsync(IPlaywright playwright, string browserType, bool jsEnabled, ViewportType viewport, string baseUrl)
+        //If tracing is enabled it needs handling with dispose qqqq
+        public static async Task<IBrowserContext> CreateBrowserContextAsync(IPlaywright playwright, string browserType, bool jsEnabled, ViewportType viewport, string baseUrl, bool enableTracing = false)
         {
             //qqqqq try catch
             //qqqqq it will be this using so we need to move this bit out
@@ -43,7 +44,15 @@ namespace Test.BrowserBased.UnitE2ETests.Helpers
                 ViewportSize = ViewportHelper.Viewports[viewport]
             };
             IBrowserContext context = await browser.NewContextAsync(contextOptions);
+            if (enableTracing) {
+                await context.Tracing.StartAsync(new()
+                {
 
+                    Screenshots = true,
+                    Snapshots = true,
+                    Sources = true
+                });
+            }
             //qqqq we probably want to set context options while testing so lets return the context
             return context;
             //IPage page = await context.NewPageAsync();

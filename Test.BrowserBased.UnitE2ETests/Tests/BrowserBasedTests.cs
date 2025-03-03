@@ -47,7 +47,6 @@ namespace Test.BrowserBased.UnitE2ETests.Tests
 
 
         [Theory]
-
         [InlineData("chromium", true, ViewportHelper.ViewportType.Desktop)]
         [InlineData("chromium", false, ViewportHelper.ViewportType.Desktop)]
         [InlineData("chromium", true, ViewportHelper.ViewportType.Mobile)]
@@ -146,9 +145,9 @@ namespace Test.BrowserBased.UnitE2ETests.Tests
             IPage page = await browserContext.NewPageAsync();
 
             //Debug option
-            await page.PauseAsync();
+            //await page.PauseAsync();
 
-            //await page.GotoPreRenderedAsync("counter");
+            //await page.GotoPreRenderedAsync("counter");qqqq try again now works
             await page.GotoAsync("counter", new PageGotoOptions() { WaitUntil = WaitUntilState.NetworkIdle });
             ILocator status = page.GetByRole(AriaRole.Status);
             await Expect(status).ToHaveTextAsync("Current count: 0");
