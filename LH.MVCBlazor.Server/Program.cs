@@ -188,3 +188,5 @@ finally
 {
     Log.CloseAndFlush(); // Ensure logs are flushed before exit
 }
+
+public partial class Program { } //atoz blazor playwright example uses this for the inmemory testing
