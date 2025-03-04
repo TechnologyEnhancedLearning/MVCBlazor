@@ -6,6 +6,17 @@
 .Net 8 MVC Blazor project, with View Components.
 Has Blazor pages and MVC Blazor components.
 
+This project is private as it is a prototype.
+
+## See Also
+To see a github page host blazor wasm project like what will be used to both test and provide documentation
+on the component library please see the public repo
+https://github.com/TechnologyEnhancedLearning/GitPageBlazorWASM
+
+And its associated readme and github hosted page.
+
+ 
+
 ### Setup 
 *This has worked, but left in the extra steps and crossed out steps, the next person to use this setup please edit this file if they are not needed*
 
@@ -764,7 +775,14 @@ dummy to satisfy the constructor signature of a class when you don’t care abou
 
 #### TODO: Profiling
 ### TODO: Linting
-
+- we can move the .cs into a scoped file to make it stylecop lint-able but so for it seems better for the project to have the .cs in the razor.
+- we could have stylelint it is mentioned for css
+- avoiding js so dont think need eslint
+- maybe Microsoft.CodeAnalysis.FxCopAnalyzers
+- maybe StyleCop.Analyzers
+- maybe  .editorconfig
+- not seeing alot of recommendations
+- only sonar cube
 
 
 
