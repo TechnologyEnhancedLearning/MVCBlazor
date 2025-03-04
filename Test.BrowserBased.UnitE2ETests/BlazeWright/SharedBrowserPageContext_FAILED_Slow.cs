@@ -19,7 +19,7 @@ namespace Test.BrowserBased.UnitE2ETests.BlazeWright
 
 //namespace Test.BrowserBased.UnitE2ETests.BlazeWright;
 
-//    //qqqq maybe this should be seperated out as is tests that define their own context dont need alot of this
+//    
 //    public class BlazorPageTest<TProgram> : PageTest, IAsyncLifetime
 //        where TProgram : class
 //    {
@@ -152,7 +152,7 @@ namespace Test.BrowserBased.UnitE2ETests.BlazeWright
 //            {
 //                if (enableTracing)
 //                {
-//                    //qqqq would this go here?
+//         
 //                    await browserContext.Tracing.StopAsync(new()
 //                    {
 //                        Path = "trace.zip",

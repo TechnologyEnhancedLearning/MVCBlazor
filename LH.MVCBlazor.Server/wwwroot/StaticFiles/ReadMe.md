@@ -25,7 +25,7 @@ SSL certificate via the browser. In the end we didnt need to change appsettings
 1. run each **IIS express**. ~~one at time~~. look in git compare to see changes to launch files.
 	1. api
 		- revert changes back when first run overwrites
-	**Dont run the server project separately** (- if you do you will need to revert/update ssl port number)
+	**Don't run the server project separately** (- if you do you will need to revert/update ssl port number)
 		1. ~~server~~ 
 			- ~~revert changes back when first run overwrites~~
 	1. ~~client~~
@@ -201,7 +201,7 @@ In this project we inherit from a base component and inject a service to tell th
 ~~If it isn't we will render some components differently~~ (We now have components that do both without a split).  Ideally we should aim for components that are exactly the same
 in NoJS and that seems possible as with refactoring it has become increasingly the case, and design decision can be made to support this.
 If we don't prerender and a user does not have JS they will see nothing. A way around this is to have the JSIsEnabled in the views and render 
-a different component, but this has not been explored as a desireable option here as we dont want to duplicate all top level components though may accept having
+a different component, but this has not been explored as a desireable option here as we don't want to duplicate all top level components though may accept having
 some base level NoJS components.
 
 
@@ -222,7 +222,7 @@ lifecycle stage or static render mode )
 - prerendering using an injected service will receive the server side version of that service, even if it is rendered WASM and is hydrated with WASM version of a service.
 - there is built in a lifecycle render stage with a provided first render flag that is likely to be useful.
 - the intention should be for prerender html to be as close to the hydrated version as possible so the screen does not flicker.
-- we dont have to prerender everything we can have loaders that wait until lifecycle stages that happen after prerender
+- we don't have to prerender everything we can have loaders that wait until lifecycle stages that happen after prerender
 - Anything *Async* that updates after initial render will not happen in NoJS because lifecycles top after rendering.
 - Prerendering will wait for async services before rendering so there can be a wait
 	- we can build a loader into the layout if its decided needed
@@ -308,7 +308,7 @@ But for now it is only a nicety that could make the project seem more complex. S
 	- WASM
 	- Server
 	- Auto
-	- Streamrendering (This one I dont think is useful to us)
+	- Streamrendering (This one I don't think is useful to us)
 	- Static
 - Design intentions
 	- Slim WASM
@@ -425,7 +425,7 @@ We can wait for tasks to complete cut.WaitForAssertion(() => cut.MarkupMatches("
 
 #### What to look at
 - JSIsEnabled wants to be tested at the same time so developer can see from the unit test that base components 
-	are doing the work and they dont need to. However BUnit without E2E is not able to replicate the lifecycle stages as they would occur for nojs browsers.
+	are doing the work and they don't need to. However BUnit without E2E is not able to replicate the lifecycle stages as they would occur for nojs browsers.
 - Efficiency of rendering test may turn out to be good practice, they also may not, currently despite the keys we are not making a single node change we update the whole list.
 - The tests are in razor so we can write razor html
 - MarkupMatches can check output
@@ -556,20 +556,20 @@ This means we need to specifically test in a Static rendermode, or control which
        => parameters.Add(p => p.ProvidedRenderModeText,
            "Rerender new params"));
    string NoJSMarkupStringAfterAwait = cut.Markup;`
-- cut.OnMarkupUpdated += (sender, args) => markupStringLs.Add(cut.Markup); We dont get the same execution order so 
+- cut.OnMarkupUpdated += (sender, args) => markupStringLs.Add(cut.Markup); We don't get the same execution order so 
 we cant just interupt the process of rendering or catch it at a certain point.
 -    var diffs = cut.GetChangesSinceFirstRender();
 
 
-###### Attempted to overcome nojs testing limitiation
+###### Attempted to overcome nojs testing limitation
 - RenderInfo is just info does not change how set up
 - Capturing all changes to html with lifecycle stages, but it is different order its not just a case of additional stages if JSEnabled
 - Different ways of rendering tried
 - JSInterlop this isnt the JS setup it is the JS interactivity of a component only
 - Various other
 - Attempting Mocking and overriding lifecycle stages 
-	- This was not succesful but it might be worth exploring seperating C# and razor to attempt to use a mock to render the razor
-		- I dont know how this would be done but if the same razor, different implementations of a class so can mock
+	- This was not successful but it might be worth exploring seperating C# and razor to attempt to use a mock to render the razor
+		- I don't know how this would be done but if the same razor, different implementations of a class so can mock
 		- or instead of mocking the component just the class part
 `
 @using Microsoft.AspNetCore.Components.Rendering
@@ -599,7 +599,7 @@ we cant just interupt the process of rendering or catch it at a certain point.
 - Explore BUnit more under the bonet
 	- Can we make a custom IRenderer for a custom ITestContext and in somewhere can we chose rendermode (I expect not)
 - November 25 Investigate .Net 10 it maybe be our unit tests can be a higher version and .Net 9 introduced Render 
-info so it might be component have an explosed rendermode and BUnit may then implement it. 
+info so it might be component have an exposed rendermode and BUnit may then implement it. 
 - Explore rendering components from component classes to see if more control
 - Look at other testing packages
 - Look into page rendering
@@ -612,11 +612,142 @@ get the actual component at the moment of that state so we will be calling addit
 
 
 
-#### E2E Testing: Playwright?
+
+#### E2E Playwright Testing
+
 - When we look at further testing we should revisit BUnit limitation and attempt to create a process for Unit 
 testing static or NoJS browser or specific lifecycle stages so that the NoJS requirement is easy to test side by side with JSEnabled.
 - Egil BUnit library creator suggests Playwright with NUnit rather than XUnit
 	- Also for us normally we would be 90% Unit 10% E2E as its packages however to enable testing NoJS along side tests for normal functioning it may need to be the other way around.
+
+
+**Recommendation: You can run playwright from console and generate tests in code by it recording your presses. You can create traces which are snap shots before 
+and after each action for debugging as well as normal recording etc. There are lots of good youtubes quickly summarising these features that are worth a watch 
+as a good way to seeing these approaches**
+
+**Recommendation: Playwright tests should be able to be concurrent and faster than they are in the prototype, so either make them faster, or only use the sparingly and focus on BUnit with playwright mainly for NoJS**
+
+I think E2E and BUnit are going to be the same project as hosting example pages for components.
+
+The axe package being used is the nuget equivalent of what is use in the playwright docs.
+
+##### Context
+
+LH and other consumers of the Blazor component package should use E2E testing as this is where the full E2E process can be tested.
+An example of this is not in this project though **recommended**.
+
+In this project E2E via playwright is used on the component library. Which will be primarily tested by unit tests such as BUnit, with playwright reserved for rendering, nojs, accessibility, browser compatibiltiy and viewport size based testing.
+The advantage of E2E testing of the components is that we get a browser and a core requirement is nojs behaviour. 
+By hosting the components on an ideally simplistic host, just so the project can be run, allows for testing of:
+- static prerendered output
+- storage
+- affects of MVC teardown (We don't have to use an MVC host with controllers for each page for each component, we can tell the browser to close and open.)
+
+Whether playwright host should be Blazor WASM, Server, or Auto is still to be decided.
+We will use WASM but we want it to be open access and other consumers may not. 
+Also some things may actually be easier to test on Server or WASM whilst which does not matter to the test itself.
+Therefore this is Blazor auto so that we can choose component by component our render mode.
+
+It tests components individually.
+And also put each component in a shared page with all the other to see if there are conflicts.
+This is **NOT** a stand-in for actual E2E testing in the consuming project. But it does allow us to cover tests the unit tests can't do. 
+
+Both the specific component library, and the generic component library would be expected to have these tests.
+However for the purposes of the prototype we will use the Test.Components library to make the solution easier to understand.
+
+[egil blazor testing atoz repo](https://github.com/egil/BlazorTestingAZ)
+Notice BUnit and playwright together in testing AtoZ project this will be what should be in the next project
+
+We have in the example both manual setting up of the E2E manually in a test. And also inherited to take out the boilerplate.
+The advantage and disadvantage of the inherited is it is sharing a browser instance. Which is more efficient but we may want to reset
+it to simulate moving between MVC pages and losing state etc.
+
+In the generic component library the JS testing will be checking components are showing the correct components
+but clicks would be tested in the actual project as that is where controller will be for them.
+
+##### In the Project
+
+The project uses XUnit only because BUnit did however there was a recommendation in one video that NUnit works better with playwright for some reason.
+
+- In solution
+	- Test.BrowserBased this is the area for the playwright E2E tests
+		- Host this is the Blazor Web App project so we can test in different rendermodes, server, wasm, per component
+		  - Host.Client just the wasm part
+	- Test.BrowserBased.UnitE2ETests  its called this because its not E2E for db to front end, its just using E2E to check browser behaviour of components.
+		And its testing them in context of LH for example, or the MVC, this is recommended but out of scope for the prototype.
+
+##### References
+- [device emulation out of scope but **come back to it**(https://playwright.dev/docs/emulation)
+- [egil blazor testing atoz repo](https://github.com/egil/BlazorTestingAZ)
+	- Notice BUnit and playwright together in testing project this may be what should be in next prototype
+	- blazortestingatoz is a good reference as it is made by egil though it is NUnit based ithas playwright in it so definately first stop	
+- [Blazor wasm git repo](https://github.com/MackinnonBuck/blazor-playwright-example)
+	- get this working good started#
+		- got trace
+		- headless
+		- codegen
+- [multiple browsers playwright fixture example](https://github.com/xaviersolau/DevArticles/blob/e2e_test_blazor_with_playwright/MyBlazorApp/MyAppTests/PlaywrightFixture.cs)
+- [egil bunit playwright talk vs](https://youtu.be/aorfcDeHUpw?t=123)
+- [playwright medium](https://chrisdunderdale.medium.com/performing-end-to-end-testing-in-blazor-with-playwright-9ab8587f7c34)		
+- [step to step set up playwright medium](https://medium.com/younited-tech-blog/end-to-end-test-a-blazor-app-with-playwright-part-2-3980b573e92a)
+- [playwright itself](https://playwright.dev/dotnet/)
+- [dotnet youtube playwright by the playwright by Debbie O'Brien who promotes and explains playwright](https://www.youtube.com/watch?v=lJa3YlUliEs)
+	- [we probably want playwright on main project it looks nice](https://youtu.be/lJa3YlUliEs?t=1114)
+	- [might be in a nice example to use record function for generating test](https://youtu.be/lJa3YlUliEs?t=1506)
+		- it generates tests that are automatically grabbing by ariarole etc so by default checks accessibility
+	- issue prerendering click https://youtu.be/lJa3YlUliEs?t=2443
+	- recommends don't use css selections
+		- use rolebased + testids
+	- github easier cicd integration
+- [same debbie presentor microsoft playwirght advocate](https://www.youtube.com/watch?v=VavFU2vLnT0)
+	- time codegen and trace as in other video but short [specific time](https://youtu.be/VavFU2vLnT0?t=264)
+		- [playwright cicd pipeline](https://youtu.be/VavFU2vLnT0?t=1291)
+			- [github action yaml](https://youtu.be/VavFU2vLnT0?t=1341)
+- [blazormvc git repo seems to be a framework its net6 but don't see what its to achieve - so leaving it alone](https://github.com/jeffreypalermo/blazormvc)
+- [Blazor wasm git repo](https://github.com/MackinnonBuck/blazor-playwright-example)
+	- seems ok example
+- Playwright Dev Docs
+	- intro https://playwright.dev/docs/intro#introduction
+		- https://playwright.dev/docs/intro#introduction  (but ive done it via nuget?)
+			- npm 
+			- test folder
+	- npx playwright test --ui
+	- [basic actions good for checking what we can do e.g. hover](https://playwright.dev/docs/writing-tests#actions)
+	- npx playwright show-report can get a nice list of seconds to run and all the browsers used and each test
+		- their version of a runner
+	- toMatchAriaSnapshot command is nice for checking html
+	- configuration stuff https://playwright.dev/docs/test-configuration#introduction
+	- nice reference for good practice of grabbing components https://playwright.dev/docs/best-practices#testing-philosophy
+	- test linting @typescript-eslint/no-floating-promises 
+	- can we set up chrome browser to even have our accessibility extensions showing in snapshot??? [chrome extensions section not quite following but looks promising](https://playwright.dev/docs/chrome-extensions#introduction)
+	- assertions https://playwright.dev/docs/test-assertions#introduction
+	- even drag drop and uploads can be simulated
+	- ive added xunit and fluent assertions but best practice is assertions are Web-First assertions (	which auto-wait and retry for the condition to be met.) like:
+		> expect(page).toHaveTitle()
+		expect(page).toHaveScreenshot()
+
+
+##### Notes
+- runas /user:TELAdminPT powershell
+- generating test code by clicking with codegen
+	- C:\reposC\blazor-playwright-example\BlazorWasmPlaywright\Test>npx playwright codegen https://localhost:7063
+- TRACEVIEWER
+	- npx show-trace full address (something like this there must be a better way)
+- PS C:\reposC\blazor-playwright-example\BlazorWasmPlaywright\Test\bin\Debug\net7.0> .\playwright.ps1 install
+	- i needed developer command window from tool in vs
+		- set PWDEBUG=1
+- Axe last update 2022 is this going to keep up with WCAG and only 150k downloads
+	- Last updated 24/07/2022
+	- cant find this @axe-core/playwright
+		- its dequelabs so actually will use nuget equivalent of this not the more common one
+
+
+
+
+
+
+
+
 
 #### Testing Naming/Glossary
 - T_ components purely for test
@@ -632,6 +763,7 @@ dummy to satisfy the constructor signature of a class when you don’t care abou
 - Stub: Returns predefined responses, usually with no logic, to isolate the unit under test.
 
 #### TODO: Profiling
+### TODO: Linting
 
 
 

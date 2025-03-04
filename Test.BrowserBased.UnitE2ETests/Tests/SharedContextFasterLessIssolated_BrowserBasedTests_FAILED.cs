@@ -29,14 +29,14 @@ namespace Test.BrowserBased.UnitE2ETests.Tests
         //public async Task Page_InteractivityIsCorrectlySimulated(BrowserConfig browserConfig, bool jsEnabled = true)
         //{
 
-        //    //qqqq what does this do maybe it should be the ipage i pass
+        // 
 
         //    IPage page = await BrowserContexts[browserConfig].NewPageAsync();//equivalent same browser new tab
     
         //    //Debug option
         //    //await page.PauseAsync();
 
-        //    //await page.GotoPreRenderedAsync("counter");qqqq try again now works
+        //    //await page.GotoPreRenderedAsync("counter"); try again now works
         //    await page.GotoAsync("counter", new PageGotoOptions() { WaitUntil = WaitUntilState.NetworkIdle });
         //    ILocator status = page.GetByRole(AriaRole.Status);
         //    await Expect(status).ToHaveTextAsync("Current count: 0");
@@ -70,14 +70,14 @@ namespace Test.BrowserBased.UnitE2ETests.Tests
         //public async Task Page_InteractivityIsCorrectlySimulated2(BrowserConfig browserConfig, bool jsEnabled = true)
         //{
 
-        //    //qqqq what does this do maybe it should be the ipage i pass
+        //    // what does this do maybe it should be the ipage i pass
 
         //    IPage page = await BrowserContexts[browserConfig].NewPageAsync();//equivalent same browser new tab
 
         //    //Debug option
         //    //await page.PauseAsync();
 
-        //    //await page.GotoPreRenderedAsync("counter");qqqq try again now works
+        //    //await page.GotoPreRenderedAsync("counter"); try again now works
         //    await page.GotoAsync("counter", new PageGotoOptions() { WaitUntil = WaitUntilState.NetworkIdle });
         //    ILocator status = page.GetByRole(AriaRole.Status);
         //    await Expect(status).ToHaveTextAsync("Current count: 0");

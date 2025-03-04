@@ -11,7 +11,7 @@ namespace Test.BrowserBased.UnitE2ETests.BlazeWright;
 public class BlazorPageTest<TProgram> : PageTest, IAsyncLifetime
     where TProgram : class
 {
-
+    protected string BaseUrl => Host.ServerAddress;
     private BlazorApplicationFactory<TProgram>? host;
 
     protected BlazorApplicationFactory<TProgram> Host

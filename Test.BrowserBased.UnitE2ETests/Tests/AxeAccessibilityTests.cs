@@ -10,6 +10,7 @@ using Deque.AxeCore;
 using Deque.AxeCore.Commons;
 using Deque.AxeCore.Playwright;
 using FluentAssertions;
+using Test.BrowserBased.UnitE2ETests.BlazeWright;
 
 namespace Test.BrowserBased.UnitE2ETests.Tests
 {
@@ -21,12 +22,11 @@ namespace Test.BrowserBased.UnitE2ETests.Tests
         public async Task CountIncrementerMeetsAxeAccesibilityStandards(string browserType, bool jsEnabled, ViewportHelper.ViewportType viewport)
         {
 
-            string baseUrl = Host.ServerAddress;
 
 
             using IPlaywright playwright = await Microsoft.Playwright.Playwright.CreateAsync();
 
-            IBrowserContext browserContext = await BrowserHelper.CreateBrowserContextAsync(playwright, browserType, jsEnabled, viewport, baseUrl);
+            IBrowserContext browserContext = await BrowserHelper.CreateBrowserContextAsync(playwright, browserType, jsEnabled, viewport, BaseUrl);
             //Debug option
             await browserContext.Tracing.StartAsync(new()
             {
@@ -40,7 +40,7 @@ namespace Test.BrowserBased.UnitE2ETests.Tests
             IPage page = await browserContext.NewPageAsync();
 
           
-            await page.GotoAsync("counter", new PageGotoOptions() { WaitUntil = WaitUntilState.NetworkIdle });
+            await page.GotoOnceNetworkIsIdleAsync("counter");
 
 
             AxeResult axeResults = await Page.RunAxe();
@@ -51,7 +51,9 @@ namespace Test.BrowserBased.UnitE2ETests.Tests
             {
                 Path = "trace.zip",
             });
-
+            // Clean up resources by closing the page and browser context
+            await page.CloseAsync();
+            await browserContext.CloseAsync();
         }
 
      

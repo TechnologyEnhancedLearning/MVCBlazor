@@ -11,6 +11,7 @@ using Test.BrowserBased.Host;
 
 using static Microsoft.Playwright.Assertions;
 using Test.BrowserBased.UnitE2ETests.Helpers;
+using Test.BrowserBased.UnitE2ETests.BlazeWright;
 
 
 namespace Test.BrowserBased.UnitE2ETests.Tests
@@ -26,6 +27,7 @@ namespace Test.BrowserBased.UnitE2ETests.Tests
             await Page.GotoAsync("https://playwright.dev");
 
             // Expect a title "to contain" a substring.
+
             await Expect(Page).ToHaveTitleAsync(new Regex("Playwright"));
         }
 
@@ -33,9 +35,9 @@ namespace Test.BrowserBased.UnitE2ETests.Tests
 
 
         [Fact]
-        public async Task MainNavigation()//qqqq this works atleast
+        public async Task MainNavigation()
         {
-            // var playwright = await Playwright();
+            var playwright = await Microsoft.Playwright.Playwright.CreateAsync();
             var browser = await Playwright.Chromium.LaunchAsync();
             var page = await browser.NewPageAsync();
             await page.GotoAsync("https://playwright.dev");
@@ -64,16 +66,14 @@ namespace Test.BrowserBased.UnitE2ETests.Tests
         public async Task Page_Loads_Correctly(string browserType, bool jsEnabled, ViewportHelper.ViewportType viewport)
         {
             
-            string baseUrl = Host.ServerAddress;
+ 
 
             //Handling this per test and running them all on the browser is quick for writing tests slow for running test
             //alternatively we could have a browser per test file
             using IPlaywright playwright = await Microsoft.Playwright.Playwright.CreateAsync();
 
-            //qqqq ussually we will use it like this? probs
-            //IPage page = await (await BrowserHelper.CreateBrowserContextAsync(playwright, browserType, jsEnabled, viewport, baseUrl)).NewPageAsync();
            
-            IBrowserContext browserContext = await BrowserHelper.CreateBrowserContextAsync(playwright, browserType, jsEnabled, viewport, baseUrl);
+            IBrowserContext browserContext = await BrowserHelper.CreateBrowserContextAsync(playwright, browserType, jsEnabled, viewport, BaseUrl);
             //Debug option
             await browserContext.Tracing.StartAsync(new()
             {
@@ -89,8 +89,7 @@ namespace Test.BrowserBased.UnitE2ETests.Tests
             //Debug option
             //await page.PauseAsync();
 
-            //await page.GotoPreRenderedAsync("counter");
-            await page.GotoAsync("counter", new PageGotoOptions() { WaitUntil = WaitUntilState.NetworkIdle });
+            await page.GotoOnceNetworkIsIdleAsync("counter");
             ILocator status = page.GetByRole(AriaRole.Status);
             await Expect(status).ToHaveTextAsync("Current count: 0");
 
@@ -98,6 +97,10 @@ namespace Test.BrowserBased.UnitE2ETests.Tests
             {
                 Path = "trace.zip",
             });
+
+            // Clean up resources by closing the page and browser context
+            await page.CloseAsync();
+            await browserContext.CloseAsync();
 
         }
 
@@ -120,16 +123,15 @@ namespace Test.BrowserBased.UnitE2ETests.Tests
         public async Task Page_InteractivityIsCorrectlySimulated(string browserType, bool jsEnabled, ViewportHelper.ViewportType viewport)
         {
 
-            string baseUrl = Host.ServerAddress;
+
 
             //Handling this per test and running them all on the browser is quick for writing tests slow for running test
             //alternatively we could have a browser per test file
             using IPlaywright playwright = await Microsoft.Playwright.Playwright.CreateAsync();
 
-            //qqqq ussually we will use it like this? probs
-            //IPage page = await (await BrowserHelper.CreateBrowserContextAsync(playwright, browserType, jsEnabled, viewport, baseUrl)).NewPageAsync();
 
-            IBrowserContext browserContext = await BrowserHelper.CreateBrowserContextAsync(playwright, browserType, jsEnabled, viewport, baseUrl);
+
+            IBrowserContext browserContext = await BrowserHelper.CreateBrowserContextAsync(playwright, browserType, jsEnabled, viewport, BaseUrl);
             //Debug option
             await browserContext.Tracing.StartAsync(new()
             {
@@ -145,8 +147,7 @@ namespace Test.BrowserBased.UnitE2ETests.Tests
             //Debug option
             //await page.PauseAsync();
 
-            //await page.GotoPreRenderedAsync("counter");qqqq try again now works
-            await page.GotoAsync("counter", new PageGotoOptions() { WaitUntil = WaitUntilState.NetworkIdle });
+            await page.GotoOnceNetworkIsIdleAsync("counter");
             ILocator status = page.GetByRole(AriaRole.Status);
             await Expect(status).ToHaveTextAsync("Current count: 0");
 
@@ -162,6 +163,10 @@ namespace Test.BrowserBased.UnitE2ETests.Tests
                 Path = "trace.zip",
             });
 
+            // Clean up resources by closing the page and browser context
+            await page.CloseAsync();
+            await browserContext.CloseAsync();
+
         }
 
 
@@ -170,7 +175,7 @@ namespace Test.BrowserBased.UnitE2ETests.Tests
         /// </summary>
         /// <returns></returns>
         [Fact]
-        public async Task Count_Increments_WhenButtonIsClicked_ManualSetUp()//works qqqq why different from other
+        public async Task Count_Increments_WhenButtonIsClicked_ManualSetUp()
         {
             // Arrange
             // Runs Blazor App referenced by Program, making it
@@ -189,14 +194,7 @@ namespace Test.BrowserBased.UnitE2ETests.Tests
                 // that tests will continue working.
                 IgnoreHTTPSErrors = true,
             };
-            await Page.PauseAsync();
-            await Context.Tracing.StartAsync(new()
-            {
-
-                Screenshots = true,
-                Snapshots = true,
-                Sources = true
-            });
+     
             IBrowserContext context = await browser.NewContextAsync(contextOptions);
             IPage page = await context.NewPageAsync();
 
@@ -204,12 +202,8 @@ namespace Test.BrowserBased.UnitE2ETests.Tests
             // This is needed when pre-rendering is enabled and using Blazor Server,
             // since the page is not interactive until the SignalR connection to the
             // backend has been established.
-            await page.GotoAsync(
-                "counter",
-                new PageGotoOptions()
-                {
-                    WaitUntil = WaitUntilState.NetworkIdle
-                });
+            await page.GotoOnceNetworkIsIdleAsync(
+                "counter");
 
             // Act
             await page
@@ -219,11 +213,11 @@ namespace Test.BrowserBased.UnitE2ETests.Tests
             // Assert
             ILocator status = page.GetByRole(AriaRole.Status);
             await Expect(status).ToHaveTextAsync("Current count: 1");
-            await Context.Tracing.StopAsync(new()
-            {
+   
 
-                Path = "trace.zip",
-            });
+            // Clean up resources by closing the page and browser context
+            await page.CloseAsync();
+            await context.CloseAsync();
         }
     }
     

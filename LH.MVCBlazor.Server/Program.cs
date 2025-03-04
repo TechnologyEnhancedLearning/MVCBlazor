@@ -188,6 +188,5 @@ finally
 {
     Log.CloseAndFlush(); // Ensure logs are flushed before exit
 }
-//qqqq remove later really stuck just trying it
-public partial class Program { } //qqqq we may want this later see the atoz testing project. but current i think rather than InMemory efficient running we want the Browser based
-                                 // as expected only this will enable nojs
+
+public partial class Program { } //atoz blazor playwright example uses this for the inmemory testing
