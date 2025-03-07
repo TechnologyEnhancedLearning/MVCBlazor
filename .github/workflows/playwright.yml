@@ -17,19 +17,35 @@ jobs:
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: '8.0.x'
-    - name: Restore dependencies
-      run: dotnet restore
-    - name: Build
-      run: dotnet build --no-restore
-    - name: Install Playwright dependencies
+    
+    # Fix xUnit dependency conflict
+    - name: Fix package dependencies
+      run: |
+        dotnet add Test.BrowserBased.UnitE2ETests/Test.BrowserBased.UnitE2ETests.csproj package xunit.extensibility.core --version 2.8.0
+    
+    # Selectively restore the test projects
+    - name: Restore test projects
+      run: |
+        dotnet restore Test.Components/Test.Components.csproj
+        dotnet restore Test.BUnit.UnitTests/Test.BUnit.UnitTests.csproj
+        dotnet restore Test.BrowserBased.UnitE2ETests/Test.BrowserBased.UnitE2ETests.csproj
+        dotnet restore Test.BrowserBased.Host/Test.BrowserBased.Host/Test.BrowserBased.Host.csproj
+        dotnet restore Test.BrowserBased.Host/Test.BrowserBased.Host.Client/Test.BrowserBased.Host.Client.csproj
+    
+    - name: Build Test.BrowserBased.UnitE2ETests
+      run: dotnet build Test.BrowserBased.UnitE2ETests/Test.BrowserBased.UnitE2ETests.csproj --no-restore
+    
+    - name: Install Playwright Browsers
       run: |
         cd Test.BrowserBased.UnitE2ETests
-        npm ci
-        npx playwright install --with-deps
+        dotnet tool install --global Microsoft.Playwright.CLI
+        playwright install --with-deps
+    
     - name: Run Playwright tests
       run: |
         cd Test.BrowserBased.UnitE2ETests
-        npx playwright test
+        dotnet test
+    
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
       with:
