@@ -48,7 +48,7 @@ jobs:
 
         
     - name: List files in the directory
-        run: ls -R Test.BrowserBased.UnitE2ETests/playwright-report/
+      run: ls -R Test.BrowserBased.UnitE2ETests/playwright-report/
         
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
