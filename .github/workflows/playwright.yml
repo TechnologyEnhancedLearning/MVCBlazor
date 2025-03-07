@@ -32,7 +32,7 @@ jobs:
     
 
     - name: Ensure browsers are installed
-      run: pwsh bin/Debug/net8.0/playwright.ps1 install --with-deps
+      run: pwsh Test.BrowserBased.UnitE2ETests/bin/Debug/net8.0/playwright.ps1 install --with-deps
     - name: Run your tests
       run: |
           cd Test.BrowserBased.UnitE2ETests
