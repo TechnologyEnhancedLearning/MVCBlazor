@@ -32,4 +32,9 @@
     <ProjectReference Include="..\Test.BrowserBased.Host\Test.BrowserBased.Host\Test.BrowserBased.Host.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="playwright-report\" />
+    <Folder Include="PlaywrightReport\" />
+  </ItemGroup>
+
 </Project>

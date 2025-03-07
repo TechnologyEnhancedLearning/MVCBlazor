@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Package.Shared.Entities.Models.Logging;
 using Package.Shared.Entities.T_Entities;
+
 using Serilog.Core;
 using Serilog.Events;
 using System;
