@@ -1,4 +1,4 @@
-name: Playwright Tests for Blazor
+name: Playwright Tests
 on:
   push:
     branches: [ main, master ]
@@ -9,14 +9,14 @@ jobs:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: '8.0.x'
-    
-    # Fix xUnit dependency conflict
+    - uses: actions/checkout@v4
+    - name: Setup dotnet
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+    - name: Build & Install
+      # run: dotnet build
+# Fix xUnit dependency conflict
       - name: Fix package dependencies
         run: |
           dotnet add Test.BrowserBased.UnitE2ETests/Test.BrowserBased.UnitE2ETests.csproj package xunit.extensibility.core --version 2.8.0
@@ -30,21 +30,15 @@ jobs:
           dotnet restore Test.BrowserBased.Host/Test.BrowserBased.Host/Test.BrowserBased.Host.csproj
           dotnet restore Test.BrowserBased.Host/Test.BrowserBased.Host.Client/Test.BrowserBased.Host.Client.csproj
     
-      - name: Build Test.BrowserBased.UnitE2ETests
-        run: dotnet build Test.BrowserBased.UnitE2ETests/Test.BrowserBased.UnitE2ETests.csproj --no-restore
-    
-      - name: Install Playwright Browsers
-        run: |
+
+    - name: Ensure browsers are installed
+      run: pwsh bin/Debug/net8.0/playwright.ps1 install --with-deps
+    - name: Run your tests
+      run: |
           cd Test.BrowserBased.UnitE2ETests
-          dotnet tool install --global Microsoft.Playwright.CLI
-          playwright install --with-deps
-    
-      - name: Run Playwright tests
-        run: |
-          cd Test.BrowserBased.UnitE2ETests
-          npx playwright test --reporter=html --output=Test.BrowserBased.UnitE2ETests/playwright-report/
-        
-      - uses: actions/upload-artifact@v4
+          dotnet test
+          
+    - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
           name: playwright-report
