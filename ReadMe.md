@@ -14,8 +14,9 @@ on the component library please see the public repo
 https://github.com/TechnologyEnhancedLearning/GitPageBlazorWASM
 
 And its associated readme and github hosted page.
+https://technologyenhancedlearning.github.io/GitPageBlazorWASM/
+https://technologyenhancedlearning.github.io/GitPageBlazorWASM/CounterComponentPage
 
- 
 
 ### Setup 
 *This has worked, but left in the extra steps and crossed out steps, the next person to use this setup please edit this file if they are not needed*
@@ -222,7 +223,7 @@ When we provide elements like an *EditForm* with a post, the post will work in t
 When the component is hydrated and a service/event is applied to the form this functionality overrides the post.
 This means we can avoid having a seperate NoJS element and an interactive element. This approach is what we would hope to acheive we all elements.
 
-
+ 
 
 Using prerender in this way does introduce some challenges/opportunities.
 - If it is a blazor page, we are not passing it a view. Therefore we will not return validation to it, and so to handle more than html validation we must redirect to an MVC page
