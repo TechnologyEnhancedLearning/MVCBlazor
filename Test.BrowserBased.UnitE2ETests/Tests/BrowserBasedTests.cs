@@ -97,7 +97,7 @@ namespace Test.BrowserBased.UnitE2ETests.Tests
             await browserContext.Tracing.StopAsync(new()
             {
 
-                Path = Path.Combine(Path.Combine(Directory.GetCurrentDirectory(), "playwright-report"), "QQQQ1_Page_Loads_Correctly.zip"),
+                Path = Path.Combine(Path.Combine(Directory.GetCurrentDirectory(), "playwright-report"), "QQQQ3_Page_Loads_Correctly.zip"),
                 //Path = $"playwright-report/CountIncrementerMeetsAxeAccesibilityStandards.zip",
 
                 //Path = $"playwright-report/Page_Loads_Correctly.zip",
@@ -163,9 +163,12 @@ namespace Test.BrowserBased.UnitE2ETests.Tests
             // Check if JavaScript is enabled by verifying the text changes
             await Expect(status).ToHaveTextAsync(jsEnabled ? "Current count: 1" : "Current count: 0");
 
+            Console.WriteLine("QQQQ");
+            Console.WriteLine(Path.Combine("./", "toplevel"));
             await browserContext.Tracing.StopAsync(new()
             {
-                Path = $"playwright-report/Page_InteractivityIsCorrectlySimulated.zip",
+                Path = "../../../playwright-report/qqqq4_Page_InteractivityIsCorrectlySimulated.zip", //qqqq works qqqqqqqqqq do this
+                //Path = "./Test.BrowserBased.UnitE2ETests/playwright-report/qqqq5_Page_InteractivityIsCorrectlySimulated.zip",
             });
 
             // Clean up resources by closing the page and browser context

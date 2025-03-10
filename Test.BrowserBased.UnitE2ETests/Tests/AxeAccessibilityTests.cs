@@ -53,6 +53,7 @@ namespace Test.BrowserBased.UnitE2ETests.Tests
             //string tracePath = Path.Combine(Directory.GetCurrentDirectory(), "playwright-report", "QQQQ1_CountIncrementerMeetsAxeAccesibilityStandards.zip");
             string tracePath = Path.Combine(Path.Combine("Test.BrowserBased.UnitE2ETests", "playwright-report"), "QQQQ2_CountIncrementerMeetsAxeAccesibilityStandards.zip");
             Console.WriteLine($"QQQQQ Saving trace to: {tracePath}");
+            //qqqq this is not changing anything!
             await browserContext.Tracing.StopAsync(new()
             {
                 
