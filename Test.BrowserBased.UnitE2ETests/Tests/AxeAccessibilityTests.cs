@@ -12,6 +12,7 @@ using Deque.AxeCore.Playwright;
 using FluentAssertions;
 using Test.BrowserBased.UnitE2ETests.BlazeWright;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.IO;
 
 namespace Test.BrowserBased.UnitE2ETests.Tests
 {
@@ -34,7 +35,8 @@ namespace Test.BrowserBased.UnitE2ETests.Tests
 
                 Screenshots = true,
                 Snapshots = true,
-                Sources = true
+                Sources = true,
+          
             });
 
 
@@ -48,9 +50,12 @@ namespace Test.BrowserBased.UnitE2ETests.Tests
 
             axeResults.Violations.Should().BeNullOrEmpty();
 
+            //string tracePath = Path.Combine(Directory.GetCurrentDirectory(), "playwright-report", "QQQQ1_CountIncrementerMeetsAxeAccesibilityStandards.zip");
+            string tracePath = Path.Combine(Path.Combine("Test.BrowserBased.UnitE2ETests", "playwright-report"), "QQQQ1_CountIncrementerMeetsAxeAccesibilityStandards.zip");
+            Console.WriteLine($"QQQQQ Saving trace to: {tracePath}");
             await browserContext.Tracing.StopAsync(new()
             {
-                Path = Path.Combine(Path.Combine(Directory.GetCurrentDirectory(), "playwright-report"), "QQQQ1_CountIncrementerMeetsAxeAccesibilityStandards.zip"),
+                Path = tracePath,
                 //Path = $"playwright-report/CountIncrementerMeetsAxeAccesibilityStandards.zip",
             });
             // Clean up resources by closing the page and browser context
