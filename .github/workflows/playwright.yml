@@ -47,7 +47,7 @@ jobs:
         run: dotnet test --filter "Category!=LocalOnly & Category!=HeadlessFalse" Test.BrowserBased.UnitE2ETests.csproj --no-restore --verbosity verbose
         working-directory: Test.BrowserBased.UnitE2ETests
         
-      - name: Debug: List All Files in Test Project
+      - name: Debug List All Files in Test Project
         if: always()
         run: ls -R Test.BrowserBased.UnitE2ETests || true
       - uses: actions/upload-artifact@v4
