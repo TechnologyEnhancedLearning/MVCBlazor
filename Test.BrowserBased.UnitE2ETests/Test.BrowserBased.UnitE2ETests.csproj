@@ -33,7 +33,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="playwright-report\" />
     <Folder Include="PlaywrightReport\" />
   </ItemGroup>
 
