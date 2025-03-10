@@ -42,7 +42,7 @@ jobs:
         run: pwsh Test.BrowserBased.UnitE2ETests/bin/Debug/net8.0/playwright.ps1 install --with-deps
         
       - name: Run your tests
-        run: dotnet test --filter "Category=HeadlessFalse|Category=LocalOnly" Test.BrowserBased.UnitE2ETests/Test.BrowserBased.UnitE2ETests.csproj --no-restore
+        run: dotnet test --filter "Category!=LocalOnly & Category!=HeadlessFalse" Test.BrowserBased.UnitE2ETests/Test.BrowserBased.UnitE2ETests.csproj --no-restore
         
       #run: |
        #   cd Test.BrowserBased.UnitE2ETests
