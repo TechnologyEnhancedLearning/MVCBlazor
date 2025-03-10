@@ -46,43 +46,49 @@ jobs:
       
       # We dont want to do it per test but lets see
       - name: Run ProductionPlaywrightSiteIsReachableAndHasTitle
+        run: dotnet test --filter "FullyQualifiedName~Test.BrowserBased.UnitE2ETests.Tests.BrowserBasedTests.ProductionPlaywrightSiteIsReachableAndHasTitle" Test.BrowserBased.UnitE2ETests/Test.BrowserBased.UnitE2ETests.csproj --no-restore --verbosity normal
+      - name: Run MainNavigation
+        run: dotnet test --filter "FullyQualifiedName~Test.BrowserBased.UnitE2ETests.Tests.BrowserBasedTests.MainNavigation" Test.BrowserBased.UnitE2ETests/Test.BrowserBased.UnitE2ETests.csproj --no-restore --verbosity normal
+      - name: Run Page_Loads_Correctly (chromium, True, Desktop)
+        run: dotnet test --filter "FullyQualifiedName~Test.BrowserBased.UnitE2ETests.Tests.BrowserBasedTests.Page_Loads_Correctly(chromium,True,Desktop)" Test.BrowserBased.UnitE2ETests/Test.BrowserBased.UnitE2ETests.csproj --no-restore --verbosity normal
+      - name: Run ProductionPlaywrightSiteIsReachableAndHasTitle
         run: dotnet test --filter "FullyQualifiedName~Test.BrowserBased.UnitE2ETests.Tests.BrowserBasedTests.ProductionPlaywrightSiteIsReachableAndHasTitle" Test.BrowserBased.UnitE2ETests/Test.BrowserBased.UnitE2ETests.csproj --no-restore --verbosity detailed
       - name: Run MainNavigation
         run: dotnet test --filter "FullyQualifiedName~Test.BrowserBased.UnitE2ETests.Tests.BrowserBasedTests.MainNavigation" Test.BrowserBased.UnitE2ETests/Test.BrowserBased.UnitE2ETests.csproj --no-restore --verbosity detailed
       - name: Run Page_Loads_Correctly (chromium, True, Desktop)
         run: dotnet test --filter "FullyQualifiedName~Test.BrowserBased.UnitE2ETests.Tests.BrowserBasedTests.Page_Loads_Correctly(chromium,True,Desktop)" Test.BrowserBased.UnitE2ETests/Test.BrowserBased.UnitE2ETests.csproj --no-restore --verbosity detailed
-      - name: Run Page_Loads_Correctly (chromium, False, Desktop)
-        run: dotnet test --filter "FullyQualifiedName~Test.BrowserBased.UnitE2ETests.Tests.BrowserBasedTests.Page_Loads_Correctly(chromium,False,Desktop)" Test.BrowserBased.UnitE2ETests/Test.BrowserBased.UnitE2ETests.csproj --no-restore --verbosity detailed
-      - name: Run Page_Loads_Correctly (chromium, True, Mobile)
-        run: dotnet test --filter "FullyQualifiedName~Test.BrowserBased.UnitE2ETests.Tests.BrowserBasedTests.Page_Loads_Correctly(chromium,True,Mobile)" Test.BrowserBased.UnitE2ETests/Test.BrowserBased.UnitE2ETests.csproj --no-restore --verbosity detailed
-      - name: Run Page_Loads_Correctly (chromium, False, Mobile)
-        run: dotnet test --filter "FullyQualifiedName~Test.BrowserBased.UnitE2ETests.Tests.BrowserBasedTests.Page_Loads_Correctly(chromium,False,Mobile)" Test.BrowserBased.UnitE2ETests/Test.BrowserBased.UnitE2ETests.csproj --no-restore --verbosity detailed
-      - name: Run Page_Loads_Correctly (firefox, True, Desktop)
-        run: dotnet test --filter "FullyQualifiedName~Test.BrowserBased.UnitE2ETests.Tests.BrowserBasedTests.Page_Loads_Correctly(firefox,True,Desktop)" Test.BrowserBased.UnitE2ETests/Test.BrowserBased.UnitE2ETests.csproj --no-restore --verbosity detailed
-      - name: Run Page_Loads_Correctly (firefox, False, Desktop)
-        run: dotnet test --filter "FullyQualifiedName~Test.BrowserBased.UnitE2ETests.Tests.BrowserBasedTests.Page_Loads_Correctly(firefox,False,Desktop)" Test.BrowserBased.UnitE2ETests/Test.BrowserBased.UnitE2ETests.csproj --no-restore --verbosity detailed
-      - name: Run Page_Loads_Correctly (firefox, True, Mobile)
-        run: dotnet test --filter "FullyQualifiedName~Test.BrowserBased.UnitE2ETests.Tests.BrowserBasedTests.Page_Loads_Correctly(firefox,True,Mobile)" Test.BrowserBased.UnitE2ETests/Test.BrowserBased.UnitE2ETests.csproj --no-restore --verbosity detailed
-      - name: Run Page_Loads_Correctly (firefox, False, Mobile)
-        run: dotnet test --filter "FullyQualifiedName~Test.BrowserBased.UnitE2ETests.Tests.BrowserBasedTests.Page_Loads_Correctly(firefox,False,Mobile)" Test.BrowserBased.UnitE2ETests/Test.BrowserBased.UnitE2ETests.csproj --no-restore --verbosity detailed
-      - name: Run Page_Loads_Correctly (webkit, True, Desktop)
-        run: dotnet test --filter "FullyQualifiedName~Test.BrowserBased.UnitE2ETests.Tests.BrowserBasedTests.Page_Loads_Correctly(webkit,True,Desktop)" Test.BrowserBased.UnitE2ETests/Test.BrowserBased.UnitE2ETests.csproj --no-restore --verbosity detailed
-      - name: Run Page_Loads_Correctly (webkit, False, Desktop)
-        run: dotnet test --filter "FullyQualifiedName~Test.BrowserBased.UnitE2ETests.Tests.BrowserBasedTests.Page_Loads_Correctly(webkit,False,Desktop)" Test.BrowserBased.UnitE2ETests/Test.BrowserBased.UnitE2ETests.csproj --no-restore --verbosity detailed
-      - name: Run Page_Loads_Correctly (webkit, True, Mobile)
-        run: dotnet test --filter "FullyQualifiedName~Test.BrowserBased.UnitE2ETests.Tests.BrowserBasedTests.Page_Loads_Correctly(webkit,True,Mobile)" Test.BrowserBased.UnitE2ETests/Test.BrowserBased.UnitE2ETests.csproj --no-restore --verbosity detailed
-      - name: Run Page_Loads_Correctly (webkit, False, Mobile)
-        run: dotnet test --filter "FullyQualifiedName~Test.BrowserBased.UnitE2ETests.Tests.BrowserBasedTests.Page_Loads_Correctly(webkit,False,Mobile)" Test.BrowserBased.UnitE2ETests/Test.BrowserBased.UnitE2ETests.csproj --no-restore --verbosity detailed
-      - name: Run Page_InteractivityIsCorrectlySimulated (chromium, True, Desktop)
-        run: dotnet test --filter "FullyQualifiedName~Test.BrowserBased.UnitE2ETests.Tests.BrowserBasedTests.Page_InteractivityIsCorrectlySimulated(chromium,True,Desktop)" Test.BrowserBased.UnitE2ETests/Test.BrowserBased.UnitE2ETests.csproj --no-restore --verbosity detailed
-      - name: Run Page_InteractivityIsCorrectlySimulated (chromium, False, Desktop)
-        run: dotnet test --filter "FullyQualifiedName~Test.BrowserBased.UnitE2ETests.Tests.BrowserBasedTests.Page_InteractivityIsCorrectlySimulated(chromium,False,Desktop)" Test.BrowserBased.UnitE2ETests/Test.BrowserBased.UnitE2ETests.csproj --no-restore --verbosity detailed
-      - name: Run Page_InteractivityIsCorrectlySimulated (chromium, True, Mobile)
-        run: dotnet test --filter "FullyQualifiedName~Test.BrowserBased.UnitE2ETests.Tests.BrowserBasedTests.Page_InteractivityIsCorrectlySimulated(chromium,True,Mobile)" Test.BrowserBased.UnitE2ETests/Test.BrowserBased.UnitE2ETests.csproj --no-restore --verbosity detailed
-      - name: Run Page_InteractivityIsCorrectlySimulated (chromium, False, Mobile)
-        run: dotnet test --filter "FullyQualifiedName~Test.BrowserBased.UnitE2ETests.Tests.BrowserBasedTests.Page_InteractivityIsCorrectlySimulated(chromium,False,Mobile)" Test.BrowserBased.UnitE2ETests/Test.BrowserBased.UnitE2ETests.csproj --no-restore --verbosity detailed
-      - name: Run Page_InteractivityIsCorrectlySimulated (firefox, True, Desktop)
-        run: dotnet test --filter "FullyQualifiedName~Test.BrowserBased.UnitE2ETests.Tests.BrowserBasedTests.Page_InteractivityIsCorrectlySimulated(firefox,True,Desktop)" Test.BrowserBased.UnitE2ETests/Test.BrowserBased.UnitE2ETests.csproj --no-restore --verbosity detailed
+      # - name: Run Page_Loads_Correctly (chromium, False, Desktop)
+        # run: dotnet test --filter "FullyQualifiedName~Test.BrowserBased.UnitE2ETests.Tests.BrowserBasedTests.Page_Loads_Correctly(chromium,False,Desktop)" Test.BrowserBased.UnitE2ETests/Test.BrowserBased.UnitE2ETests.csproj --no-restore --verbosity detailed
+      # - name: Run Page_Loads_Correctly (chromium, True, Mobile)
+        # run: dotnet test --filter "FullyQualifiedName~Test.BrowserBased.UnitE2ETests.Tests.BrowserBasedTests.Page_Loads_Correctly(chromium,True,Mobile)" Test.BrowserBased.UnitE2ETests/Test.BrowserBased.UnitE2ETests.csproj --no-restore --verbosity detailed
+      # - name: Run Page_Loads_Correctly (chromium, False, Mobile)
+        # run: dotnet test --filter "FullyQualifiedName~Test.BrowserBased.UnitE2ETests.Tests.BrowserBasedTests.Page_Loads_Correctly(chromium,False,Mobile)" Test.BrowserBased.UnitE2ETests/Test.BrowserBased.UnitE2ETests.csproj --no-restore --verbosity detailed
+      # - name: Run Page_Loads_Correctly (firefox, True, Desktop)
+        # run: dotnet test --filter "FullyQualifiedName~Test.BrowserBased.UnitE2ETests.Tests.BrowserBasedTests.Page_Loads_Correctly(firefox,True,Desktop)" Test.BrowserBased.UnitE2ETests/Test.BrowserBased.UnitE2ETests.csproj --no-restore --verbosity detailed
+      # - name: Run Page_Loads_Correctly (firefox, False, Desktop)
+        # run: dotnet test --filter "FullyQualifiedName~Test.BrowserBased.UnitE2ETests.Tests.BrowserBasedTests.Page_Loads_Correctly(firefox,False,Desktop)" Test.BrowserBased.UnitE2ETests/Test.BrowserBased.UnitE2ETests.csproj --no-restore --verbosity detailed
+      # - name: Run Page_Loads_Correctly (firefox, True, Mobile)
+        # run: dotnet test --filter "FullyQualifiedName~Test.BrowserBased.UnitE2ETests.Tests.BrowserBasedTests.Page_Loads_Correctly(firefox,True,Mobile)" Test.BrowserBased.UnitE2ETests/Test.BrowserBased.UnitE2ETests.csproj --no-restore --verbosity detailed
+      # - name: Run Page_Loads_Correctly (firefox, False, Mobile)
+        # run: dotnet test --filter "FullyQualifiedName~Test.BrowserBased.UnitE2ETests.Tests.BrowserBasedTests.Page_Loads_Correctly(firefox,False,Mobile)" Test.BrowserBased.UnitE2ETests/Test.BrowserBased.UnitE2ETests.csproj --no-restore --verbosity detailed
+      # - name: Run Page_Loads_Correctly (webkit, True, Desktop)
+        # run: dotnet test --filter "FullyQualifiedName~Test.BrowserBased.UnitE2ETests.Tests.BrowserBasedTests.Page_Loads_Correctly(webkit,True,Desktop)" Test.BrowserBased.UnitE2ETests/Test.BrowserBased.UnitE2ETests.csproj --no-restore --verbosity detailed
+      # - name: Run Page_Loads_Correctly (webkit, False, Desktop)
+        # run: dotnet test --filter "FullyQualifiedName~Test.BrowserBased.UnitE2ETests.Tests.BrowserBasedTests.Page_Loads_Correctly(webkit,False,Desktop)" Test.BrowserBased.UnitE2ETests/Test.BrowserBased.UnitE2ETests.csproj --no-restore --verbosity detailed
+      # - name: Run Page_Loads_Correctly (webkit, True, Mobile)
+        # run: dotnet test --filter "FullyQualifiedName~Test.BrowserBased.UnitE2ETests.Tests.BrowserBasedTests.Page_Loads_Correctly(webkit,True,Mobile)" Test.BrowserBased.UnitE2ETests/Test.BrowserBased.UnitE2ETests.csproj --no-restore --verbosity detailed
+      # - name: Run Page_Loads_Correctly (webkit, False, Mobile)
+        # run: dotnet test --filter "FullyQualifiedName~Test.BrowserBased.UnitE2ETests.Tests.BrowserBasedTests.Page_Loads_Correctly(webkit,False,Mobile)" Test.BrowserBased.UnitE2ETests/Test.BrowserBased.UnitE2ETests.csproj --no-restore --verbosity detailed
+      # - name: Run Page_InteractivityIsCorrectlySimulated (chromium, True, Desktop)
+        # run: dotnet test --filter "FullyQualifiedName~Test.BrowserBased.UnitE2ETests.Tests.BrowserBasedTests.Page_InteractivityIsCorrectlySimulated(chromium,True,Desktop)" Test.BrowserBased.UnitE2ETests/Test.BrowserBased.UnitE2ETests.csproj --no-restore --verbosity detailed
+      # - name: Run Page_InteractivityIsCorrectlySimulated (chromium, False, Desktop)
+        # run: dotnet test --filter "FullyQualifiedName~Test.BrowserBased.UnitE2ETests.Tests.BrowserBasedTests.Page_InteractivityIsCorrectlySimulated(chromium,False,Desktop)" Test.BrowserBased.UnitE2ETests/Test.BrowserBased.UnitE2ETests.csproj --no-restore --verbosity detailed
+      # - name: Run Page_InteractivityIsCorrectlySimulated (chromium, True, Mobile)
+        # run: dotnet test --filter "FullyQualifiedName~Test.BrowserBased.UnitE2ETests.Tests.BrowserBasedTests.Page_InteractivityIsCorrectlySimulated(chromium,True,Mobile)" Test.BrowserBased.UnitE2ETests/Test.BrowserBased.UnitE2ETests.csproj --no-restore --verbosity detailed
+      # - name: Run Page_InteractivityIsCorrectlySimulated (chromium, False, Mobile)
+        # run: dotnet test --filter "FullyQualifiedName~Test.BrowserBased.UnitE2ETests.Tests.BrowserBasedTests.Page_InteractivityIsCorrectlySimulated(chromium,False,Mobile)" Test.BrowserBased.UnitE2ETests/Test.BrowserBased.UnitE2ETests.csproj --no-restore --verbosity detailed
+      # - name: Run Page_InteractivityIsCorrectlySimulated (firefox, True, Desktop)
+        # run: dotnet test --filter "FullyQualifiedName~Test.BrowserBased.UnitE2ETests.Tests.BrowserBasedTests.Page_InteractivityIsCorrectlySimulated(firefox,True,Desktop)" Test.BrowserBased.UnitE2ETests/Test.BrowserBased.UnitE2ETests.csproj --no-restore --verbosity detailed
 
       #run: |
        #   cd Test.BrowserBased.UnitE2ETests
