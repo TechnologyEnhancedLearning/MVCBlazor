@@ -40,11 +40,13 @@ jobs:
       #check if fails early
       - name: Ensure browsers are installed
         run: pwsh Test.BrowserBased.UnitE2ETests/bin/Debug/net8.0/playwright.ps1 install --with-deps
-      - name: Playwright test run excepted filtered
+      # - name: Playwright test run excepted filtered
         # run : dotnet test --filter "Category!=LocalOnly & Category!=HeadlessFalse"  Test.BrowserBased.UnitE2ETests/Test.BrowserBased.UnitE2ETests.csproj --no-restore --verbosity minimal      
-            # - name: Playwright test run excepted filtered
-        run : dotnet test --filter "Category!=LocalOnly & Category!=HeadlessFalse"  Test.BrowserBased.UnitE2ETests/Test.BrowserBased.UnitE2ETests.csproj --no-restore --verbosity minimal      
-     
+      
+      - name: Playwright test run excepted filtered
+        run: dotnet test --filter "Category!=LocalOnly & Category!=HeadlessFalse" Test.BrowserBased.UnitE2ETests.csproj --no-restore --verbosity minimal
+        working-directory: Test.BrowserBased.UnitE2ETests
+
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
