@@ -11,6 +11,7 @@ using Deque.AxeCore.Commons;
 using Deque.AxeCore.Playwright;
 using FluentAssertions;
 using Test.BrowserBased.UnitE2ETests.BlazeWright;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Test.BrowserBased.UnitE2ETests.Tests
 {
@@ -49,7 +50,7 @@ namespace Test.BrowserBased.UnitE2ETests.Tests
 
             await browserContext.Tracing.StopAsync(new()
             {
-                Path = "trace.zip",
+                Path = $"playwright-report/CountIncrementerMeetsAxeAccesibilityStandards.zip",
             });
             // Clean up resources by closing the page and browser context
             await page.CloseAsync();

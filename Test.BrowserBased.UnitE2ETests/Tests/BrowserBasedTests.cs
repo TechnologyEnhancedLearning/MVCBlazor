@@ -12,6 +12,7 @@ using Test.BrowserBased.Host;
 using static Microsoft.Playwright.Assertions;
 using Test.BrowserBased.UnitE2ETests.Helpers;
 using Test.BrowserBased.UnitE2ETests.BlazeWright;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 
 namespace Test.BrowserBased.UnitE2ETests.Tests
@@ -95,7 +96,7 @@ namespace Test.BrowserBased.UnitE2ETests.Tests
 
             await browserContext.Tracing.StopAsync(new()
             {
-                Path = "trace.zip",
+                Path = $"playwright-report/Page_Loads_Correctly.zip",
             });
 
             // Clean up resources by closing the page and browser context
@@ -160,7 +161,7 @@ namespace Test.BrowserBased.UnitE2ETests.Tests
 
             await browserContext.Tracing.StopAsync(new()
             {
-                Path = "trace.zip",
+                Path = $"playwright-report/Page_InteractivityIsCorrectlySimulated.zip",
             });
 
             // Clean up resources by closing the page and browser context
