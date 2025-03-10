@@ -44,11 +44,12 @@ jobs:
         # run : dotnet test --filter "Category!=LocalOnly & Category!=HeadlessFalse"  Test.BrowserBased.UnitE2ETests/Test.BrowserBased.UnitE2ETests.csproj --no-restore --verbosity minimal      
       
       - name: Playwright test run excepted filtered
-        run: dotnet test --filter "Category!=LocalOnly & Category!=HeadlessFalse" Test.BrowserBased.UnitE2ETests.csproj --no-restore --verbosity minimal
+        run: dotnet test --filter "Category!=LocalOnly & Category!=HeadlessFalse" Test.BrowserBased.UnitE2ETests.csproj --no-restore --verbosity verbose
         working-directory: Test.BrowserBased.UnitE2ETests
 
       - uses: actions/upload-artifact@v4
-        if: ${{ !cancelled() }}
+        if: Always() 
+        #${{ !cancelled() }} qqqq put back in
         with:
           name: playwright-report
           path: playwright-report/
