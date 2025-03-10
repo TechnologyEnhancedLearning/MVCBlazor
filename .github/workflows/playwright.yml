@@ -9,11 +9,12 @@ jobs:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    - name: Setup dotnet
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: 8.0.x
+      - uses: actions/checkout@v4
+      
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
 #    - name: Build & Install
       # run: dotnet build
 # Fix xUnit dependency conflict
@@ -22,6 +23,7 @@ jobs:
           dotnet add Test.BrowserBased.UnitE2ETests/Test.BrowserBased.UnitE2ETests.csproj package xunit.extensibility.core --version 2.8.0
     
     # Selectively restore the test projects
+    # qqqq may not need all of them as may happen in test step do we want to fail early? we will have dependabot yml too so this will need to run first
       - name: Restore test projects
         run: |
           dotnet restore Test.Components/Test.Components.csproj
@@ -30,17 +32,21 @@ jobs:
           dotnet restore Test.BrowserBased.Host/Test.BrowserBased.Host/Test.BrowserBased.Host.csproj
           dotnet restore Test.BrowserBased.Host/Test.BrowserBased.Host.Client/Test.BrowserBased.Host.Client.csproj
     
-
+    - name: Build & Install
+      run: | 
+        dotnet build Test.BrowserBased.UnitE2ETests/Test.BrowserBased.UnitE2ETests.csproj --no-restore
+      #check if fails early
     - name: Ensure browsers are installed
       run: pwsh Test.BrowserBased.UnitE2ETests/bin/Debug/net8.0/playwright.ps1 install --with-deps
     - name: Run your tests
-      run: |
-          cd Test.BrowserBased.UnitE2ETests
-          dotnet test
+      run: dotnet test Test.BrowserBased.UnitE2ETests/Test.BrowserBased.UnitE2ETests.csproj --no-restore
+      #run: |
+       #   cd Test.BrowserBased.UnitE2ETests
+       #   dotnet test --no-restore
           
     - uses: actions/upload-artifact@v4
-        if: ${{ !cancelled() }}
-        with:
-          name: playwright-report
-          path: Test.BrowserBased.UnitE2ETests/playwright-report/
-          retention-days: 30
+      if: ${{ !cancelled() }}
+      with:
+        name: playwright-report
+        path: Test.BrowserBased.UnitE2ETests/playwright-report/
+        retention-days: 30
