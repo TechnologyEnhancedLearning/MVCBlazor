@@ -175,6 +175,8 @@ namespace Test.BrowserBased.UnitE2ETests.Tests
         /// </summary>
         /// <returns></returns>
         [Fact]
+        [Trait("Category", "LocalOnly")]
+        [Trait("Category", "HeadlessFalse")]
         public async Task Count_Increments_WhenButtonIsClicked_ManualSetUp()
         {
             // Arrange

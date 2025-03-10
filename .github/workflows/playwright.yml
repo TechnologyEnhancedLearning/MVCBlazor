@@ -17,6 +17,7 @@ jobs:
           dotnet-version: 8.0.x
 #    - name: Build & Install
       # run: dotnet build
+      
 # Fix xUnit dependency conflict
       - name: Fix package dependencies
         run: |
@@ -35,11 +36,14 @@ jobs:
       - name: Build & Install
         run: | 
           dotnet build Test.BrowserBased.UnitE2ETests/Test.BrowserBased.UnitE2ETests.csproj --no-restore
+          
       #check if fails early
       - name: Ensure browsers are installed
         run: pwsh Test.BrowserBased.UnitE2ETests/bin/Debug/net8.0/playwright.ps1 install --with-deps
+        
       - name: Run your tests
-        run: dotnet test Test.BrowserBased.UnitE2ETests/Test.BrowserBased.UnitE2ETests.csproj --no-restore
+        run: dotnet test --filter "Category=HeadlessFalse|Category=LocalOnly" Test.BrowserBased.UnitE2ETests/Test.BrowserBased.UnitE2ETests.csproj --no-restore
+        
       #run: |
        #   cd Test.BrowserBased.UnitE2ETests
        #   dotnet test --no-restore
