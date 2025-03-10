@@ -44,7 +44,7 @@ jobs:
         # run : dotnet test --filter "Category!=LocalOnly & Category!=HeadlessFalse"  Test.BrowserBased.UnitE2ETests/Test.BrowserBased.UnitE2ETests.csproj --no-restore --verbosity minimal      
       
       - name: Playwright test run excepted filtered
-        run: dotnet test --filter "Category!=LocalOnly & Category!=HeadlessFalse" Test.BrowserBased.UnitE2ETests.csproj --no-restore --verbosity verbose
+        run: dotnet test --filter "Category!=LocalOnly & Category!=HeadlessFalse" Test.BrowserBased.UnitE2ETests.csproj --no-restore --verbosity normal
         working-directory: Test.BrowserBased.UnitE2ETests
         
       - name: Debug List All Files in Test Project
