@@ -42,7 +42,7 @@ namespace Test.BrowserBased.UnitE2ETests.Tests
             var browser = await Playwright.Chromium.LaunchAsync();
             var page = await browser.NewPageAsync();
             await page.GotoAsync("https://playwright.dev");
-            Assert.Equal("https://playwright.dev/", page.Url);
+            Xunit.Assert.Equal("https://playwright.dev/", page.Url);
         }
 
 
@@ -96,7 +96,11 @@ namespace Test.BrowserBased.UnitE2ETests.Tests
 
             await browserContext.Tracing.StopAsync(new()
             {
-                Path = $"playwright-report/Page_Loads_Correctly.zip",
+
+                Path = Path.Combine(Path.Combine(Directory.GetCurrentDirectory(), "playwright-report"), "QQQQ1_Page_Loads_Correctly.zip"),
+                //Path = $"playwright-report/CountIncrementerMeetsAxeAccesibilityStandards.zip",
+
+                //Path = $"playwright-report/Page_Loads_Correctly.zip",
             });
 
             // Clean up resources by closing the page and browser context

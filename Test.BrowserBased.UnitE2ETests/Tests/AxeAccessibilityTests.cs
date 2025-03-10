@@ -50,7 +50,8 @@ namespace Test.BrowserBased.UnitE2ETests.Tests
 
             await browserContext.Tracing.StopAsync(new()
             {
-                Path = $"playwright-report/CountIncrementerMeetsAxeAccesibilityStandards.zip",
+                Path = Path.Combine(Path.Combine(Directory.GetCurrentDirectory(), "playwright-report"), "QQQQ1_CountIncrementerMeetsAxeAccesibilityStandards.zip"),
+                //Path = $"playwright-report/CountIncrementerMeetsAxeAccesibilityStandards.zip",
             });
             // Clean up resources by closing the page and browser context
             await page.CloseAsync();
