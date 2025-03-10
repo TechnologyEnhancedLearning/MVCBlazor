@@ -40,15 +40,16 @@ jobs:
       #check if fails early
       - name: Ensure browsers are installed
         run: pwsh Test.BrowserBased.UnitE2ETests/bin/Debug/net8.0/playwright.ps1 install --with-deps
-        
-      - name: Run ProductionPlaywrightSiteIsReachableAndHasTitle
-        run: dotnet test --filter "FullyQualifiedName~ProductionPlaywrightSiteIsReachableAndHasTitle" Test.BrowserBased.UnitE2ETests/Test.BrowserBased.UnitE2ETests.csproj --no-restore --verbosity minimal
-      - name: Run MainNavigation
-        run: dotnet test --filter "FullyQualifiedName~MainNavigation" Test.BrowserBased.UnitE2ETests/Test.BrowserBased.UnitE2ETests.csproj --no-restore --verbosity minimal
-      - name: Run Page_Loads_Correctly
-        run: dotnet test --filter "FullyQualifiedName~Page_Loads_Correctly" Test.BrowserBased.UnitE2ETests/Test.BrowserBased.UnitE2ETests.csproj --no-restore --verbosity minimal
-      - name: Run Page_InteractivityIsCorrectlySimulated
-        run: dotnet test --filter "FullyQualifiedName~Page_InteractivityIsCorrectlySimulated" Test.BrowserBased.UnitE2ETests/Test.BrowserBased.UnitE2ETests.csproj --no-restore --verbosity minimal
+      - name: Playwright test run excepted filtered
+        run : dotnet test --filter "Category!=LocalOnly & Category!=HeadlessFalse"  Test.BrowserBased.UnitE2ETests/Test.BrowserBased.UnitE2ETests.csproj --no-restore --verbosity minimal      
+      # - name: Run ProductionPlaywrightSiteIsReachableAndHasTitle
+        # run: dotnet test --filter "FullyQualifiedName~ProductionPlaywrightSiteIsReachableAndHasTitle" Test.BrowserBased.UnitE2ETests/Test.BrowserBased.UnitE2ETests.csproj --no-restore --verbosity minimal
+      # - name: Run MainNavigation
+        # run: dotnet test --filter "FullyQualifiedName~MainNavigation" Test.BrowserBased.UnitE2ETests/Test.BrowserBased.UnitE2ETests.csproj --no-restore --verbosity minimal
+      # - name: Run Page_Loads_Correctly
+        # run: dotnet test --filter "FullyQualifiedName~Page_Loads_Correctly" Test.BrowserBased.UnitE2ETests/Test.BrowserBased.UnitE2ETests.csproj --no-restore --verbosity minimal
+      # - name: Run Page_InteractivityIsCorrectlySimulated
+        # run: dotnet test --filter "FullyQualifiedName~Page_InteractivityIsCorrectlySimulated" Test.BrowserBased.UnitE2ETests/Test.BrowserBased.UnitE2ETests.csproj --no-restore --verbosity minimal
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
