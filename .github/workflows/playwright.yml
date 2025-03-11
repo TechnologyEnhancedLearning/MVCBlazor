@@ -5,7 +5,44 @@ on:
   pull_request:
     branches: [ main, master ]
 jobs:
-  test:
+  ## test.BUnit.UnitTests
+  ## qqqq bunit-lh-tests:
+  bunit-shared-tests:
+    timeout-minutes: 60
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v4
+      
+        - name: Setup dotnet
+          uses: actions/setup-dotnet@v4
+          with:
+            dotnet-version: 8.0.x
+        
+        - name: Restore test projects
+          run: |
+            dotnet restore Test.Components/Test.Components.csproj
+            dotnet restore Package.Shared.BlazorComponents.UnitTests.csproj
+            dotnet restore Package.Shared.BlazorComponents.csproj
+            dotnet restore Package.Shared.Entities.csproj
+            dotnet restore Package.Shared.Services.csproj
+            
+        - name: Build & Install
+          run: | 
+            dotnet build Test.Components/Test.Components.csproj --no-restore
+            dotnet build Package.Shared.BlazorComponents.UnitTests.csproj --no-restore
+            dotnet build Package.Shared.BlazorComponents.csproj --no-restore
+            dotnet build Package.Shared.Entities.csproj --no-restore
+            dotnet build Package.Shared.Services.csproj --no-restore
+            
+        - name: Run bUnit tests
+          run: dotnet test Package.Shared.BlazorComponents.UnitTests.csproj --no-build --verbosity minimal
+          working-directory: Package.Shared.BlazorComponents.UnitTests
+
+        
+
+
+            
+  playwright-browser-tests:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
@@ -26,7 +63,6 @@ jobs:
       - name: Restore test projects
         run: |
           dotnet restore Test.Components/Test.Components.csproj
-          dotnet restore Test.BUnit.UnitTests/Test.BUnit.UnitTests.csproj
           dotnet restore Test.BrowserBased.UnitE2ETests/Test.BrowserBased.UnitE2ETests.csproj
           dotnet restore Test.BrowserBased.Host/Test.BrowserBased.Host/Test.BrowserBased.Host.csproj
           dotnet restore Test.BrowserBased.Host/Test.BrowserBased.Host.Client/Test.BrowserBased.Host.Client.csproj

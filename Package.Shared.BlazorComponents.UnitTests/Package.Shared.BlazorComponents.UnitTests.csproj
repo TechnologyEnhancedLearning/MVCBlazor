@@ -39,6 +39,10 @@
 	  <ProjectReference Include="..\Package.Shared.Services\Package.Shared.Services.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="BUnitLoggerOutput\" />
+	</ItemGroup>
+
 
 
 </Project>
