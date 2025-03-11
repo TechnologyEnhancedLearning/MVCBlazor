@@ -13,6 +13,8 @@ using static Microsoft.Playwright.Assertions;
 using Test.BrowserBased.UnitE2ETests.Helpers;
 using Test.BrowserBased.UnitE2ETests.BlazeWright;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
+using System.Globalization;
 
 
 namespace Test.BrowserBased.UnitE2ETests.Tests
@@ -94,13 +96,14 @@ namespace Test.BrowserBased.UnitE2ETests.Tests
             ILocator status = page.GetByRole(AriaRole.Status);
             await Expect(status).ToHaveTextAsync("Current count: 0");
 
+
+            string methodName = "Page_Loads_Correctly";
+            string timestamp = DateTime.UtcNow.ToString("yyMMddHHmmss", CultureInfo.InvariantCulture);
+            string path = $"../../../playwright-report/{methodName}_{timestamp}.zip";
             await browserContext.Tracing.StopAsync(new()
             {
+                Path = path,
 
-                Path = Path.Combine(Path.Combine(Directory.GetCurrentDirectory(), "playwright-report"), "QQQQ3_Page_Loads_Correctly.zip"),
-                //Path = $"playwright-report/CountIncrementerMeetsAxeAccesibilityStandards.zip",
-
-                //Path = $"playwright-report/Page_Loads_Correctly.zip",
             });
 
             // Clean up resources by closing the page and browser context
@@ -163,12 +166,14 @@ namespace Test.BrowserBased.UnitE2ETests.Tests
             // Check if JavaScript is enabled by verifying the text changes
             await Expect(status).ToHaveTextAsync(jsEnabled ? "Current count: 1" : "Current count: 0");
 
-            Console.WriteLine("QQQQ");
-            Console.WriteLine(Path.Combine("./", "toplevel"));
+
+            string methodName = "Page_InteractivityIsCorrectlySimulated";
+            string timestamp = DateTime.UtcNow.ToString("yyMMddHHmmss", CultureInfo.InvariantCulture);
+            string path = $"../../../playwright-report/{methodName}_{timestamp}.zip";
             await browserContext.Tracing.StopAsync(new()
             {
-                Path = "../../../playwright-report/qqqq4_Page_InteractivityIsCorrectlySimulated.zip", //qqqq works qqqqqqqqqq do this
-                //Path = "./Test.BrowserBased.UnitE2ETests/playwright-report/qqqq5_Page_InteractivityIsCorrectlySimulated.zip",
+                Path = path,
+                
             });
 
             // Clean up resources by closing the page and browser context
