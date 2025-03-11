@@ -38,7 +38,7 @@ jobs:
             dotnet build Test.BUnit.UnitTests/Test.BUnit.UnitTests.csproj --no-restore
             
         - name: Run bUnit tests
-          run: dotnet test Test.BUnit.UnitTests.csproj --no-build --verbosity minimal
+          run: dotnet test Test.BUnit.UnitTests.csproj --no-build --verbosity normal
           working-directory: Test.BUnit.UnitTests
           
           
