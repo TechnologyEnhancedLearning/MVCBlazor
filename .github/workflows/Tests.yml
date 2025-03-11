@@ -1,4 +1,4 @@
-name: Playwright Tests
+name: Tests
 on:
   push:
     branches: [ main, master ]
@@ -6,7 +6,38 @@ on:
     branches: [ main, master ]
 jobs:
   ## test.BUnit.UnitTests
-  ## qqqq bunit-lh-tests:
+  bunit-lh-tests:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    steps:
+        - uses: actions/checkout@v4
+      
+        - name: Setup dotnet
+          uses: actions/setup-dotnet@v4
+          with:
+            dotnet-version: 8.0.x
+        
+        - name: Restore test projects
+          run: |
+            dotnet restore Package.Shared.BlazorComponents.UnitTests/Package.Shared.BlazorComponents.UnitTests.csproj
+            dotnet restore Package.Shared.Services/Package.Shared.Services.csproj
+            dotnet restore Package.LH.Services/Package.LH.Services.csproj
+            dotnet restore Package.LH.BlazorComponents/Package.LH.BlazorComponents.csproj
+            
+         
+            
+        - name: Build & Install
+          run: | 
+            dotnet build Package.Shared.BlazorComponents.UnitTests/Package.Shared.BlazorComponents.UnitTests.csproj --no-restore
+            dotnet build Package.Shared.Services/Package.Shared.Services.csproj --no-restore
+            dotnet build Package.LH.Services/Package.LH.Services.csproj --no-restore
+            dotnet build Package.LH.BlazorComponents/Package.LH.BlazorComponents.csproj --no-restore
+            
+            
+        - name: Run bUnit tests
+          run: dotnet test Package.LH.BlazorComponents.UnitTests.csproj --no-build --verbosity minimal
+          working-directory: Package.LH.BlazorComponents.UnitTests
+
   bunit-shared-tests:
     timeout-minutes: 60
     runs-on: ubuntu-latest
