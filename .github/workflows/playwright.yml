@@ -21,18 +21,18 @@ jobs:
         - name: Restore test projects
           run: |
             dotnet restore Test.Components/Test.Components.csproj
-            dotnet restore Package.Shared.BlazorComponents.UnitTests.csproj
-            dotnet restore Package.Shared.BlazorComponents.csproj
-            dotnet restore Package.Shared.Entities.csproj
-            dotnet restore Package.Shared.Services.csproj
+            dotnet restore Package.Shared.BlazorComponents.UnitTests/Package.Shared.BlazorComponents.UnitTests.csproj
+            dotnet restore Package.Shared.BlazorComponents/Package.Shared.BlazorComponents.csproj
+            dotnet restore Package.Shared.Entities/Package.Shared.Entities.csproj
+            dotnet restore Package.Shared.Services/Package.Shared.Services.csproj
             
         - name: Build & Install
           run: | 
             dotnet build Test.Components/Test.Components.csproj --no-restore
-            dotnet build Package.Shared.BlazorComponents.UnitTests.csproj --no-restore
-            dotnet build Package.Shared.BlazorComponents.csproj --no-restore
-            dotnet build Package.Shared.Entities.csproj --no-restore
-            dotnet build Package.Shared.Services.csproj --no-restore
+            dotnet build Package.Shared.BlazorComponents/Package.Shared.BlazorComponents.UnitTests.csproj --no-restore
+            dotnet build Package.Shared.BlazorComponents/Package.Shared.BlazorComponents.csproj --no-restore
+            dotnet build Package.Shared.Entities/Package.Shared.Entities.csproj --no-restore
+            dotnet build Package.Shared.Services/Package.Shared.Services.csproj --no-restore
             
         - name: Run bUnit tests
           run: dotnet test Package.Shared.BlazorComponents.UnitTests.csproj --no-build --verbosity minimal
