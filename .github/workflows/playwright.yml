@@ -39,7 +39,7 @@ jobs:
         run: pwsh Test.BrowserBased.UnitE2ETests/bin/Debug/net8.0/playwright.ps1 install --with-deps
 
       - name: Playwright test run excepted filtered
-        run: dotnet test --filter "Category!=LocalOnly & Category!=HeadlessFalse" Test.BrowserBased.UnitE2ETests.csproj --no-restore --verbosity minimal --results-directory:Test.BrowserBased.UnitE2ETests/playwright-report
+        run: dotnet test --filter "Category!=LocalOnly & Category!=HeadlessFalse" Test.BrowserBased.UnitE2ETests.csproj --no-restore --verbosity minimal
         working-directory: Test.BrowserBased.UnitE2ETests
         
       - name: Debug List All Files in Test Project

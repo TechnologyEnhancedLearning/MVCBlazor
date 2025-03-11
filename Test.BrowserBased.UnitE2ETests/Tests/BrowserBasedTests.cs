@@ -98,8 +98,9 @@ namespace Test.BrowserBased.UnitE2ETests.Tests
 
 
             string methodName = "Page_Loads_Correctly";
-            string timestamp = DateTime.UtcNow.ToString("yyMMddHHmmss", CultureInfo.InvariantCulture);
-            string path = $"../../../playwright-report/{methodName}_{timestamp}.zip";
+            string timestamp = DateTime.UtcNow.ToString("yy_MM_dd_HH_mm_ss", CultureInfo.InvariantCulture);
+            string arguments = $"{browserType}_{$"jsEnabled_{jsEnabled.ToString()}"}_{viewport.ToString()}";
+            string path = $"../../../playwright-report/{methodName}_{arguments}_{timestamp}.zip";
             await browserContext.Tracing.StopAsync(new()
             {
                 Path = path,
@@ -168,8 +169,9 @@ namespace Test.BrowserBased.UnitE2ETests.Tests
 
 
             string methodName = "Page_InteractivityIsCorrectlySimulated";
-            string timestamp = DateTime.UtcNow.ToString("yyMMddHHmmss", CultureInfo.InvariantCulture);
-            string path = $"../../../playwright-report/{methodName}_{timestamp}.zip";
+            string timestamp = DateTime.UtcNow.ToString("yy_MM_dd_HH_mm_ss", CultureInfo.InvariantCulture);
+            string arguments = $"{browserType}_{$"jsEnabled_{jsEnabled.ToString()}"}_{viewport.ToString()}";
+            string path = $"../../../playwright-report/{methodName}_{arguments}_{timestamp}.zip";
             await browserContext.Tracing.StopAsync(new()
             {
                 Path = path,

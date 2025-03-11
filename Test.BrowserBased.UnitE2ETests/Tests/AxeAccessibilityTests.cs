@@ -13,6 +13,7 @@ using FluentAssertions;
 using Test.BrowserBased.UnitE2ETests.BlazeWright;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.IO;
+using System.Globalization;
 
 namespace Test.BrowserBased.UnitE2ETests.Tests
 {
@@ -50,12 +51,16 @@ namespace Test.BrowserBased.UnitE2ETests.Tests
 
             axeResults.Violations.Should().BeNullOrEmpty();
 
-      
+     
+
+            string methodName = "CountIncrementerMeetsAxeAccesibilityStandards";
+            string timestamp = DateTime.UtcNow.ToString("yy_MM_dd_HH_mm_ss", CultureInfo.InvariantCulture);
+            string arguments = $"{browserType}_{$"jsEnabled_{jsEnabled.ToString()}"}_{viewport.ToString()}";
+            string path = $"../../../playwright-report/{methodName}_{arguments}_{timestamp}.zip";
             await browserContext.Tracing.StopAsync(new()
             {
-                
-                Path = tracePath,
-                //Path = $"playwright-report/CountIncrementerMeetsAxeAccesibilityStandards.zip",
+                Path = path,
+
             });
             // Clean up resources by closing the page and browser context
             await page.CloseAsync();
