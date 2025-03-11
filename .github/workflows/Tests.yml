@@ -23,7 +23,7 @@ jobs:
             dotnet restore Package.Shared.Services/Package.Shared.Services.csproj
             dotnet restore Package.LH.Services/Package.LH.Services.csproj
             dotnet restore Package.LH.BlazorComponents/Package.LH.BlazorComponents.csproj
-            
+            dotnet restore Package.LH.BlazorComponents.UnitTests/Package.LH.BlazorComponents.UnitTests.csproj
          
             
         - name: Build & Install
@@ -32,6 +32,7 @@ jobs:
             dotnet build Package.Shared.Services/Package.Shared.Services.csproj --no-restore
             dotnet build Package.LH.Services/Package.LH.Services.csproj --no-restore
             dotnet build Package.LH.BlazorComponents/Package.LH.BlazorComponents.csproj --no-restore
+            dotnet build Package.LH.BlazorComponents.UnitTests/Package.LH.BlazorComponents.UnitTests.csproj --no-restore
             
             
         - name: Run bUnit tests
