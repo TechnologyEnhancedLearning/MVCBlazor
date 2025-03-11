@@ -29,7 +29,7 @@ jobs:
         - name: Build & Install
           run: | 
             dotnet build Test.Components/Test.Components.csproj --no-restore
-            dotnet build Package.Shared.BlazorComponents/Package.Shared.BlazorComponents.UnitTests.csproj --no-restore
+            dotnet build Package.Shared.BlazorComponents.UnitTests/Package.Shared.BlazorComponents.UnitTests.csproj --no-restore
             dotnet build Package.Shared.BlazorComponents/Package.Shared.BlazorComponents.csproj --no-restore
             dotnet build Package.Shared.Entities/Package.Shared.Entities.csproj --no-restore
             dotnet build Package.Shared.Services/Package.Shared.Services.csproj --no-restore
