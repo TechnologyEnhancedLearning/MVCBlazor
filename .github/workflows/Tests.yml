@@ -5,7 +5,44 @@ on:
   pull_request:
     branches: [ main, master ]
 jobs:
-  ## test.BUnit.UnitTests
+  bunit-bunit-functionality-tests:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    steps:
+        - uses: actions/checkout@v4
+      
+        - name: Setup dotnet
+          uses: actions/setup-dotnet@v4
+          with:
+            dotnet-version: 8.0.x
+        
+        - name: Restore test projects
+          run: |
+            dotnet restore Package.LH.Services/Package.LH.Services.csproj
+            dotnet restore Package.LH.Entities/Package.LH.Entities.csproj
+            dotnet restore Package.Shared.BlazorComponents/Package.Shared.BlazorComponents.csproj
+            dotnet restore Package.Shared.Services/Package.Shared.Services.csproj
+            dotnet restore Package.Shared.Entities/Package.Shared.Entities.csproj
+            dotnet restore Test.Components/Test.Components.csproj
+            dotnet restore Test.BUnit.UnitTests/Test.BUnit.UnitTests.csproj
+         
+            
+        - name: Build & Install
+          run: | 
+            dotnet build Package.LH.Services/Package.LH.Services.csproj --no-restore
+            dotnet build Package.LH.Entities/Package.LH.Entities.csproj --no-restore
+            dotnet build Package.Shared.BlazorComponents/Package.Shared.BlazorComponents.csproj --no-restore
+            dotnet build Package.Shared.Services/Package.Shared.Services.csproj --no-restore
+            dotnet build Package.Shared.Entities/Package.Shared.Entities.csproj --no-restore
+            dotnet build Test.Components/Test.Components.csproj --no-restore
+            dotnet build Test.BUnit.UnitTests/Test.BUnit.UnitTests.csproj --no-restore
+            
+        - name: Run bUnit tests
+          run: dotnet test Test.BUnit.UnitTests.csproj --no-build --verbosity minimal
+          working-directory: Test.BUnit.UnitTests
+          
+          
+          
   bunit-lh-tests:
     timeout-minutes: 60
     runs-on: ubuntu-latest
