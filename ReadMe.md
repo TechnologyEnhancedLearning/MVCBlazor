@@ -476,6 +476,9 @@ Creator of BUnit testing project and step by step, I think there are some long v
 - [egil conference tests](https://www.youtube.com/watch?v=aorfcDeHUpw)
 - [pizza egil git](https://github.com/egil/blazor-workshop/blob/master/src/BlazingPizza.Tests/ComponentLibrary/PizzaCardTests.razor)
 - [useful for understanding comparer options for markup in bunit](https://bunit.dev/docs/verification/semantic-html-comparison.html)
+- [Mud Blazor Unit Tests for examples of good practice](https://github.com/MudBlazor/MudBlazor/blob/dev/src/MudBlazor.UnitTests/Components/BadgeTests.cs)
+
+
 
 ##### Carpark Test Examples
 - cut.Nodes.QuerySelector("main > span");
@@ -783,7 +786,7 @@ dummy to satisfy the constructor signature of a class when you don’t care abou
 - maybe StyleCop.Analyzers
 - maybe  .editorconfig
 - not seeing alot of recommendations
-- only sonar cube
+- only sonar cube which is used in the original frontend design system and maybe in mud?
 
 
 
@@ -1146,6 +1149,15 @@ It would be possible to tell them they we're redirected on the page they we're r
 
 ## Things to try in the project to gain familiarity
 - replace the li links with a blazor component that takes class the href or two one for mvc and blazor
+
+## CarPark
+- gitpod looks interesting i am using ace to run yaml locally but that seems better potentially
+
+### Mudblazor notes (in their contributions.md theres lots of valuable information)
+- [mud doesnt allow logic in setters](https://github.com/MudBlazor/MudBlazor/blob/dev/CONTRIBUTING.md#parameter-registration-or-why-we-cant-have-logic-in-parameter-setters)
+- we can autogenerate tests just for checking if rendering happens
+- always use comp.InvokeAsync(()=>textField.Value="I love dogs");
+- loads of other stuff and this isnt the right place for it
 
 ## Folder Structures and Comments
 ### Project Structure
